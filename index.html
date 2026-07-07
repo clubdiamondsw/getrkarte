@@ -2,7 +2,7 @@
 <html lang="de">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover, user-scalable=yes, maximum-scale=1.0, user-scalable=no">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, viewfit=cover, user-scalable=yes, maximum-scale=1.0, user-scalable=no">
     <title>CLUB, LOUNGE, COCKTAIL BAR DIAMOND · Getränkekarte</title>
     <style>
         * {
@@ -562,181 +562,629 @@
 <div class="pin-overlay" id="pinOverlay"><div class="pin-dialog"><h3>🔒 Admin-Zugang</h3><p>Bitte PIN eingeben</p><input type="password" id="pinInput" class="pin-input" maxlength="4" inputmode="numeric"><div class="pin-buttons"><button class="pin-cancel" id="pinCancelBtn">Abbrechen</button><button class="pin-submit" id="pinSubmitBtn">Bestätigen</button></div><div id="pinError" class="pin-error"></div></div></div>
 
 <script>
-    // ==================== MULTILANGUAGE ====================
+    // ==================== MULTILANGUAGE TRANSLATIONS ====================
     const translations = {
-        de: { cartItems: "Artikel", resetBtn: "Zurücksetzen", orderBtn: "Bestellen", confirmTitle: "⚠️ Warenkorb zurücksetzen", confirmMessage: "Möchten Sie wirklich alle Artikel aus dem Warenkorb entfernen?", confirmYes: "Ja, zurücksetzen", confirmNo: "Abbrechen", orderTitle: "Ihre Bestellung", orderSubtitle: "Bitte überprüfen Sie Ihre Auswahl", closeBtn: "Schließen", speakingHead: "Bitte geben Sie diese Bestellung am Tresen auf", thankYou: "Vielen Dank & genießen Sie Ihren Aufenthalt!", showAllCategories: "Alle Kategorien anzeigen", emptyCart: "Ihr Warenkorb ist leer", toastAdded: "➕ {name} hinzugefügt", toastCleared: "🗑️ Warenkorb wurde geleert", toastRemoved: "🗑️ {name} entfernt", themeDark: "🌙 Dark Mode aktiviert", themeLight: "☀️ Light Mode aktiviert", dataSaved: "💾 Daten gespeichert! Seite wird neu geladen..." },
-        ru: { cartItems: "Позиции", resetBtn: "Сбросить", orderBtn: "Заказать", confirmTitle: "⚠️ Очистить корзину", confirmMessage: "Вы действительно хотите удалить все позиции из корзины?", confirmYes: "Да, очистить", confirmNo: "Отмена", orderTitle: "Ваш заказ", orderSubtitle: "Пожалуйста, проверьте ваш выбор", closeBtn: "Закрыть", speakingHead: "Пожалуйста, передайте этот заказ за стойку", thankYou: "Спасибо и приятного отдыха!", showAllCategories: "Показать все категории", emptyCart: "Ваша корзина пуста", toastAdded: "➕ {name} добавлено", toastCleared: "🗑️ Корзина очищена", toastRemoved: "🗑️ {name} удалено", themeDark: "🌙 Темный режим активирован", themeLight: "☀️ Светлый режим активирован", dataSaved: "💾 Данные сохранены! Страница будет перезагружена..." },
-        en: { cartItems: "Items", resetBtn: "Reset", orderBtn: "Order", confirmTitle: "⚠️ Reset Cart", confirmMessage: "Do you really want to remove all items from your cart?", confirmYes: "Yes, reset", confirmNo: "Cancel", orderTitle: "Your Order", orderSubtitle: "Please check your selection", closeBtn: "Close", speakingHead: "Please place this order at the counter", thankYou: "Thank you and enjoy your stay!", showAllCategories: "Show all categories", emptyCart: "Your cart is empty", toastAdded: "➕ {name} added", toastCleared: "🗑️ Cart cleared", toastRemoved: "🗑️ {name} removed", themeDark: "🌙 Dark Mode activated", themeLight: "☀️ Light Mode activated", dataSaved: "💾 Data saved! Page will reload..." }
-    };
-
-    // ==================== GETRÄNKEDATEN ====================
-    const baseDrinks = {
-        bier: {
-            title: "🍺 BIER",
-            items: [
-                { name: "Heineken", size: "0,25l", price: 4.00 },
-                { name: "Heineken Alkoholfrei", size: "0,33l", price: 4.50 },
-                { name: "Corona Bier", size: "0,33l", price: 4.50 },
-                { name: "Hefe Weizen", size: "0,5l", price: 4.50 },
-                { name: "Saltos verschiedene Sorten", size: "0,33l", price: 4.50 }
-            ]
+        de: { 
+            cartItems: "Artikel", resetBtn: "Zurücksetzen", orderBtn: "Bestellen", 
+            confirmTitle: "⚠️ Warenkorb zurücksetzen", confirmMessage: "Möchten Sie wirklich alle Artikel aus dem Warenkorb entfernen?",
+            confirmYes: "Ja, zurücksetzen", confirmNo: "Abbrechen", orderTitle: "Ihre Bestellung",
+            orderSubtitle: "Bitte überprüfen Sie Ihre Auswahl", closeBtn: "Schließen",
+            speakingHead: "Bitte geben Sie diese Bestellung am Tresen auf", thankYou: "Vielen Dank & genießen Sie Ihren Aufenthalt!",
+            showAllCategories: "Alle Kategorien anzeigen", emptyCart: "Ihr Warenkorb ist leer",
+            toastAdded: "➕ {name} hinzugefügt", toastCleared: "🗑️ Warenkorb wurde geleert", toastRemoved: "🗑️ {name} entfernt",
+            themeDark: "🌙 Dark Mode aktiviert", themeLight: "☀️ Light Mode aktiviert", dataSaved: "💾 Daten gespeichert! Seite wird neu geladen...",
+            infoText: "ⓘ Zusatzstoffe: 1=Farbstoffe | 2=coffeinhaltig | 3=chininhaltig | 4=niacinhaltig | 5=Herkunft: Frankreich | 6=Säuerungsmittel<br><span class='star-item'>⭐ * Inclusive 1l Softdrinks (Cola/Fanta/Sprite)</span><br><span class='star-item'>⭐ * Inclusive 1l Saft (verschiedene Sorten)</span><br><span class='star-item'>⭐ * Inclusive 6 Red Bull's</span><br>💰 Alle Preise inkl. MwSt. | **Sonstiges: Preis auf Anfrage"
         },
-        softdrinks: {
-            title: "🥤 SOFTDRINKS",
-            items: [
-                { name: "Coca Cola", size: "0,3l", price: 3.50, desc: "1,2" },
-                { name: "Coca Cola Zero", size: "0,3l", price: 3.50, desc: "1,2" },
-                { name: "Fanta", size: "0,3l", price: 3.50, desc: "1" },
-                { name: "Sprite", size: "0,3l", price: 3.50, desc: "1" },
-                { name: "Wasser", size: "0,25l", price: 3.00, hasVariants: true, variants: ["spritzig", "still"], requireSelection: true },
-                { name: "Tonic Water", size: "0,3l", price: 3.50, desc: "3" },
-                { name: "Bitter Lemon", size: "0,3l", price: 3.50, desc: "3" },
-                { name: "Ginger Ale", size: "0,3l", price: 3.50, desc: "2" },
-                { name: "Wild Berry", size: "0,3l", price: 3.50, desc: "2" },
-                { name: "Energy", size: "0,3l", price: 4.00, desc: "1,2,3,4,6" },
-                { name: "Red Bull verschiedene Sorten", size: "0,25l", price: 4.50, desc: "1,2,3,4,6" }
-            ]
+        ru: { 
+            cartItems: "Позиции", resetBtn: "Сбросить", orderBtn: "Заказать",
+            confirmTitle: "⚠️ Очистить корзину", confirmMessage: "Вы действительно хотите удалить все позиции из корзины?",
+            confirmYes: "Да, очистить", confirmNo: "Отмена", orderTitle: "Ваш заказ",
+            orderSubtitle: "Пожалуйста, проверьте ваш выбор", closeBtn: "Закрыть",
+            speakingHead: "Пожалуйста, передайте этот заказ за стойку", thankYou: "Спасибо и приятного отдыха!",
+            showAllCategories: "Показать все категории", emptyCart: "Ваша корзина пуста",
+            toastAdded: "➕ {name} добавлено", toastCleared: "🗑️ Корзина очищена", toastRemoved: "🗑️ {name} удалено",
+            themeDark: "🌙 Темный режим активирован", themeLight: "☀️ Светлый режим активирован", dataSaved: "💾 Данные сохранены! Страница будет перезагружена...",
+            infoText: "ⓘ Добавки: 1=Красители | 2=Содержит кофеин | 3=Содержит хинин | 4=Содержит ниацин | 5=Происхождение: Франция | 6=Регулятор кислотности<br><span class='star-item'>⭐ * Включено 1л безалкогольных напитков (Cola/Fanta/Sprite)</span><br><span class='star-item'>⭐ * Включено 1л сока (разные сорта)</span><br><span class='star-item'>⭐ * Включено 6 Red Bull's</span><br>💰 Все цены с НДС | **Другое: Цена по запросу"
         },
-        saefte: {
-            title: "🧃 SÄFTE",
-            items: [
-                { name: "Kirschen", size: "0,25l", price: 4.00, hasVariants: true, variants: ["Nektar", "Schorle"], requireSelection: true },
-                { name: "Banane", size: "0,25l", price: 4.00, hasVariants: true, variants: ["Nektar", "Schorle"], requireSelection: true },
-                { name: "Johannisbeere", size: "0,25l", price: 4.00, hasVariants: true, variants: ["Nektar", "Schorle"], requireSelection: true },
-                { name: "Apfel", size: "0,25l", price: 4.00, hasVariants: true, variants: ["Saft", "Schorle"], requireSelection: true },
-                { name: "Orange", size: "0,25l", price: 4.00, hasVariants: true, variants: ["Saft", "Schorle"], requireSelection: true },
-                { name: "Maracuja", size: "0,25l", price: 4.00, hasVariants: true, variants: ["Nektar", "Schorle"], requireSelection: true },
-                { name: "Ananas", size: "0,25l", price: 4.00, hasVariants: true, variants: ["Saft", "Schorle"], requireSelection: true },
-                { name: "Cranberry", size: "0,25l", price: 4.00, hasVariants: true, variants: ["Saft", "Schorle"], requireSelection: true }
-            ]
-        },
-        cocktails: {
-            title: "🍹 COCKTAILS",
-            items: [
-                { name: "Daiquiri", desc: "Weißer Rum, Zitronensaft, Erdbeer Sirup", size: "0,4l", price: 10.00 },
-                { name: "Lady Killer", desc: "Gin, Triple Sec, Peach Tree, Maracuja, Ananas", size: "0,4l", price: 10.00 },
-                { name: "Caipirinha", desc: "Limette, Lime Juice, Brauner Zucker, Cachaca", size: "0,4l", price: 10.00 },
-                { name: "Cuba Libre", desc: "Limetten, Rum (Havanna), Rohrzucker, Cola", size: "0,4l", price: 10.00 },
-                { name: "Touch Down", desc: "Vodka, Triple Sec, Zitrone, Ananas, Maracuja, Grenadine", size: "0,4l", price: 10.00 },
-                { name: "Mai Tai", desc: "Zitronensaft, Lime Juice, Ananassaft, Rum, Brandy, Havanna", size: "0,4l", price: 10.00 },
-                { name: "Zombie", desc: "Zitros, Lime Juice, Ceepers, Myers Rum, Havanna, Ananassaft, Orangensaft", size: "0,4l", price: 10.00 },
-                { name: "Sex on the Beach", desc: "Orangensaft, Ananassaft, Vodka, Peachtree, Zitro", size: "0,4l", price: 10.00 },
-                { name: "White Russian", desc: "Vodka, Kahlua, Sahne", size: "0,4l", price: 10.00 },
-                { name: "Long Island", desc: "Zitro, Lime Juice, Vodka, Tequila, Havanna, Gin, Triple Sec", size: "0,4l", price: 10.00 },
-                { name: "Pina Colada", desc: "Cocossirup, Myers Rum, Havanna, Ananassaft", size: "0,4l", price: 10.00 },
-                { name: "Peach Colada", desc: "Rum, Peach Tree, Ananas, Pfirsich, Kokos, Sahne", size: "0,4l", price: 10.00 },
-                { name: "Americano", desc: "Campari, Vermuth bianco", size: "0,4l", price: 10.00 },
-                { name: "Mojito", desc: "Limette, Minze, Rohrzucker, Sodawasser, Weißer Rum", size: "0,4l", price: 10.00 },
-                { name: "Ocean Breeze", desc: "Weißer Rum, Amaretto, Curacao Blue, Ananassaft, Sodawasser", size: "0,4l", price: 10.00 },
-                { name: "Diamond Special", desc: "Gin, Vodka, Tequila Silver, Triple Sec, Grenadine, Maracuja Saft, Zitrone, Lime", size: "0,4l", price: 10.00 }
-            ]
-        },
-        cocktails_alkoholfrei: {
-            title: "✨ ALKOHOLFREIE COCKTAILS",
-            items: [
-                { name: "Coconut Kiss", desc: "Cocos, Sahne, Grenadine, Ananassaft", size: "0,4l", price: 9.00 },
-                { name: "Virgin Capi", desc: "Limette, Lime Juice, Brauner Zucker, Ginger Ale", size: "0,4l", price: 9.00 },
-                { name: "Diamond Special Fresh", desc: "Ananas, Orange, Zitrone, Grenadine", size: "0,4l", price: 9.00 },
-                { name: "Exotik", desc: "Ananas, Orange, Zitrone, Minze Sirup", size: "0,4l", price: 9.00 },
-                { name: "Mojito (alkoholfrei)", desc: "Limette, Minze, Rohrzucker, Tonic Wasser, Sodawasser", size: "0,4l", price: 9.00 },
-                { name: "Caipirinha (alkoholfrei)", desc: "Limette, Rohrzucker, Ginger Ale", size: "0,4l", price: 9.00 },
-                { name: "Cinderella", desc: "Orangensaft, Ananassaft, Kokossirup, Sahne, Grenadine", size: "0,4l", price: 9.00 }
-            ]
-        },
-        longdrinks: {
-            title: "🥃 LONGDRINKS",
-            items: [
-                { name: "Malibu", size: "4cl", price: 9.00, hasVariants: true, variants: ["Maracuja", "Kirsch"], requireSelection: true },
-                { name: "Jacky", size: "4cl", price: 9.00, hasVariants: true, variants: ["Cola", "Apfel"], desc: "1,2", requireSelection: true },
-                { name: "Asbach Cola", desc: "1,2", size: "4cl", price: 9.00 },
-                { name: "Captain Morgan Cola", desc: "1,2", size: "4cl", price: 9.00 },
-                { name: "Gin", size: "4cl", price: 9.00, hasVariants: true, variants: ["Tonic", "Russian Wild Berry"], requireSelection: true },
-                { name: "Jägermeister Energy", desc: "1,2,3,4,6", size: "4cl", price: 9.00 },
-                { name: "Vodka Energy", desc: "1,2,3,4,6", size: "4cl", price: 9.00 },
-                { name: "Vodka", size: "4cl", price: 9.00, hasVariants: true, variants: ["Lemon", "Orange"], desc: "3", requireSelection: true }
-            ]
-        },
-        shots: {
-            title: "💥 SHOTS",
-            items: [
-                { name: "B52", size: "4cl", price: 6.00 },
-                { name: "Havanna Lime", size: "4cl", price: 6.00 },
-                { name: "Vodka Lime", size: "4cl", price: 6.00 },
-                { name: "Orgasmus", size: "4cl", price: 6.00 },
-                { name: "Russian Roulette", size: "4cl", price: 6.00 },
-                { name: "Kamikaze", size: "4cl", price: 6.00 }
-            ]
-        },
-        sekt: {
-            title: "🥂 SEKT & WEIN",
-            items: [
-                { name: "Scavi & Ray Prosecco", size: "0,2l", price: 6.00 },
-                { name: "Scavi & Ray Ice Prestige", size: "0,2l", price: 7.00 },
-                { name: "Aperol Spritz", size: "0,2l", price: 7.00 },
-                { name: "Hugo", size: "0,2l", price: 7.00 },
-                { name: "Scavi & Ray IL Bianco", size: "0,75l", price: 35.00 },
-                { name: "Scavi & Ray IL Rosso", size: "0,75l", price: 35.00 },
-                { name: "Scavi & Ray IL Rosato", size: "0,75l", price: 35.00 },
-                { name: "Rotwein", size: "0,2l", price: 6.00 },
-                { name: "Weißwein", size: "0,2l", price: 6.00 },
-                { name: "Lille Berry", size: "0,2l", price: 7.00 }
-            ]
-        },
-        flaschen: {
-            title: "🍾 FLASCHENVERKAUF",
-            items: [
-                { name: "Softdrinks (Cola, Fanta, Sprite)", size: "1,0l", price: 10.00, hasVariants: true, variants: ["Cola", "Fanta", "Sprite"], requireSelection: true },
-                { name: "Säfte (Verschiedene Sorten)", size: "1,0l", price: 15.00 },
-                { name: "Effect Classic Energy", size: "1,0l", price: 10.00 },
-                { name: "Vodka Smirnoff Red Label *", size: "0,7l", hasVariants: true, hasPriceVariants: true, variants: ["65€ mit Softdrinks", "70€ mit Saft", "80€ mit 6 Red Bull's"], requireSelection: true },
-                { name: "Vodka Absolut *", size: "0,7l", hasVariants: true, hasPriceVariants: true, variants: ["75€ mit Softdrinks", "80€ mit Saft", "90€ mit 6 Red Bull's"], requireSelection: true },
-                { name: "Vodka Belvedere *", size: "0,7l", hasVariants: true, hasPriceVariants: true, variants: ["135€ mit Softdrinks", "140€ mit Saft", "150€ mit 6 Red Bull's"], requireSelection: true },
-                { name: "Vodka 9 Mile *", size: "0,7l", hasVariants: true, hasPriceVariants: true, variants: ["75€ mit Softdrinks", "80€ mit Saft", "90€ mit 6 Red Bull's"], requireSelection: true },
-                { name: "Tequila Gold / Silver *", size: "0,7l", hasVariants: true, hasPriceVariants: true, variants: ["80€ mit Softdrinks", "85€ mit Saft", "95€ mit 6 Red Bull's"], requireSelection: true },
-                { name: "Jägermeister *", size: "0,7l", hasVariants: true, hasPriceVariants: true, variants: ["80€ mit Softdrinks", "85€ mit Saft", "95€ mit 6 Red Bull's"], requireSelection: true },
-                { name: "Captain Morgan *", size: "0,7l", hasVariants: true, hasPriceVariants: true, variants: ["80€ mit Softdrinks", "85€ mit Saft", "95€ mit 6 Red Bull's"], requireSelection: true },
-                { name: "Gordon's Gin *", size: "0,7l", hasVariants: true, hasPriceVariants: true, variants: ["80€ mit Softdrinks", "85€ mit Saft", "95€ mit 6 Red Bull's"], requireSelection: true },
-                { name: "Ficken", size: "0,7l", price: 50.00 },
-                { name: "Havanna *", size: "0,7l", hasVariants: true, hasPriceVariants: true, variants: ["80€ mit Softdrinks", "85€ mit Saft", "95€ mit 6 Red Bull's"], requireSelection: true },
-                { name: "Vodka Melone", size: "0,7l", price: 50.00 },
-                { name: "Hennessy *", size: "0,7l", hasVariants: true, hasPriceVariants: true, variants: ["135€ mit Softdrinks", "140€ mit Saft", "150€ mit 6 Red Bull's"], requireSelection: true },
-                { name: "Jack Daniels *", size: "0,7l", hasVariants: true, hasPriceVariants: true, variants: ["80€ mit Softdrinks", "85€ mit Saft", "95€ mit 6 Red Bull's"], requireSelection: true },
-                { name: "Moet & Chandon Brut", size: "0,7l", price: 120.00 },
-                { name: "Scavi & Ray Prosecco", size: "0,75l", price: 35.00 },
-                { name: "Scavi & Ray Ice Prestige", size: "0,75l", price: 40.00 }
-            ]
-        },
-        spirituosen: {
-            title: "🥃 SPIRITUOSEN",
-            items: [
-                { name: "Vodka", size: "2cl", price: 3.00 },
-                { name: "Vodka Melone", size: "2cl", price: 3.00 },
-                { name: "Havanna Club", size: "2cl", price: 3.00 },
-                { name: "Tequila (Silver / Gold)", size: "2cl", price: 3.00 },
-                { name: "Malibu", size: "2cl", price: 3.00 },
-                { name: "Baileys", size: "4cl", price: 6.00, desc: "1,2" },
-                { name: "Ficken", size: "2cl", price: 3.00 },
-                { name: "Jägermeister", size: "2cl", price: 3.00 },
-                { name: "Jack Daniels", size: "2cl", price: 3.00 },
-                { name: "Asbach", size: "2cl", price: 3.00 },
-                { name: "Hennessy", size: "2cl", price: 5.00 },
-                { name: "Bacardi/Razz", size: "2cl", price: 3.00 },
-                { name: "Gordon's Dry Gin", size: "2cl", price: 3.00 },
-                { name: "Captain Morgan Gold", size: "2cl", price: 3.00 }
-            ]
+        en: { 
+            cartItems: "Items", resetBtn: "Reset", orderBtn: "Order",
+            confirmTitle: "⚠️ Reset Cart", confirmMessage: "Do you really want to remove all items from your cart?",
+            confirmYes: "Yes, reset", confirmNo: "Cancel", orderTitle: "Your Order",
+            orderSubtitle: "Please check your selection", closeBtn: "Close",
+            speakingHead: "Please place this order at the counter", thankYou: "Thank you and enjoy your stay!",
+            showAllCategories: "Show all categories", emptyCart: "Your cart is empty",
+            toastAdded: "➕ {name} added", toastCleared: "🗑️ Cart cleared", toastRemoved: "🗑️ {name} removed",
+            themeDark: "🌙 Dark Mode activated", themeLight: "☀️ Light Mode activated", dataSaved: "💾 Data saved! Page will reload...",
+            infoText: "ⓘ Additives: 1=Colorings | 2=Caffeine | 3=Quinine | 4=Niacin | 5=Origin: France | 6=Acidulant<br><span class='star-item'>⭐ * Inclusive 1l Softdrinks (Cola/Fanta/Sprite)</span><br><span class='star-item'>⭐ * Inclusive 1l Juice (various flavors)</span><br><span class='star-item'>⭐ * Inclusive 6 Red Bull's</span><br>💰 All prices incl. VAT | **Others: Price on request"
         }
     };
 
+    // ==================== MEHRSPRACHIGE GETRÄNKEDATEN ====================
     const drinksDataMultilang = {
-        de: JSON.parse(JSON.stringify(baseDrinks)),
-        ru: JSON.parse(JSON.stringify(baseDrinks)),
-        en: JSON.parse(JSON.stringify(baseDrinks))
+        de: {
+            bier: {
+                title: "🍺 BIER",
+                items: [
+                    { name: "Heineken", size: "0,25l", price: 4.00 },
+                    { name: "Heineken Alkoholfrei", size: "0,33l", price: 4.50 },
+                    { name: "Corona Bier", size: "0,33l", price: 4.50 },
+                    { name: "Hefe Weizen", size: "0,5l", price: 4.50 },
+                    { name: "Saltos verschiedene Sorten", size: "0,33l", price: 4.50 }
+                ]
+            },
+            softdrinks: {
+                title: "🥤 SOFTDRINKS",
+                items: [
+                    { name: "Coca Cola", size: "0,3l", price: 3.50, desc: "1,2" },
+                    { name: "Coca Cola Zero", size: "0,3l", price: 3.50, desc: "1,2" },
+                    { name: "Fanta", size: "0,3l", price: 3.50, desc: "1" },
+                    { name: "Sprite", size: "0,3l", price: 3.50, desc: "1" },
+                    { name: "Wasser", size: "0,25l", price: 3.00, hasVariants: true, variants: ["spritzig", "still"], requireSelection: true },
+                    { name: "Tonic Water", size: "0,3l", price: 3.50, desc: "3" },
+                    { name: "Bitter Lemon", size: "0,3l", price: 3.50, desc: "3" },
+                    { name: "Ginger Ale", size: "0,3l", price: 3.50, desc: "2" },
+                    { name: "Wild Berry", size: "0,3l", price: 3.50, desc: "2" },
+                    { name: "Energy", size: "0,3l", price: 4.00, desc: "1,2,3,4,6" },
+                    { name: "Red Bull verschiedene Sorten", size: "0,25l", price: 4.50, desc: "1,2,3,4,6" }
+                ]
+            },
+            saefte: {
+                title: "🧃 SÄFTE",
+                items: [
+                    { name: "Kirschen", size: "0,25l", price: 4.00, hasVariants: true, variants: ["Nektar", "Schorle"], requireSelection: true },
+                    { name: "Banane", size: "0,25l", price: 4.00, hasVariants: true, variants: ["Nektar", "Schorle"], requireSelection: true },
+                    { name: "Johannisbeere", size: "0,25l", price: 4.00, hasVariants: true, variants: ["Nektar", "Schorle"], requireSelection: true },
+                    { name: "Apfel", size: "0,25l", price: 4.00, hasVariants: true, variants: ["Saft", "Schorle"], requireSelection: true },
+                    { name: "Orange", size: "0,25l", price: 4.00, hasVariants: true, variants: ["Saft", "Schorle"], requireSelection: true },
+                    { name: "Maracuja", size: "0,25l", price: 4.00, hasVariants: true, variants: ["Nektar", "Schorle"], requireSelection: true },
+                    { name: "Ananas", size: "0,25l", price: 4.00, hasVariants: true, variants: ["Saft", "Schorle"], requireSelection: true },
+                    { name: "Cranberry", size: "0,25l", price: 4.00, hasVariants: true, variants: ["Saft", "Schorle"], requireSelection: true }
+                ]
+            },
+            cocktails: {
+                title: "🍹 COCKTAILS",
+                items: [
+                    { name: "Daiquiri", desc: "Weißer Rum, Zitronensaft, Erdbeer Sirup", size: "0,4l", price: 10.00 },
+                    { name: "Lady Killer", desc: "Gin, Triple Sec, Peach Tree, Maracuja, Ananas", size: "0,4l", price: 10.00 },
+                    { name: "Caipirinha", desc: "Limette, Lime Juice, Brauner Zucker, Cachaca", size: "0,4l", price: 10.00 },
+                    { name: "Cuba Libre", desc: "Limetten, Rum (Havanna), Rohrzucker, Cola", size: "0,4l", price: 10.00 },
+                    { name: "Touch Down", desc: "Vodka, Triple Sec, Zitrone, Ananas, Maracuja, Grenadine", size: "0,4l", price: 10.00 },
+                    { name: "Mai Tai", desc: "Zitronensaft, Lime Juice, Ananassaft, Rum, Brandy, Havanna", size: "0,4l", price: 10.00 },
+                    { name: "Zombie", desc: "Zitros, Lime Juice, Ceepers, Myers Rum, Havanna, Ananassaft, Orangensaft", size: "0,4l", price: 10.00 },
+                    { name: "Sex on the Beach", desc: "Orangensaft, Ananassaft, Vodka, Peachtree, Zitro", size: "0,4l", price: 10.00 },
+                    { name: "White Russian", desc: "Vodka, Kahlua, Sahne", size: "0,4l", price: 10.00 },
+                    { name: "Long Island", desc: "Zitro, Lime Juice, Vodka, Tequila, Havanna, Gin, Triple Sec", size: "0,4l", price: 10.00 },
+                    { name: "Pina Colada", desc: "Cocossirup, Myers Rum, Havanna, Ananassaft", size: "0,4l", price: 10.00 },
+                    { name: "Peach Colada", desc: "Rum, Peach Tree, Ananas, Pfirsich, Kokos, Sahne", size: "0,4l", price: 10.00 },
+                    { name: "Americano", desc: "Campari, Vermuth bianco", size: "0,4l", price: 10.00 },
+                    { name: "Mojito", desc: "Limette, Minze, Rohrzucker, Sodawasser, Weißer Rum", size: "0,4l", price: 10.00 },
+                    { name: "Ocean Breeze", desc: "Weißer Rum, Amaretto, Curacao Blue, Ananassaft, Sodawasser", size: "0,4l", price: 10.00 },
+                    { name: "Diamond Special", desc: "Gin, Vodka, Tequila Silver, Triple Sec, Grenadine, Maracuja Saft, Zitrone, Lime", size: "0,4l", price: 10.00 }
+                ]
+            },
+            cocktails_alkoholfrei: {
+                title: "✨ ALKOHOLFREIE COCKTAILS",
+                items: [
+                    { name: "Coconut Kiss", desc: "Cocos, Sahne, Grenadine, Ananassaft", size: "0,4l", price: 9.00 },
+                    { name: "Virgin Capi", desc: "Limette, Lime Juice, Brauner Zucker, Ginger Ale", size: "0,4l", price: 9.00 },
+                    { name: "Diamond Special Fresh", desc: "Ananas, Orange, Zitrone, Grenadine", size: "0,4l", price: 9.00 },
+                    { name: "Exotik", desc: "Ananas, Orange, Zitrone, Minze Sirup", size: "0,4l", price: 9.00 },
+                    { name: "Mojito (alkoholfrei)", desc: "Limette, Minze, Rohrzucker, Tonic Wasser, Sodawasser", size: "0,4l", price: 9.00 },
+                    { name: "Caipirinha (alkoholfrei)", desc: "Limette, Rohrzucker, Ginger Ale", size: "0,4l", price: 9.00 },
+                    { name: "Cinderella", desc: "Orangensaft, Ananassaft, Kokossirup, Sahne, Grenadine", size: "0,4l", price: 9.00 }
+                ]
+            },
+            longdrinks: {
+                title: "🥃 LONGDRINKS",
+                items: [
+                    { name: "Malibu", size: "4cl", price: 9.00, hasVariants: true, variants: ["Maracuja", "Kirsch"], requireSelection: true },
+                    { name: "Jacky", size: "4cl", price: 9.00, hasVariants: true, variants: ["Cola", "Apfel"], desc: "1,2", requireSelection: true },
+                    { name: "Asbach Cola", desc: "1,2", size: "4cl", price: 9.00 },
+                    { name: "Captain Morgan Cola", desc: "1,2", size: "4cl", price: 9.00 },
+                    { name: "Gin", size: "4cl", price: 9.00, hasVariants: true, variants: ["Tonic", "Russian Wild Berry"], requireSelection: true },
+                    { name: "Jägermeister Energy", desc: "1,2,3,4,6", size: "4cl", price: 9.00 },
+                    { name: "Vodka Energy", desc: "1,2,3,4,6", size: "4cl", price: 9.00 },
+                    { name: "Vodka", size: "4cl", price: 9.00, hasVariants: true, variants: ["Lemon", "Orange"], desc: "3", requireSelection: true }
+                ]
+            },
+            shots: {
+                title: "💥 SHOTS",
+                items: [
+                    { name: "B52", size: "4cl", price: 6.00 },
+                    { name: "Havanna Lime", size: "4cl", price: 6.00 },
+                    { name: "Vodka Lime", size: "4cl", price: 6.00 },
+                    { name: "Orgasmus", size: "4cl", price: 6.00 },
+                    { name: "Russian Roulette", size: "4cl", price: 6.00 },
+                    { name: "Kamikaze", size: "4cl", price: 6.00 }
+                ]
+            },
+            sekt: {
+                title: "🥂 SEKT & WEIN",
+                items: [
+                    { name: "Scavi & Ray Prosecco", size: "0,2l", price: 6.00 },
+                    { name: "Scavi & Ray Ice Prestige", size: "0,2l", price: 7.00 },
+                    { name: "Aperol Spritz", size: "0,2l", price: 7.00 },
+                    { name: "Hugo", size: "0,2l", price: 7.00 },
+                    { name: "Scavi & Ray IL Bianco", size: "0,75l", price: 35.00 },
+                    { name: "Scavi & Ray IL Rosso", size: "0,75l", price: 35.00 },
+                    { name: "Scavi & Ray IL Rosato", size: "0,75l", price: 35.00 },
+                    { name: "Rotwein", size: "0,2l", price: 6.00 },
+                    { name: "Weißwein", size: "0,2l", price: 6.00 },
+                    { name: "Lille Berry", size: "0,2l", price: 7.00 }
+                ]
+            },
+            flaschen: {
+                title: "🍾 FLASCHENVERKAUF",
+                items: [
+                    { name: "Softdrinks (Cola, Fanta, Sprite)", size: "1,0l", price: 10.00, hasVariants: true, variants: ["Cola", "Fanta", "Sprite"], requireSelection: true },
+                    { name: "Säfte (Verschiedene Sorten)", size: "1,0l", price: 15.00 },
+                    { name: "Effect Classic Energy", size: "1,0l", price: 10.00 },
+                    { name: "Vodka Smirnoff Red Label *", size: "0,7l", hasVariants: true, hasPriceVariants: true, variants: ["65€ mit Softdrinks", "70€ mit Saft", "80€ mit 6 Red Bull's"], requireSelection: true },
+                    { name: "Vodka Absolut *", size: "0,7l", hasVariants: true, hasPriceVariants: true, variants: ["75€ mit Softdrinks", "80€ mit Saft", "90€ mit 6 Red Bull's"], requireSelection: true },
+                    { name: "Vodka Belvedere *", size: "0,7l", hasVariants: true, hasPriceVariants: true, variants: ["135€ mit Softdrinks", "140€ mit Saft", "150€ mit 6 Red Bull's"], requireSelection: true },
+                    { name: "Vodka 9 Mile *", size: "0,7l", hasVariants: true, hasPriceVariants: true, variants: ["75€ mit Softdrinks", "80€ mit Saft", "90€ mit 6 Red Bull's"], requireSelection: true },
+                    { name: "Tequila Gold / Silver *", size: "0,7l", hasVariants: true, hasPriceVariants: true, variants: ["80€ mit Softdrinks", "85€ mit Saft", "95€ mit 6 Red Bull's"], requireSelection: true },
+                    { name: "Jägermeister *", size: "0,7l", hasVariants: true, hasPriceVariants: true, variants: ["80€ mit Softdrinks", "85€ mit Saft", "95€ mit 6 Red Bull's"], requireSelection: true },
+                    { name: "Captain Morgan *", size: "0,7l", hasVariants: true, hasPriceVariants: true, variants: ["80€ mit Softdrinks", "85€ mit Saft", "95€ mit 6 Red Bull's"], requireSelection: true },
+                    { name: "Gordon's Gin *", size: "0,7l", hasVariants: true, hasPriceVariants: true, variants: ["80€ mit Softdrinks", "85€ mit Saft", "95€ mit 6 Red Bull's"], requireSelection: true },
+                    { name: "Ficken", size: "0,7l", price: 50.00 },
+                    { name: "Havanna *", size: "0,7l", hasVariants: true, hasPriceVariants: true, variants: ["80€ mit Softdrinks", "85€ mit Saft", "95€ mit 6 Red Bull's"], requireSelection: true },
+                    { name: "Vodka Melone", size: "0,7l", price: 50.00 },
+                    { name: "Hennessy *", size: "0,7l", hasVariants: true, hasPriceVariants: true, variants: ["135€ mit Softdrinks", "140€ mit Saft", "150€ mit 6 Red Bull's"], requireSelection: true },
+                    { name: "Jack Daniels *", size: "0,7l", hasVariants: true, hasPriceVariants: true, variants: ["80€ mit Softdrinks", "85€ mit Saft", "95€ mit 6 Red Bull's"], requireSelection: true },
+                    { name: "Moet & Chandon Brut", size: "0,7l", price: 120.00 },
+                    { name: "Scavi & Ray Prosecco", size: "0,75l", price: 35.00 },
+                    { name: "Scavi & Ray Ice Prestige", size: "0,75l", price: 40.00 }
+                ]
+            },
+            spirituosen: {
+                title: "🥃 SPIRITUOSEN",
+                items: [
+                    { name: "Vodka", size: "2cl", price: 3.00 },
+                    { name: "Vodka Melone", size: "2cl", price: 3.00 },
+                    { name: "Havanna Club", size: "2cl", price: 3.00 },
+                    { name: "Tequila (Silver / Gold)", size: "2cl", price: 3.00 },
+                    { name: "Malibu", size: "2cl", price: 3.00 },
+                    { name: "Baileys", size: "4cl", price: 6.00, desc: "1,2" },
+                    { name: "Ficken", size: "2cl", price: 3.00 },
+                    { name: "Jägermeister", size: "2cl", price: 3.00 },
+                    { name: "Jack Daniels", size: "2cl", price: 3.00 },
+                    { name: "Asbach", size: "2cl", price: 3.00 },
+                    { name: "Hennessy", size: "2cl", price: 5.00 },
+                    { name: "Bacardi/Razz", size: "2cl", price: 3.00 },
+                    { name: "Gordon's Dry Gin", size: "2cl", price: 3.00 },
+                    { name: "Captain Morgan Gold", size: "2cl", price: 3.00 }
+                ]
+            }
+        },
+        ru: { /* Russische Übersetzung - wird mit den deutschen Daten gefüllt und dann übersetzt */ },
+        en: { /* Englische Übersetzung - wird mit den deutschen Daten gefüllt und dann übersetzt */ }
     };
-    drinksDataMultilang.ru.bier.title = "🍺 ПИВО"; drinksDataMultilang.ru.softdrinks.title = "🥤 НАПИТКИ"; drinksDataMultilang.ru.saefte.title = "🧃 СОКИ"; drinksDataMultilang.ru.cocktails.title = "🍹 КОКТЕЙЛИ"; drinksDataMultilang.ru.cocktails_alkoholfrei.title = "✨ БЕЗАЛКОГОЛЬНЫЕ"; drinksDataMultilang.ru.longdrinks.title = "🥃 ЛОНГДРИНКИ"; drinksDataMultilang.ru.shots.title = "💥 ШОТЫ"; drinksDataMultilang.ru.sekt.title = "🥂 ИГРИСТОЕ & ВИНО"; drinksDataMultilang.ru.flaschen.title = "🍾 ПРОДАЖА БУТЫЛОК"; drinksDataMultilang.ru.spirituosen.title = "🥃 КРЕПКИЙ АЛКОГОЛЬ";
-    drinksDataMultilang.en.bier.title = "🍺 BEER"; drinksDataMultilang.en.softdrinks.title = "🥤 SOFT DRINKS"; drinksDataMultilang.en.saefte.title = "🧃 JUICES"; drinksDataMultilang.en.cocktails.title = "🍹 COCKTAILS"; drinksDataMultilang.en.cocktails_alkoholfrei.title = "✨ NON-ALCOHOLIC"; drinksDataMultilang.en.longdrinks.title = "🥃 LONG DRINKS"; drinksDataMultilang.en.shots.title = "💥 SHOTS"; drinksDataMultilang.en.sekt.title = "🥂 SPARKLING & WINE"; drinksDataMultilang.en.flaschen.title = "🍾 BOTTLE SALES"; drinksDataMultilang.en.spirituosen.title = "🥃 SPIRITS";
 
+    // ==================== SPRACHÜBERSETZUNGEN FÜR GETRÄNKE ====================
+    const drinkTranslations = {
+        de: {
+            // Bier
+            "Heineken": "Heineken",
+            "Heineken Alkoholfrei": "Heineken Alkoholfrei",
+            "Corona Bier": "Corona Bier",
+            "Hefe Weizen": "Hefe Weizen",
+            "Saltos verschiedene Sorten": "Saltos verschiedene Sorten",
+            // Softdrinks
+            "Coca Cola": "Coca Cola",
+            "Coca Cola Zero": "Coca Cola Zero",
+            "Fanta": "Fanta",
+            "Sprite": "Sprite",
+            "Wasser": "Wasser",
+            "Tonic Water": "Tonic Water",
+            "Bitter Lemon": "Bitter Lemon",
+            "Ginger Ale": "Ginger Ale",
+            "Wild Berry": "Wild Berry",
+            "Energy": "Energy",
+            "Red Bull verschiedene Sorten": "Red Bull verschiedene Sorten",
+            // Säfte
+            "Kirschen": "Kirschen",
+            "Banane": "Banane",
+            "Johannisbeere": "Johannisbeere",
+            "Apfel": "Apfel",
+            "Orange": "Orange",
+            "Maracuja": "Maracuja",
+            "Ananas": "Ananas",
+            "Cranberry": "Cranberry",
+            // Cocktails
+            "Daiquiri": "Daiquiri",
+            "Lady Killer": "Lady Killer",
+            "Caipirinha": "Caipirinha",
+            "Cuba Libre": "Cuba Libre",
+            "Touch Down": "Touch Down",
+            "Mai Tai": "Mai Tai",
+            "Zombie": "Zombie",
+            "Sex on the Beach": "Sex on the Beach",
+            "White Russian": "White Russian",
+            "Long Island": "Long Island",
+            "Pina Colada": "Pina Colada",
+            "Peach Colada": "Peach Colada",
+            "Americano": "Americano",
+            "Mojito": "Mojito",
+            "Ocean Breeze": "Ocean Breeze",
+            "Diamond Special": "Diamond Special",
+            // Alkoholfrei
+            "Coconut Kiss": "Coconut Kiss",
+            "Virgin Capi": "Virgin Capi",
+            "Diamond Special Fresh": "Diamond Special Fresh",
+            "Exotik": "Exotik",
+            "Mojito (alkoholfrei)": "Mojito (alkoholfrei)",
+            "Caipirinha (alkoholfrei)": "Caipirinha (alkoholfrei)",
+            "Cinderella": "Cinderella",
+            // Longdrinks
+            "Malibu": "Malibu",
+            "Jacky": "Jacky",
+            "Asbach Cola": "Asbach Cola",
+            "Captain Morgan Cola": "Captain Morgan Cola",
+            "Gin": "Gin",
+            "Jägermeister Energy": "Jägermeister Energy",
+            "Vodka Energy": "Vodka Energy",
+            "Vodka": "Vodka",
+            // Shots
+            "B52": "B52",
+            "Havanna Lime": "Havanna Lime",
+            "Vodka Lime": "Vodka Lime",
+            "Orgasmus": "Orgasmus",
+            "Russian Roulette": "Russian Roulette",
+            "Kamikaze": "Kamikaze",
+            // Sekt & Wein
+            "Scavi & Ray Prosecco": "Scavi & Ray Prosecco",
+            "Scavi & Ray Ice Prestige": "Scavi & Ray Ice Prestige",
+            "Aperol Spritz": "Aperol Spritz",
+            "Hugo": "Hugo",
+            "Scavi & Ray IL Bianco": "Scavi & Ray IL Bianco",
+            "Scavi & Ray IL Rosso": "Scavi & Ray IL Rosso",
+            "Scavi & Ray IL Rosato": "Scavi & Ray IL Rosato",
+            "Rotwein": "Rotwein",
+            "Weißwein": "Weißwein",
+            "Lille Berry": "Lille Berry",
+            // Flaschen
+            "Softdrinks (Cola, Fanta, Sprite)": "Softdrinks (Cola, Fanta, Sprite)",
+            "Säfte (Verschiedene Sorten)": "Säfte (Verschiedene Sorten)",
+            "Effect Classic Energy": "Effect Classic Energy",
+            "Vodka Smirnoff Red Label *": "Vodka Smirnoff Red Label *",
+            "Vodka Absolut *": "Vodka Absolut *",
+            "Vodka Belvedere *": "Vodka Belvedere *",
+            "Vodka 9 Mile *": "Vodka 9 Mile *",
+            "Tequila Gold / Silver *": "Tequila Gold / Silver *",
+            "Jägermeister *": "Jägermeister *",
+            "Captain Morgan *": "Captain Morgan *",
+            "Gordon's Gin *": "Gordon's Gin *",
+            "Ficken": "Ficken",
+            "Havanna *": "Havanna *",
+            "Vodka Melone": "Vodka Melone",
+            "Hennessy *": "Hennessy *",
+            "Jack Daniels *": "Jack Daniels *",
+            "Moet & Chandon Brut": "Moet & Chandon Brut",
+            "Scavi & Ray Prosecco": "Scavi & Ray Prosecco",
+            "Scavi & Ray Ice Prestige": "Scavi & Ray Ice Prestige",
+            // Spirituosen
+            "Vodka": "Vodka",
+            "Vodka Melone": "Vodka Melone",
+            "Havanna Club": "Havanna Club",
+            "Tequila (Silver / Gold)": "Tequila (Silver / Gold)",
+            "Malibu": "Malibu",
+            "Baileys": "Baileys",
+            "Ficken": "Ficken",
+            "Jägermeister": "Jägermeister",
+            "Jack Daniels": "Jack Daniels",
+            "Asbach": "Asbach",
+            "Hennessy": "Hennessy",
+            "Bacardi/Razz": "Bacardi/Razz",
+            "Gordon's Dry Gin": "Gordon's Dry Gin",
+            "Captain Morgan Gold": "Captain Morgan Gold"
+        },
+        ru: {
+            // Bier
+            "Heineken": "Хайнекен",
+            "Heineken Alkoholfrei": "Хайнекен Безалкогольное",
+            "Corona Bier": "Корона",
+            "Hefe Weizen": "Пшеничное",
+            "Saltos verschiedene Sorten": "Сальтос разные сорта",
+            // Softdrinks
+            "Coca Cola": "Кока Кола",
+            "Coca Cola Zero": "Кока Кола Зеро",
+            "Fanta": "Фанта",
+            "Sprite": "Спрайт",
+            "Wasser": "Вода",
+            "Tonic Water": "Тоник",
+            "Bitter Lemon": "Биттер Лимон",
+            "Ginger Ale": "Имбирный эль",
+            "Wild Berry": "Уайлд Берри",
+            "Energy": "Энергетик",
+            "Red Bull verschiedene Sorten": "Ред Булл разные сорта",
+            // Säfte
+            "Kirschen": "Вишня",
+            "Banane": "Банан",
+            "Johannisbeere": "Смородина",
+            "Apfel": "Яблоко",
+            "Orange": "Апельсин",
+            "Maracuja": "Маракуйя",
+            "Ananas": "Ананас",
+            "Cranberry": "Клюква",
+            // Cocktails
+            "Daiquiri": "Дайкири",
+            "Lady Killer": "Леди Киллер",
+            "Caipirinha": "Кайпиринья",
+            "Cuba Libre": "Куба Либре",
+            "Touch Down": "Тач Даун",
+            "Mai Tai": "Май Тай",
+            "Zombie": "Зомби",
+            "Sex on the Beach": "Секс на пляже",
+            "White Russian": "Белый русский",
+            "Long Island": "Лонг-Айленд",
+            "Pina Colada": "Пина Колада",
+            "Peach Colada": "Пич Колада",
+            "Americano": "Американо",
+            "Mojito": "Мохито",
+            "Ocean Breeze": "Оушен Бриз",
+            "Diamond Special": "Даймонд Спешиал",
+            // Alkoholfrei
+            "Coconut Kiss": "Кокосовый поцелуй",
+            "Virgin Capi": "Вирджин Капи",
+            "Diamond Special Fresh": "Даймонд Фреш",
+            "Exotik": "Экзотик",
+            "Mojito (alkoholfrei)": "Мохито (безалк.)",
+            "Caipirinha (alkoholfrei)": "Кайпиринья (безалк.)",
+            "Cinderella": "Золушка",
+            // Longdrinks
+            "Malibu": "Малибу",
+            "Jacky": "Джеки",
+            "Asbach Cola": "Асбах Кола",
+            "Captain Morgan Cola": "Капитан Морган Кола",
+            "Gin": "Джин",
+            "Jägermeister Energy": "Егермейстер Энерджи",
+            "Vodka Energy": "Водка Энерджи",
+            "Vodka": "Водка",
+            // Shots
+            "B52": "B52",
+            "Havanna Lime": "Гаванна Лайм",
+            "Vodka Lime": "Водка Лайм",
+            "Orgasmus": "Оргазмус",
+            "Russian Roulette": "Русская рулетка",
+            "Kamikaze": "Камикадзе",
+            // Sekt & Wein
+            "Scavi & Ray Prosecco": "Скави & Рэй Просекко",
+            "Scavi & Ray Ice Prestige": "Скави & Рэй Айс Престиж",
+            "Aperol Spritz": "Апероль Шприц",
+            "Hugo": "Хуго",
+            "Scavi & Ray IL Bianco": "Скави & Рэй Иль Бьянко",
+            "Scavi & Ray IL Rosso": "Скави & Рэй Иль Россо",
+            "Scavi & Ray IL Rosato": "Скави & Рэй Иль Розато",
+            "Rotwein": "Красное вино",
+            "Weißwein": "Белое вино",
+            "Lille Berry": "Лиль Берри",
+            // Flaschen
+            "Softdrinks (Cola, Fanta, Sprite)": "Напитки (Кола, Фанта, Спрайт)",
+            "Säfte (Verschiedene Sorten)": "Соки (разные сорта)",
+            "Effect Classic Energy": "Эффект Классик Энерджи",
+            "Vodka Smirnoff Red Label *": "Водка Смирнофф Ред Лейбл *",
+            "Vodka Absolut *": "Водка Абсолют *",
+            "Vodka Belvedere *": "Водка Бельведер *",
+            "Vodka 9 Mile *": "Водка 9 Майл *",
+            "Tequila Gold / Silver *": "Текила Голд / Сильвер *",
+            "Jägermeister *": "Егермейстер *",
+            "Captain Morgan *": "Капитан Морган *",
+            "Gordon's Gin *": "Гордонс Джин *",
+            "Ficken": "Фикен",
+            "Havanna *": "Гаванна *",
+            "Vodka Melone": "Водка Мелон",
+            "Hennessy *": "Хеннесси *",
+            "Jack Daniels *": "Джек Дэниэлс *",
+            "Moet & Chandon Brut": "Моэт & Шандон Брют",
+            "Scavi & Ray Prosecco": "Скави & Рэй Просекко",
+            "Scavi & Ray Ice Prestige": "Скави & Рэй Айс Престиж",
+            // Spirituosen
+            "Vodka": "Водка",
+            "Vodka Melone": "Водка Мелон",
+            "Havanna Club": "Гаванна Клаб",
+            "Tequila (Silver / Gold)": "Текила (Сильвер / Голд)",
+            "Malibu": "Малибу",
+            "Baileys": "Бейлис",
+            "Ficken": "Фикен",
+            "Jägermeister": "Егермейстер",
+            "Jack Daniels": "Джек Дэниэлс",
+            "Asbach": "Асбах",
+            "Hennessy": "Хеннесси",
+            "Bacardi/Razz": "Бакарди/Разз",
+            "Gordon's Dry Gin": "Гордонс Драй Джин",
+            "Captain Morgan Gold": "Капитан Морган Голд"
+        },
+        en: {
+            // Bier
+            "Heineken": "Heineken",
+            "Heineken Alkoholfrei": "Heineken Non-Alcoholic",
+            "Corona Bier": "Corona Beer",
+            "Hefe Weizen": "Hefe Wheat",
+            "Saltos verschiedene Sorten": "Saltos various flavors",
+            // Softdrinks
+            "Coca Cola": "Coca Cola",
+            "Coca Cola Zero": "Coca Cola Zero",
+            "Fanta": "Fanta",
+            "Sprite": "Sprite",
+            "Wasser": "Water",
+            "Tonic Water": "Tonic Water",
+            "Bitter Lemon": "Bitter Lemon",
+            "Ginger Ale": "Ginger Ale",
+            "Wild Berry": "Wild Berry",
+            "Energy": "Energy Drink",
+            "Red Bull verschiedene Sorten": "Red Bull various flavors",
+            // Säfte
+            "Kirschen": "Cherry",
+            "Banane": "Banana",
+            "Johannisbeere": "Blackcurrant",
+            "Apfel": "Apple",
+            "Orange": "Orange",
+            "Maracuja": "Passion Fruit",
+            "Ananas": "Pineapple",
+            "Cranberry": "Cranberry",
+            // Cocktails
+            "Daiquiri": "Daiquiri",
+            "Lady Killer": "Lady Killer",
+            "Caipirinha": "Caipirinha",
+            "Cuba Libre": "Cuba Libre",
+            "Touch Down": "Touch Down",
+            "Mai Tai": "Mai Tai",
+            "Zombie": "Zombie",
+            "Sex on the Beach": "Sex on the Beach",
+            "White Russian": "White Russian",
+            "Long Island": "Long Island",
+            "Pina Colada": "Pina Colada",
+            "Peach Colada": "Peach Colada",
+            "Americano": "Americano",
+            "Mojito": "Mojito",
+            "Ocean Breeze": "Ocean Breeze",
+            "Diamond Special": "Diamond Special",
+            // Alkoholfrei
+            "Coconut Kiss": "Coconut Kiss",
+            "Virgin Capi": "Virgin Capi",
+            "Diamond Special Fresh": "Diamond Special Fresh",
+            "Exotik": "Exotik",
+            "Mojito (alkoholfrei)": "Mojito (non-alc)",
+            "Caipirinha (alkoholfrei)": "Caipirinha (non-alc)",
+            "Cinderella": "Cinderella",
+            // Longdrinks
+            "Malibu": "Malibu",
+            "Jacky": "Jacky",
+            "Asbach Cola": "Asbach Cola",
+            "Captain Morgan Cola": "Captain Morgan Cola",
+            "Gin": "Gin",
+            "Jägermeister Energy": "Jägermeister Energy",
+            "Vodka Energy": "Vodka Energy",
+            "Vodka": "Vodka",
+            // Shots
+            "B52": "B52",
+            "Havanna Lime": "Havanna Lime",
+            "Vodka Lime": "Vodka Lime",
+            "Orgasmus": "Orgasm",
+            "Russian Roulette": "Russian Roulette",
+            "Kamikaze": "Kamikaze",
+            // Sekt & Wein
+            "Scavi & Ray Prosecco": "Scavi & Ray Prosecco",
+            "Scavi & Ray Ice Prestige": "Scavi & Ray Ice Prestige",
+            "Aperol Spritz": "Aperol Spritz",
+            "Hugo": "Hugo",
+            "Scavi & Ray IL Bianco": "Scavi & Ray IL Bianco",
+            "Scavi & Ray IL Rosso": "Scavi & Ray IL Rosso",
+            "Scavi & Ray IL Rosato": "Scavi & Ray IL Rosato",
+            "Rotwein": "Red Wine",
+            "Weißwein": "White Wine",
+            "Lille Berry": "Lille Berry",
+            // Flaschen
+            "Softdrinks (Cola, Fanta, Sprite)": "Soft Drinks (Cola, Fanta, Sprite)",
+            "Säfte (Verschiedene Sorten)": "Juices (various flavors)",
+            "Effect Classic Energy": "Effect Classic Energy",
+            "Vodka Smirnoff Red Label *": "Vodka Smirnoff Red Label *",
+            "Vodka Absolut *": "Vodka Absolut *",
+            "Vodka Belvedere *": "Vodka Belvedere *",
+            "Vodka 9 Mile *": "Vodka 9 Mile *",
+            "Tequila Gold / Silver *": "Tequila Gold / Silver *",
+            "Jägermeister *": "Jägermeister *",
+            "Captain Morgan *": "Captain Morgan *",
+            "Gordon's Gin *": "Gordon's Gin *",
+            "Ficken": "Ficken",
+            "Havanna *": "Havanna *",
+            "Vodka Melone": "Vodka Melon",
+            "Hennessy *": "Hennessy *",
+            "Jack Daniels *": "Jack Daniels *",
+            "Moet & Chandon Brut": "Moet & Chandon Brut",
+            "Scavi & Ray Prosecco": "Scavi & Ray Prosecco",
+            "Scavi & Ray Ice Prestige": "Scavi & Ray Ice Prestige",
+            // Spirituosen
+            "Vodka": "Vodka",
+            "Vodka Melone": "Vodka Melon",
+            "Havanna Club": "Havanna Club",
+            "Tequila (Silver / Gold)": "Tequila (Silver / Gold)",
+            "Malibu": "Malibu",
+            "Baileys": "Baileys",
+            "Ficken": "Ficken",
+            "Jägermeister": "Jägermeister",
+            "Jack Daniels": "Jack Daniels",
+            "Asbach": "Asbach",
+            "Hennessy": "Hennessy",
+            "Bacardi/Razz": "Bacardi/Razz",
+            "Gordon's Dry Gin": "Gordon's Dry Gin",
+            "Captain Morgan Gold": "Captain Morgan Gold"
+        }
+    };
+
+    // ==================== FUNKTION ZUM ÜBERSETZEN DER GETRÄNKE ====================
+    function translateDrinks(lang) {
+        // Deep copy der deutschen Daten
+        let newData = JSON.parse(JSON.stringify(drinksDataMultilang.de));
+        const translations = drinkTranslations[lang];
+        
+        // Durch alle Kategorien und Items gehen und Namen übersetzen
+        for (let categoryKey in newData) {
+            if (newData[categoryKey] && newData[categoryKey].items) {
+                newData[categoryKey].items.forEach(item => {
+                    if (item.name && translations[item.name]) {
+                        item.name = translations[item.name];
+                    }
+                    // Beschreibungen auch übersetzen (für Cocktails)
+                    if (item.desc) {
+                        // Beschreibungen werden separat übersetzt
+                        const descTranslations = {
+                            de: {
+                                "Weißer Rum, Zitronensaft, Erdbeer Sirup": "Weißer Rum, Zitronensaft, Erdbeer Sirup",
+                                "Gin, Triple Sec, Peach Tree, Maracuja, Ananas": "Gin, Triple Sec, Peach Tree, Maracuja, Ananas",
+                                // ... mehr deutsche Beschreibungen
+                            },
+                            ru: {
+                                "Weißer Rum, Zitronensaft, Erdbeer Sirup": "Белый ром, лимонный сок, клубничный сироп",
+                                "Gin, Triple Sec, Peach Tree, Maracuja, Ananas": "Джин, Трипл Сек, Пич Три, маракуйя, ананас",
+                                "Limette, Lime Juice, Brauner Zucker, Cachaca": "Лайм, сок лайма, коричневый сахар, Кашаса",
+                                "Limetten, Rum (Havanna), Rohrzucker, Cola": "Лайм, ром (Гаванна), тростниковый сахар, кола",
+                                "Vodka, Triple Sec, Zitrone, Ananas, Maracuja, Grenadine": "Водка, Трипл Сек, лимон, ананас, маракуйя, гренадин",
+                                "Zitronensaft, Lime Juice, Ananassaft, Rum, Brandy, Havanna": "Лимонный сок, сок лайма, ананасовый сок, ром, бренди, Гаванна",
+                                "Zitros, Lime Juice, Ceepers, Myers Rum, Havanna, Ananassaft, Orangensaft": "Лайм, ром, ананасовый сок, апельсиновый сок",
+                                "Orangensaft, Ananassaft, Vodka, Peachtree, Zitro": "Апельсиновый сок, ананасовый сок, водка, Пичтри",
+                                "Vodka, Kahlua, Sahne": "Водка, Калуа, сливки",
+                                "Zitro, Lime Juice, Vodka, Tequila, Havanna, Gin, Triple Sec": "Водка, текила, ром, джин, Трипл Сек",
+                                "Cocossirup, Myers Rum, Havanna, Ananassaft": "Кокосовый сироп, ром, ананасовый сок",
+                                "Rum, Peach Tree, Ananas, Pfirsich, Kokos, Sahne": "Ром, Пич Три, ананас, персик, кокос, сливки",
+                                "Campari, Vermuth bianco": "Кампари, вермут",
+                                "Limette, Minze, Rohrzucker, Sodawasser, Weißer Rum": "Лайм, мята, тростниковый сахар, содовая, белый ром",
+                                "Weißer Rum, Amaretto, Curacao Blue, Ananassaft, Sodawasser": "Белый ром, Амаретто, Курасао Блю, ананасовый сок, содовая",
+                                "Gin, Vodka, Tequila Silver, Triple Sec, Grenadine, Maracuja Saft, Zitrone, Lime": "Джин, водка, Текила Сильвер, Трипл Сек, гренадин, маракуйя, лимон, лайм"
+                            },
+                            en: {
+                                "Weißer Rum, Zitronensaft, Erdbeer Sirup": "White rum, lemon juice, strawberry syrup",
+                                "Gin, Triple Sec, Peach Tree, Maracuja, Ananas": "Gin, Triple Sec, Peach Tree, passion fruit, pineapple",
+                                "Limette, Lime Juice, Brauner Zucker, Cachaca": "Lime, lime juice, brown sugar, Cachaca",
+                                "Limetten, Rum (Havanna), Rohrzucker, Cola": "Lime, rum (Havana), cane sugar, cola",
+                                "Vodka, Triple Sec, Zitrone, Ananas, Maracuja, Grenadine": "Vodka, Triple Sec, lemon, pineapple, passion fruit, grenadine",
+                                "Zitronensaft, Lime Juice, Ananassaft, Rum, Brandy, Havanna": "Lemon juice, lime juice, pineapple juice, rum, brandy, Havana",
+                                "Zitros, Lime Juice, Ceepers, Myers Rum, Havanna, Ananassaft, Orangensaft": "Lime juice, rum, pineapple juice, orange juice",
+                                "Orangensaft, Ananassaft, Vodka, Peachtree, Zitro": "Orange juice, pineapple juice, vodka, Peachtree",
+                                "Vodka, Kahlua, Sahne": "Vodka, Kahlua, cream",
+                                "Zitro, Lime Juice, Vodka, Tequila, Havanna, Gin, Triple Sec": "Vodka, tequila, rum, gin, Triple Sec",
+                                "Cocossirup, Myers Rum, Havanna, Ananassaft": "Coconut syrup, rum, pineapple juice",
+                                "Rum, Peach Tree, Ananas, Pfirsich, Kokos, Sahne": "Rum, Peach Tree, pineapple, peach, coconut, cream",
+                                "Campari, Vermuth bianco": "Campari, vermouth",
+                                "Limette, Minze, Rohrzucker, Sodawasser, Weißer Rum": "Lime, mint, cane sugar, soda water, white rum",
+                                "Weißer Rum, Amaretto, Curacao Blue, Ananassaft, Sodawasser": "White rum, Amaretto, Blue Curacao, pineapple juice, soda",
+                                "Gin, Vodka, Tequila Silver, Triple Sec, Grenadine, Maracuja Saft, Zitrone, Lime": "Gin, vodka, Tequila Silver, Triple Sec, grenadine, passion fruit, lemon, lime"
+                            }
+                        };
+                        if (descTranslations[lang] && descTranslations[lang][item.desc]) {
+                            item.desc = descTranslations[lang][item.desc];
+                        }
+                    }
+                });
+            }
+        }
+        return newData;
+    }
+
+    // ==================== INIT ====================
     let currentLang = "de";
-    let drinksData = JSON.parse(JSON.stringify(drinksDataMultilang.de));
+    let drinksData = translateDrinks("de");
     let cartItems = [];
     let selectedVariants = {};
     let currentSelectedCategory = null;
@@ -747,7 +1195,10 @@
 
     function updateLanguage(lang) {
         currentLang = lang;
-        drinksData = JSON.parse(JSON.stringify(drinksDataMultilang[lang]));
+        // Daten übersetzen
+        drinksData = translateDrinks(lang);
+        
+        // UI Texte aktualisieren
         document.getElementById("cartItemsText").innerText = translations[lang].cartItems;
         document.getElementById("resetBtnText").innerText = translations[lang].resetBtn;
         document.getElementById("orderBtnText").innerText = translations[lang].orderBtn;
@@ -759,8 +1210,28 @@
         document.getElementById("orderSubtitle").innerText = translations[lang].orderSubtitle;
         document.getElementById("closeBtnText").innerText = translations[lang].closeBtn;
         document.getElementById("showAllText").innerText = translations[lang].showAllCategories;
-        document.querySelectorAll(".lang-btn").forEach(btn => { btn.classList.remove("active"); if (btn.getAttribute("data-lang") === lang) btn.classList.add("active"); });
-        if (currentSelectedCategory) { renderDrinks(); selectCategory(currentSelectedCategory); } else { renderDrinks(); showAllCategories(); }
+        document.getElementById("infoNote").innerHTML = translations[lang].infoText;
+        
+        document.querySelectorAll(".lang-btn").forEach(btn => { 
+            btn.classList.remove("active"); 
+            if (btn.getAttribute("data-lang") === lang) btn.classList.add("active"); 
+        });
+        
+        // Kategorie-Titel aktualisieren
+        const categoryOrder = ["bier", "softdrinks", "saefte", "cocktails", "cocktails_alkoholfrei", "longdrinks", "shots", "sekt", "flaschen", "spirituosen"];
+        const categoryTitles = {
+            de: { bier: "🍺 BIER", softdrinks: "🥤 SOFTDRINKS", saefte: "🧃 SÄFTE", cocktails: "🍹 COCKTAILS", cocktails_alkoholfrei: "✨ ALKOHOLFREIE COCKTAILS", longdrinks: "🥃 LONGDRINKS", shots: "💥 SHOTS", sekt: "🥂 SEKT & WEIN", flaschen: "🍾 FLASCHENVERKAUF", spirituosen: "🥃 SPIRITUOSEN" },
+            ru: { bier: "🍺 ПИВО", softdrinks: "🥤 НАПИТКИ", saefte: "🧃 СОКИ", cocktails: "🍹 КОКТЕЙЛИ", cocktails_alkoholfrei: "✨ БЕЗАЛКОГОЛЬНЫЕ", longdrinks: "🥃 ЛОНГДРИНКИ", shots: "💥 ШОТЫ", sekt: "🥂 ИГРИСТОЕ & ВИНО", flaschen: "🍾 ПРОДАЖА БУТЫЛОК", spirituosen: "🥃 КРЕПКИЙ АЛКОГОЛЬ" },
+            en: { bier: "🍺 BEER", softdrinks: "🥤 SOFT DRINKS", saefte: "🧃 JUICES", cocktails: "🍹 COCKTAILS", cocktails_alkoholfrei: "✨ NON-ALCOHOLIC", longdrinks: "🥃 LONG DRINKS", shots: "💥 SHOTS", sekt: "🥂 SPARKLING & WINE", flaschen: "🍾 BOTTLE SALES", spirituosen: "🥃 SPIRITS" }
+        };
+        for (let key of categoryOrder) {
+            if (drinksData[key]) {
+                drinksData[key].title = categoryTitles[lang][key] || drinksData[key].title;
+            }
+        }
+        
+        if (currentSelectedCategory) { renderDrinks(); selectCategory(currentSelectedCategory); } 
+        else { renderDrinks(); showAllCategories(); }
         if (document.getElementById("orderOverlay").classList.contains("show")) refreshOrderSummary();
     }
 
@@ -814,10 +1285,8 @@
                 let desc = item.desc && !item.desc.match(/^\d/) ? `<div class="drink-desc">${item.desc}</div>` : "";
                 let size = item.size || "0,4l";
                 
-                // PREIS IMMER ANZEIGEN
                 let displayPrice = "";
                 if (hasPriceVariants) {
-                    // Bei Preisvarianten: Standardpreis anzeigen (erste Variante) oder "ab X€"
                     if (item.variants && item.variants.length > 0) {
                         let firstPrice = item.variants[0].match(/(\d+)/);
                         let lastPrice = item.variants[item.variants.length-1].match(/(\d+)/);
@@ -833,7 +1302,6 @@
                     displayPrice = item.price.toFixed(2).replace('.', ',') + " €";
                 }
                 
-                // Bestellbutton sichtbar? Nur bei requireSelection wenn Auswahl getroffen, sonst immer sichtbar
                 let showOrderBtn = !requireSelection || (requireSelection && currentVariant !== null);
                 
                 html += `<div class="drink-item"><div class="drink-info"><div class="drink-name">${item.name}${badge}</div>${desc}<div class="drink-size">${size}</div>`;
@@ -851,7 +1319,6 @@
         }
         document.getElementById("drinksContainer").innerHTML = html;
         
-        // Variation-Buttons
         document.querySelectorAll(".variation-select").forEach(select => { 
             let id = select.dataset.id; 
             let requireSelection = select.dataset.requireSelection === "true";
@@ -869,7 +1336,6 @@
                         if (requireSelection) {
                             let hasPriceVariants = orderBtn.dataset.hasPriceVariants === "true";
                             if (hasPriceVariants) {
-                                // Bei Preisvarianten: Preis auf den ausgewählten Preis aktualisieren
                                 let priceMatch = selectedVariants[id].match(/(\d+)/);
                                 if (priceMatch && priceEl) {
                                     priceEl.textContent = parseFloat(priceMatch[1]).toFixed(2).replace('.', ',') + " €";
@@ -886,7 +1352,6 @@
             }); 
         });
         
-        // Bestell-Buttons
         document.querySelectorAll(".order-btn").forEach(btn => { 
             btn.addEventListener("click", () => { 
                 let name = btn.dataset.name, 
