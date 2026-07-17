@@ -40,6 +40,9 @@
             --reset-btn-hover: #c82333;
             --order-btn: #28a745;
             --order-btn-hover: #218838;
+            --modal-bg: #ffffff;
+            --modal-overlay: rgba(0,0,0,0.7);
+            --modal-shadow: 0 20px 60px rgba(0,0,0,0.3);
         }
 
         body.dark {
@@ -69,6 +72,8 @@
             --reset-btn-hover: #b02a37;
             --order-btn: #28a745;
             --order-btn-hover: #218838;
+            --modal-bg: #1a1a1a;
+            --modal-overlay: rgba(0,0,0,0.85);
         }
 
         body {
@@ -84,6 +89,9 @@
             padding: 12px 12px 8px 12px;
             text-align: center;
             border-bottom: 1px solid var(--border-color);
+            position: sticky;
+            top: 0;
+            z-index: 100;
         }
         .logo { font-size: 9px; letter-spacing: 3px; color: var(--text-muted); margin-bottom: 4px; }
         .header h1 { font-size: 24px; letter-spacing: 2px; font-weight: 300; cursor: pointer; }
@@ -95,6 +103,7 @@
             justify-content: center;
             gap: 12px;
             margin-top: 8px;
+            flex-wrap: wrap;
         }
         .lang-btn {
             background: rgba(0,0,0,0.05);
@@ -175,6 +184,7 @@
             border-bottom: 1px solid var(--border-light);
             gap: 8px;
             flex-wrap: wrap;
+            position: relative;
         }
         .drink-item:last-child { border-bottom: none; }
         .drink-info { flex: 2; min-width: 140px; }
@@ -182,36 +192,36 @@
         .drink-desc { font-size: 9px; color: var(--text-secondary); line-height: 1.3; }
         .drink-size { font-size: 9px; color: var(--text-muted); margin-top: 2px; }
         .drink-price { font-size: 14px; font-weight: 700; color: var(--text-primary); white-space: nowrap; min-width: 60px; text-align: right; }
-        .drink-actions { display: flex; flex-direction: column; align-items: flex-end; gap: 6px; }
+        .drink-actions { display: flex; flex-direction: column; align-items: flex-end; gap: 6px; position: relative; }
 
-        .variation-select { display: flex; gap: 5px; flex-wrap: wrap; margin-top: 5px; }
-        .var-btn {
-            background: var(--select-bg);
+        .order-btn {
+            background: var(--btn-bg);
             border: 1px solid var(--border-color);
+            padding: 5px 14px;
             border-radius: 30px;
-            padding: 3px 8px;
-            font-size: 9px;
+            font-size: 13px;
+            font-weight: 600;
             cursor: pointer;
-            color: var(--text-secondary);
+            color: var(--text-primary);
+            display: inline-block;
+            min-width: 40px;
+            text-align: center;
             transition: all 0.2s;
         }
-        .var-btn.active {
+        .order-btn:hover {
             background: var(--accent);
             color: var(--bg-primary);
             border-color: var(--accent);
         }
-        .order-btn {
-            background: var(--btn-bg);
-            border: 1px solid var(--border-color);
-            padding: 5px 12px;
-            border-radius: 30px;
-            font-size: 11px;
-            font-weight: 600;
-            cursor: pointer;
-            color: var(--text-primary);
-            display: none;
+        .order-btn.has-variants {
+            background: var(--accent);
+            color: var(--bg-primary);
+            border-color: var(--accent);
         }
-        .order-btn.visible { display: inline-block; }
+        .order-btn.has-variants:hover {
+            opacity: 0.8;
+        }
+        
         .badge {
             display: inline-block;
             background: var(--badge-bg);
@@ -301,7 +311,7 @@
             left: 0;
             right: 0;
             bottom: 0;
-            background: rgba(0,0,0,0.85);
+            background: var(--modal-overlay);
             backdrop-filter: blur(5px);
             z-index: 2500;
             display: flex;
@@ -311,20 +321,28 @@
             visibility: hidden;
             transition: all 0.3s ease;
         }
-        .confirm-overlay.show, .order-overlay.show, .pin-overlay.show { opacity: 1; visibility: visible; }
+        .confirm-overlay.show, .order-overlay.show, .pin-overlay.show, .variant-modal-overlay.show { 
+            opacity: 1; 
+            visibility: visible; 
+        }
         .admin-overlay { background: var(--bg-primary); z-index: 2000; overflow-y: auto; padding: 20px; display: none; }
         .admin-overlay.show { display: block; }
         
-        .confirm-dialog, .order-modal, .pin-dialog {
-            background: var(--bg-card);
+        .confirm-dialog, .order-modal, .pin-dialog, .variant-modal {
+            background: var(--modal-bg);
             border-radius: 28px;
             padding: 24px;
-            width: 280px;
+            width: 320px;
+            max-width: 90%;
             text-align: center;
             border: 1px solid var(--border-color);
+            box-shadow: var(--modal-shadow);
+            max-height: 80vh;
+            overflow-y: auto;
         }
         .order-modal { max-width: 350px; width: 90%; max-height: 80vh; overflow-y: auto; padding: 20px; }
         .pin-dialog { padding: 32px 24px; }
+        .variant-modal { max-width: 360px; padding: 20px; }
         
         .confirm-buttons, .pin-buttons { display: flex; gap: 12px; margin-top: 20px; }
         .confirm-buttons button, .pin-buttons button { flex: 1; padding: 10px; border-radius: 40px; border: none; font-weight: 600; cursor: pointer; }
@@ -393,6 +411,92 @@
         }
         .empty-cart { text-align: center; padding: 28px; color: var(--text-muted); font-size: 13px; }
 
+        /* Varianten-Modal Styles */
+        .variant-modal-title {
+            font-size: 18px;
+            font-weight: 700;
+            margin-bottom: 4px;
+        }
+        .variant-modal-sub {
+            font-size: 12px;
+            color: var(--text-secondary);
+            margin-bottom: 16px;
+        }
+        .variant-option {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 12px 16px;
+            border-bottom: 1px solid var(--border-light);
+            cursor: pointer;
+            transition: background 0.2s;
+            border-radius: 12px;
+            margin: 2px 0;
+        }
+        .variant-option:hover {
+            background: var(--accent-light);
+        }
+        .variant-option .option-label {
+            font-size: 13px;
+            font-weight: 500;
+            text-align: left;
+        }
+        .variant-option .option-price {
+            font-size: 13px;
+            font-weight: 700;
+            color: var(--accent);
+            white-space: nowrap;
+        }
+        .variant-option.has-sub {
+            flex-direction: column;
+            align-items: stretch;
+            padding: 8px 0;
+        }
+        .variant-option.has-sub .main-option {
+            display: flex;
+            justify-content: space-between;
+            padding: 8px 16px;
+            font-weight: 600;
+            color: var(--text-secondary);
+            font-size: 12px;
+        }
+        .sub-option {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 8px 16px 8px 32px;
+            cursor: pointer;
+            transition: background 0.2s;
+            border-radius: 8px;
+            margin: 2px 0;
+        }
+        .sub-option:hover {
+            background: var(--accent-light);
+        }
+        .sub-option .sub-label {
+            font-size: 12px;
+        }
+        .sub-option .sub-price {
+            font-size: 12px;
+            font-weight: 600;
+            color: var(--accent);
+        }
+        .variant-close-btn {
+            background: var(--btn-bg);
+            border: 1px solid var(--border-color);
+            padding: 10px 20px;
+            border-radius: 40px;
+            font-size: 13px;
+            font-weight: 600;
+            cursor: pointer;
+            color: var(--text-primary);
+            width: 100%;
+            margin-top: 16px;
+        }
+        .variant-close-btn:hover {
+            background: var(--accent-light);
+        }
+
         .admin-header {
             display: flex;
             justify-content: space-between;
@@ -456,17 +560,6 @@
         .admin-item .item-price { width: 65px; }
         .admin-item .item-desc { width: 130px; }
         .admin-item .item-variants { width: 130px; }
-        .admin-item .item-has-variants { width: 110px; }
-        .sort-buttons { display: flex; gap: 4px; }
-        .sort-up, .sort-down {
-            background: var(--sort-bg);
-            border: 1px solid var(--border-color);
-            border-radius: 8px;
-            padding: 4px 8px;
-            cursor: pointer;
-            font-size: 12px;
-            color: var(--text-primary);
-        }
         .delete-admin-btn {
             background: var(--delete-bg);
             color: white;
@@ -511,8 +604,38 @@
         }
         .pin-error { color: #dc3545; font-size: 11px; margin-top: 12px; min-height: 30px; }
 
+        .variant-modal-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: var(--modal-overlay);
+            backdrop-filter: blur(5px);
+            z-index: 3000;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            opacity: 0;
+            visibility: hidden;
+            transition: all 0.3s ease;
+        }
+        .variant-modal-overlay.show {
+            opacity: 1;
+            visibility: visible;
+        }
+
         @keyframes fadeIn { from { opacity: 0; transform: translateY(8px); } to { opacity: 1; transform: translateY(0); } }
         .category-section { animation: fadeIn 0.25s ease-out; }
+        .variant-modal { animation: fadeIn 0.25s ease-out; }
+
+        @media print {
+            .cart-bar, .header, .categories-wrapper, .lang-switcher, .info-note { display: none !important; }
+            body { padding-bottom: 0 !important; background: white !important; }
+            .category-section { break-inside: avoid; border: 1px solid #ddd !important; }
+            .drink-item { border-bottom: 1px solid #eee !important; }
+            .order-btn { display: none !important; }
+        }
     </style>
 </head>
 <body>
@@ -555,6 +678,16 @@
     </div>
 </div>
 
+<!-- Varianten-Modal -->
+<div class="variant-modal-overlay" id="variantModalOverlay">
+    <div class="variant-modal" id="variantModal">
+        <div class="variant-modal-title" id="variantModalTitle">Auswählen</div>
+        <div class="variant-modal-sub" id="variantModalSub">Bitte wählen Sie eine Option</div>
+        <div id="variantOptionsContainer"></div>
+        <button class="variant-close-btn" id="variantModalClose">Abbrechen</button>
+    </div>
+</div>
+
 <div class="toast" id="toast">✨ Getränk hinzugefügt</div>
 <div class="confirm-overlay" id="confirmOverlay"><div class="confirm-dialog"><h3 id="confirmTitle">⚠️ Warenkorb zurücksetzen</h3><p id="confirmMessage">Möchten Sie wirklich alle Artikel aus dem Warenkorb entfernen?</p><div class="confirm-buttons"><button class="confirm-yes" id="confirmYesBtn"><span id="confirmYesText">Ja, zurücksetzen</span></button><button class="confirm-no" id="confirmNoBtn"><span id="confirmNoText">Abbrechen</span></button></div></div></div>
 <div class="order-overlay" id="orderOverlay"><div class="order-modal"><h2 id="orderTitle">Ihre Bestellung</h2><div class="sub" id="orderSubtitle">Bitte überprüfen Sie Ihre Auswahl</div><div id="orderSummaryContent"></div><button class="close-order-btn" id="closeOrderBtn"><span id="closeBtnText">Schließen</span></button></div></div>
@@ -573,7 +706,8 @@
             showAllCategories: "Alle Kategorien anzeigen", emptyCart: "Ihr Warenkorb ist leer",
             toastAdded: "➕ {name} hinzugefügt", toastCleared: "🗑️ Warenkorb wurde geleert", toastRemoved: "🗑️ {name} entfernt",
             themeDark: "🌙 Dark Mode aktiviert", themeLight: "☀️ Light Mode aktiviert", dataSaved: "💾 Daten gespeichert! Seite wird neu geladen...",
-            infoText: "ⓘ Zusatzstoffe: 1=Farbstoffe | 2=coffeinhaltig | 3=chininhaltig | 4=niacinhaltig | 5=Herkunft: Frankreich | 6=Säuerungsmittel<br><span class='star-item'>⭐ * Inclusive 1l Softdrinks (Cola/Fanta/Sprite)</span><br><span class='star-item'>⭐ * Inclusive 1l Saft (verschiedene Sorten)</span><br><span class='star-item'>⭐ * Inclusive 6 Red Bull's</span><br>💰 Alle Preise inkl. MwSt. | **Sonstiges: Preis auf Anfrage"
+            infoText: "ⓘ Zusatzstoffe: 1=Farbstoffe | 2=coffeinhaltig | 3=chininhaltig | 4=niacinhaltig | 5=Herkunft: Frankreich | 6=Säuerungsmittel<br><span class='star-item'>⭐ * Inclusive 1l Softdrinks (Cola/Fanta/Sprite)</span><br><span class='star-item'>⭐ * Inclusive 1l Saft (verschiedene Sorten)</span><br><span class='star-item'>⭐ * Inclusive 6 Red Bull's</span><br>💰 Alle Preise inkl. MwSt. | **Sonstiges: Preis auf Anfrage",
+            selectOption: "Bitte wählen Sie eine Option"
         },
         ru: { 
             cartItems: "Позиции", resetBtn: "Сбросить", orderBtn: "Заказать",
@@ -584,7 +718,8 @@
             showAllCategories: "Показать все категории", emptyCart: "Ваша корзина пуста",
             toastAdded: "➕ {name} добавлено", toastCleared: "🗑️ Корзина очищена", toastRemoved: "🗑️ {name} удалено",
             themeDark: "🌙 Темный режим активирован", themeLight: "☀️ Светлый режим активирован", dataSaved: "💾 Данные сохранены! Страница будет перезагружена...",
-            infoText: "ⓘ Добавки: 1=Красители | 2=Содержит кофеин | 3=Содержит хинин | 4=Содержит ниацин | 5=Происхождение: Франция | 6=Регулятор кислотности<br><span class='star-item'>⭐ * Включено 1л безалкогольных напитков (Cola/Fanta/Sprite)</span><br><span class='star-item'>⭐ * Включено 1л сока (разные сорта)</span><br><span class='star-item'>⭐ * Включено 6 Red Bull's</span><br>💰 Все цены с НДС | **Другое: Цена по запросу"
+            infoText: "ⓘ Добавки: 1=Красители | 2=Содержит кофеин | 3=Содержит хинин | 4=Содержит ниацин | 5=Происхождение: Франция | 6=Регулятор кислотности<br><span class='star-item'>⭐ * Включено 1л безалкогольных напитков (Cola/Fanta/Sprite)</span><br><span class='star-item'>⭐ * Включено 1л сока (разные сорта)</span><br><span class='star-item'>⭐ * Включено 6 Red Bull's</span><br>💰 Все цены с НДС | **Другое: Цена по запросу",
+            selectOption: "Пожалуйста, выберите опцию"
         },
         en: { 
             cartItems: "Items", resetBtn: "Reset", orderBtn: "Order",
@@ -595,11 +730,12 @@
             showAllCategories: "Show all categories", emptyCart: "Your cart is empty",
             toastAdded: "➕ {name} added", toastCleared: "🗑️ Cart cleared", toastRemoved: "🗑️ {name} removed",
             themeDark: "🌙 Dark Mode activated", themeLight: "☀️ Light Mode activated", dataSaved: "💾 Data saved! Page will reload...",
-            infoText: "ⓘ Additives: 1=Colorings | 2=Caffeine | 3=Quinine | 4=Niacin | 5=Origin: France | 6=Acidulant<br><span class='star-item'>⭐ * Inclusive 1l Softdrinks (Cola/Fanta/Sprite)</span><br><span class='star-item'>⭐ * Inclusive 1l Juice (various flavors)</span><br><span class='star-item'>⭐ * Inclusive 6 Red Bull's</span><br>💰 All prices incl. VAT | **Others: Price on request"
+            infoText: "ⓘ Additives: 1=Colorings | 2=Caffeine | 3=Quinine | 4=Niacin | 5=Origin: France | 6=Acidulant<br><span class='star-item'>⭐ * Inclusive 1l Softdrinks (Cola/Fanta/Sprite)</span><br><span class='star-item'>⭐ * Inclusive 1l Juice (various flavors)</span><br><span class='star-item'>⭐ * Inclusive 6 Red Bull's</span><br>💰 All prices incl. VAT | **Others: Price on request",
+            selectOption: "Please select an option"
         }
     };
 
-    // ==================== MEHRSPRACHIGE GETRÄNKEDATEN ====================
+    // ==================== GETRÄNKEDATEN ====================
     const drinksDataMultilang = {
         de: {
             bier: {
@@ -717,21 +853,21 @@
                 title: "🍾 FLASCHENVERKAUF",
                 items: [
                     { name: "Softdrinks (Cola, Fanta, Sprite)", size: "1,0l", price: 10.00, hasVariants: true, variants: ["Cola", "Fanta", "Sprite"], requireSelection: true },
-                    { name: "Säfte (Verschiedene Sorten)", size: "1,0l", price: 15.00 },
+                    { name: "Säfte (Verschiedene Sorten)", size: "1,0l", price: 15.00, hasVariants: true, variants: ["Kirschen", "Banane", "Johannisbeere", "Apfel", "Orange", "Maracuja", "Ananas", "Cranberry"], requireSelection: true },
                     { name: "Effect Classic Energy", size: "1,0l", price: 10.00 },
-                    { name: "Vodka Smirnoff Red Label *", size: "0,7l", hasVariants: true, hasPriceVariants: true, variants: ["65€ mit Softdrinks", "70€ mit Saft", "80€ mit 6 Red Bull's"], requireSelection: true },
-                    { name: "Vodka Absolut *", size: "0,7l", hasVariants: true, hasPriceVariants: true, variants: ["75€ mit Softdrinks", "80€ mit Saft", "90€ mit 6 Red Bull's"], requireSelection: true },
-                    { name: "Vodka Belvedere *", size: "0,7l", hasVariants: true, hasPriceVariants: true, variants: ["135€ mit Softdrinks", "140€ mit Saft", "150€ mit 6 Red Bull's"], requireSelection: true },
-                    { name: "Vodka 9 Mile *", size: "0,7l", hasVariants: true, hasPriceVariants: true, variants: ["75€ mit Softdrinks", "80€ mit Saft", "90€ mit 6 Red Bull's"], requireSelection: true },
-                    { name: "Tequila Gold / Silver *", size: "0,7l", hasVariants: true, hasPriceVariants: true, variants: ["80€ mit Softdrinks", "85€ mit Saft", "95€ mit 6 Red Bull's"], requireSelection: true },
-                    { name: "Jägermeister *", size: "0,7l", hasVariants: true, hasPriceVariants: true, variants: ["80€ mit Softdrinks", "85€ mit Saft", "95€ mit 6 Red Bull's"], requireSelection: true },
-                    { name: "Captain Morgan *", size: "0,7l", hasVariants: true, hasPriceVariants: true, variants: ["80€ mit Softdrinks", "85€ mit Saft", "95€ mit 6 Red Bull's"], requireSelection: true },
-                    { name: "Gordon's Gin *", size: "0,7l", hasVariants: true, hasPriceVariants: true, variants: ["80€ mit Softdrinks", "85€ mit Saft", "95€ mit 6 Red Bull's"], requireSelection: true },
+                    { name: "Vodka Smirnoff Red Label *", size: "0,7l", hasPriceVariants: true, variants: ["65€ mit Softdrinks", "70€ mit Saft", "80€ mit 6 Red Bull's"], requireSelection: true, isBottle: true },
+                    { name: "Vodka Absolut *", size: "0,7l", hasPriceVariants: true, variants: ["75€ mit Softdrinks", "80€ mit Saft", "90€ mit 6 Red Bull's"], requireSelection: true, isBottle: true },
+                    { name: "Vodka Belvedere *", size: "0,7l", hasPriceVariants: true, variants: ["135€ mit Softdrinks", "140€ mit Saft", "150€ mit 6 Red Bull's"], requireSelection: true, isBottle: true },
+                    { name: "Vodka 9 Mile *", size: "0,7l", hasPriceVariants: true, variants: ["75€ mit Softdrinks", "80€ mit Saft", "90€ mit 6 Red Bull's"], requireSelection: true, isBottle: true },
+                    { name: "Tequila Gold / Silver *", size: "0,7l", hasPriceVariants: true, variants: ["80€ mit Softdrinks", "85€ mit Saft", "95€ mit 6 Red Bull's"], requireSelection: true, isBottle: true },
+                    { name: "Jägermeister *", size: "0,7l", hasPriceVariants: true, variants: ["80€ mit Softdrinks", "85€ mit Saft", "95€ mit 6 Red Bull's"], requireSelection: true, isBottle: true },
+                    { name: "Captain Morgan *", size: "0,7l", hasPriceVariants: true, variants: ["80€ mit Softdrinks", "85€ mit Saft", "95€ mit 6 Red Bull's"], requireSelection: true, isBottle: true },
+                    { name: "Gordon's Gin *", size: "0,7l", hasPriceVariants: true, variants: ["80€ mit Softdrinks", "85€ mit Saft", "95€ mit 6 Red Bull's"], requireSelection: true, isBottle: true },
                     { name: "Ficken", size: "0,7l", price: 50.00 },
-                    { name: "Havanna *", size: "0,7l", hasVariants: true, hasPriceVariants: true, variants: ["80€ mit Softdrinks", "85€ mit Saft", "95€ mit 6 Red Bull's"], requireSelection: true },
+                    { name: "Havanna *", size: "0,7l", hasPriceVariants: true, variants: ["80€ mit Softdrinks", "85€ mit Saft", "95€ mit 6 Red Bull's"], requireSelection: true, isBottle: true },
                     { name: "Vodka Melone", size: "0,7l", price: 50.00 },
-                    { name: "Hennessy *", size: "0,7l", hasVariants: true, hasPriceVariants: true, variants: ["135€ mit Softdrinks", "140€ mit Saft", "150€ mit 6 Red Bull's"], requireSelection: true },
-                    { name: "Jack Daniels *", size: "0,7l", hasVariants: true, hasPriceVariants: true, variants: ["80€ mit Softdrinks", "85€ mit Saft", "95€ mit 6 Red Bull's"], requireSelection: true },
+                    { name: "Hennessy *", size: "0,7l", hasPriceVariants: true, variants: ["135€ mit Softdrinks", "140€ mit Saft", "150€ mit 6 Red Bull's"], requireSelection: true, isBottle: true },
+                    { name: "Jack Daniels *", size: "0,7l", hasPriceVariants: true, variants: ["80€ mit Softdrinks", "85€ mit Saft", "95€ mit 6 Red Bull's"], requireSelection: true, isBottle: true },
                     { name: "Moet & Chandon Brut", size: "0,7l", price: 120.00 },
                     { name: "Scavi & Ray Prosecco", size: "0,75l", price: 35.00 },
                     { name: "Scavi & Ray Ice Prestige", size: "0,75l", price: 40.00 }
@@ -757,136 +893,18 @@
                 ]
             }
         },
-        ru: { /* Russische Übersetzung - wird mit den deutschen Daten gefüllt und dann übersetzt */ },
-        en: { /* Englische Übersetzung - wird mit den deutschen Daten gefüllt und dann übersetzt */ }
+        ru: {}, en: {}
     };
 
-    // ==================== SPRACHÜBERSETZUNGEN FÜR GETRÄNKE ====================
+    // ==================== GETRÄNKEÜBERSETZUNGEN ====================
     const drinkTranslations = {
-        de: {
-            // Bier
-            "Heineken": "Heineken",
-            "Heineken Alkoholfrei": "Heineken Alkoholfrei",
-            "Corona Bier": "Corona Bier",
-            "Hefe Weizen": "Hefe Weizen",
-            "Saltos (Verschiedene Sorten)": "Saltos (Verschiedene Sorten)",
-            // Softdrinks
-            "Coca Cola": "Coca Cola",
-            "Coca Cola Zero": "Coca Cola Zero",
-            "Fanta": "Fanta",
-            "Sprite": "Sprite",
-            "Wasser": "Wasser",
-            "Tonic Water": "Tonic Water",
-            "Bitter Lemon": "Bitter Lemon",
-            "Ginger Ale": "Ginger Ale",
-            "Wild Berry": "Wild Berry",
-            "Energy": "Energy",
-            "Red Bull (Verschiedene Sorten)": "Red Bull (Verschiedene Sorten)",
-            // Säfte
-            "Kirschen": "Kirschen",
-            "Banane": "Banane",
-            "Johannisbeere": "Johannisbeere",
-            "Apfel": "Apfel",
-            "Orange": "Orange",
-            "Maracuja": "Maracuja",
-            "Ananas": "Ananas",
-            "Cranberry": "Cranberry",
-            // Cocktails
-            "Daiquiri": "Daiquiri",
-            "Lady Killer": "Lady Killer",
-            "Caipirinha": "Caipirinha",
-            "Cuba Libre": "Cuba Libre",
-            "Touch Down": "Touch Down",
-            "Mai Tai": "Mai Tai",
-            "Zombie": "Zombie",
-            "Sex on the Beach": "Sex on the Beach",
-            "White Russian": "White Russian",
-            "Long Island": "Long Island",
-            "Pina Colada": "Pina Colada",
-            "Peach Colada": "Peach Colada",
-            "Americano": "Americano",
-            "Mojito": "Mojito",
-            "Ocean Breeze": "Ocean Breeze",
-            "Diamond Special": "Diamond Special",
-            // Alkoholfrei
-            "Coconut Kiss": "Coconut Kiss",
-            "Virgin Capi": "Virgin Capi",
-            "Diamond Special Fresh": "Diamond Special Fresh",
-            "Exotik": "Exotik",
-            "Mojito (alkoholfrei)": "Mojito (alkoholfrei)",
-            "Caipirinha (alkoholfrei)": "Caipirinha (alkoholfrei)",
-            "Cinderella": "Cinderella",
-            // Longdrinks
-            "Malibu": "Malibu",
-            "Jacky": "Jacky",
-            "Asbach Cola": "Asbach Cola",
-            "Captain Morgan Cola": "Captain Morgan Cola",
-            "Gin": "Gin",
-            "Jägermeister Energy": "Jägermeister Energy",
-            "Vodka Energy": "Vodka Energy",
-            "Vodka": "Vodka",
-            // Shots
-            "B52": "B52",
-            "Havanna Lime": "Havanna Lime",
-            "Vodka Lime": "Vodka Lime",
-            "Orgasmus": "Orgasmus",
-            "Russian Roulette": "Russian Roulette",
-            "Kamikaze": "Kamikaze",
-            // Sekt & Wein
-            "Scavi & Ray Prosecco": "Scavi & Ray Prosecco",
-            "Scavi & Ray Ice Prestige": "Scavi & Ray Ice Prestige",
-            "Aperol Spritz": "Aperol Spritz",
-            "Hugo": "Hugo",
-            "Scavi & Ray IL Bianco": "Scavi & Ray IL Bianco",
-            "Scavi & Ray IL Rosso": "Scavi & Ray IL Rosso",
-            "Scavi & Ray IL Rosato": "Scavi & Ray IL Rosato",
-            "Rotwein": "Rotwein",
-            "Weißwein": "Weißwein",
-            "Lille Berry": "Lille Berry",
-            // Flaschen
-            "Softdrinks (Cola, Fanta, Sprite)": "Softdrinks (Cola, Fanta, Sprite)",
-            "Säfte (Verschiedene Sorten)": "Säfte (Verschiedene Sorten)",
-            "Effect Classic Energy": "Effect Classic Energy",
-            "Vodka Smirnoff Red Label *": "Vodka Smirnoff Red Label *",
-            "Vodka Absolut *": "Vodka Absolut *",
-            "Vodka Belvedere *": "Vodka Belvedere *",
-            "Vodka 9 Mile *": "Vodka 9 Mile *",
-            "Tequila Gold / Silver *": "Tequila Gold / Silver *",
-            "Jägermeister *": "Jägermeister *",
-            "Captain Morgan *": "Captain Morgan *",
-            "Gordon's Gin *": "Gordon's Gin *",
-            "Ficken": "Ficken",
-            "Havanna *": "Havanna *",
-            "Vodka Melone": "Vodka Melone",
-            "Hennessy *": "Hennessy *",
-            "Jack Daniels *": "Jack Daniels *",
-            "Moet & Chandon Brut": "Moet & Chandon Brut",
-            "Scavi & Ray Prosecco": "Scavi & Ray Prosecco",
-            "Scavi & Ray Ice Prestige": "Scavi & Ray Ice Prestige",
-            // Spirituosen
-            "Vodka": "Vodka",
-            "Vodka Melone": "Vodka Melone",
-            "Havanna Club": "Havanna Club",
-            "Tequila (Silver / Gold)": "Tequila (Silver / Gold)",
-            "Malibu": "Malibu",
-            "Baileys": "Baileys",
-            "Ficken": "Ficken",
-            "Jägermeister": "Jägermeister",
-            "Jack Daniels": "Jack Daniels",
-            "Asbach": "Asbach",
-            "Hennessy": "Hennessy",
-            "Bacardi/Razz": "Bacardi/Razz",
-            "Gordon's Dry Gin": "Gordon's Dry Gin",
-            "Captain Morgan Gold": "Captain Morgan Gold"
-        },
+        de: {},
         ru: {
-            // Bier
             "Heineken": "Хайнекен",
             "Heineken Alkoholfrei": "Хайнекен Безалкогольное",
             "Corona Bier": "Корона",
             "Hefe Weizen": "Пшеничное",
             "Saltos (Verschiedene Sorten)": "Сальтос (разные сорта)",
-            // Softdrinks
             "Coca Cola": "Кока Кола",
             "Coca Cola Zero": "Кока Кола Зеро",
             "Fanta": "Фанта",
@@ -898,7 +916,6 @@
             "Wild Berry": "Уайлд Берри",
             "Energy": "Энергетик",
             "Red Bull (Verschiedene Sorten)": "Ред Булл (разные сорта)",
-            // Säfte
             "Kirschen": "Вишня",
             "Banane": "Банан",
             "Johannisbeere": "Смородина",
@@ -907,7 +924,6 @@
             "Maracuja": "Маракуйя",
             "Ananas": "Ананас",
             "Cranberry": "Клюква",
-            // Cocktails
             "Daiquiri": "Дайкири",
             "Lady Killer": "Леди Киллер",
             "Caipirinha": "Кайпиринья",
@@ -924,7 +940,6 @@
             "Mojito": "Мохито",
             "Ocean Breeze": "Оушен Бриз",
             "Diamond Special": "Даймонд Спешиал",
-            // Alkoholfrei
             "Coconut Kiss": "Кокосовый поцелуй",
             "Virgin Capi": "Вирджин Капи",
             "Diamond Special Fresh": "Даймонд Фреш",
@@ -932,7 +947,6 @@
             "Mojito (alkoholfrei)": "Мохито (безалк.)",
             "Caipirinha (alkoholfrei)": "Кайпиринья (безалк.)",
             "Cinderella": "Золушка",
-            // Longdrinks
             "Malibu": "Малибу",
             "Jacky": "Джеки",
             "Asbach Cola": "Асбах Кола",
@@ -941,14 +955,12 @@
             "Jägermeister Energy": "Егермейстер Энерджи",
             "Vodka Energy": "Водка Энерджи",
             "Vodka": "Водка",
-            // Shots
             "B52": "B52",
             "Havanna Lime": "Гаванна Лайм",
             "Vodka Lime": "Водка Лайм",
             "Orgasmus": "Оргазмус",
             "Russian Roulette": "Русская рулетка",
             "Kamikaze": "Камикадзе",
-            // Sekt & Wein
             "Scavi & Ray Prosecco": "Скави & Рэй Просекко",
             "Scavi & Ray Ice Prestige": "Скави & Рэй Айс Престиж",
             "Aperol Spritz": "Апероль Шприц",
@@ -959,7 +971,6 @@
             "Rotwein": "Красное вино",
             "Weißwein": "Белое вино",
             "Lille Berry": "Лиль Берри",
-            // Flaschen
             "Softdrinks (Cola, Fanta, Sprite)": "Напитки (Кола, Фанта, Спрайт)",
             "Säfte (Verschiedene Sorten)": "Соки (разные сорта)",
             "Effect Classic Energy": "Эффект Классик Энерджи",
@@ -977,17 +988,9 @@
             "Hennessy *": "Хеннесси *",
             "Jack Daniels *": "Джек Дэниэлс *",
             "Moet & Chandon Brut": "Моэт & Шандон Брют",
-            "Scavi & Ray Prosecco": "Скави & Рэй Просекко",
-            "Scavi & Ray Ice Prestige": "Скави & Рэй Айс Престиж",
-            // Spirituosen
-            "Vodka": "Водка",
-            "Vodka Melone": "Водка Мелон",
             "Havanna Club": "Гаванна Клаб",
             "Tequila (Silver / Gold)": "Текила (Сильвер / Голд)",
-            "Malibu": "Малибу",
             "Baileys": "Бейлис",
-            "Ficken": "Фикен",
-            "Jägermeister": "Егермейстер",
             "Jack Daniels": "Джек Дэниэлс",
             "Asbach": "Асбах",
             "Hennessy": "Хеннесси",
@@ -996,13 +999,11 @@
             "Captain Morgan Gold": "Капитан Морган Голд"
         },
         en: {
-            // Bier
             "Heineken": "Heineken",
             "Heineken Alkoholfrei": "Heineken Non-Alcoholic",
             "Corona Bier": "Corona Beer",
             "Hefe Weizen": "Hefe Wheat",
             "Saltos (Verschiedene Sorten)": "Saltos (various flavors)",
-            // Softdrinks
             "Coca Cola": "Coca Cola",
             "Coca Cola Zero": "Coca Cola Zero",
             "Fanta": "Fanta",
@@ -1014,7 +1015,6 @@
             "Wild Berry": "Wild Berry",
             "Energy": "Energy Drink",
             "Red Bull (Verschiedene Sorten)": "Red Bull (various flavors)",
-            // Säfte
             "Kirschen": "Cherry",
             "Banane": "Banana",
             "Johannisbeere": "Blackcurrant",
@@ -1023,7 +1023,6 @@
             "Maracuja": "Passion Fruit",
             "Ananas": "Pineapple",
             "Cranberry": "Cranberry",
-            // Cocktails
             "Daiquiri": "Daiquiri",
             "Lady Killer": "Lady Killer",
             "Caipirinha": "Caipirinha",
@@ -1040,7 +1039,6 @@
             "Mojito": "Mojito",
             "Ocean Breeze": "Ocean Breeze",
             "Diamond Special": "Diamond Special",
-            // Alkoholfrei
             "Coconut Kiss": "Coconut Kiss",
             "Virgin Capi": "Virgin Capi",
             "Diamond Special Fresh": "Diamond Special Fresh",
@@ -1048,7 +1046,6 @@
             "Mojito (alkoholfrei)": "Mojito (non-alc)",
             "Caipirinha (alkoholfrei)": "Caipirinha (non-alc)",
             "Cinderella": "Cinderella",
-            // Longdrinks
             "Malibu": "Malibu",
             "Jacky": "Jacky",
             "Asbach Cola": "Asbach Cola",
@@ -1057,14 +1054,12 @@
             "Jägermeister Energy": "Jägermeister Energy",
             "Vodka Energy": "Vodka Energy",
             "Vodka": "Vodka",
-            // Shots
             "B52": "B52",
             "Havanna Lime": "Havanna Lime",
             "Vodka Lime": "Vodka Lime",
             "Orgasmus": "Orgasm",
             "Russian Roulette": "Russian Roulette",
             "Kamikaze": "Kamikaze",
-            // Sekt & Wein
             "Scavi & Ray Prosecco": "Scavi & Ray Prosecco",
             "Scavi & Ray Ice Prestige": "Scavi & Ray Ice Prestige",
             "Aperol Spritz": "Aperol Spritz",
@@ -1075,7 +1070,6 @@
             "Rotwein": "Red Wine",
             "Weißwein": "White Wine",
             "Lille Berry": "Lille Berry",
-            // Flaschen
             "Softdrinks (Cola, Fanta, Sprite)": "Soft Drinks (Cola, Fanta, Sprite)",
             "Säfte (Verschiedene Sorten)": "Juices (various flavors)",
             "Effect Classic Energy": "Effect Classic Energy",
@@ -1093,17 +1087,9 @@
             "Hennessy *": "Hennessy *",
             "Jack Daniels *": "Jack Daniels *",
             "Moet & Chandon Brut": "Moet & Chandon Brut",
-            "Scavi & Ray Prosecco": "Scavi & Ray Prosecco",
-            "Scavi & Ray Ice Prestige": "Scavi & Ray Ice Prestige",
-            // Spirituosen
-            "Vodka": "Vodka",
-            "Vodka Melone": "Vodka Melon",
             "Havanna Club": "Havanna Club",
             "Tequila (Silver / Gold)": "Tequila (Silver / Gold)",
-            "Malibu": "Malibu",
             "Baileys": "Baileys",
-            "Ficken": "Ficken",
-            "Jägermeister": "Jägermeister",
             "Jack Daniels": "Jack Daniels",
             "Asbach": "Asbach",
             "Hennessy": "Hennessy",
@@ -1113,68 +1099,79 @@
         }
     };
 
-    // ==================== FUNKTION ZUM ÜBERSETZEN DER GETRÄNKE ====================
+    // ==================== DEFINITIONEN FÜR SUB-OPTIONEN ====================
+    const subOptionMap = {
+        "mit Softdrinks": ["Cola", "Fanta", "Sprite"],
+        "mit Saft": ["Kirschen", "Banane", "Johannisbeere", "Apfel", "Orange", "Maracuja", "Ananas", "Cranberry"]
+    };
+
+    // ==================== FUNKTIONEN ====================
+    let currentLang = "de";
+    let drinksData = JSON.parse(JSON.stringify(drinksDataMultilang.de));
+    let cartItems = [];
+    let currentSelectedCategory = null;
+
+    // Cart aus localStorage laden
+    function loadCart() {
+        const saved = localStorage.getItem('diamondCart');
+        if (saved) {
+            try {
+                cartItems = JSON.parse(saved);
+            } catch (e) {
+                cartItems = [];
+            }
+        }
+    }
+
+    function saveCart() {
+        localStorage.setItem('diamondCart', JSON.stringify(cartItems));
+    }
+
+    function showToast(msg) { 
+        const toast = document.getElementById('toast'); 
+        toast.textContent = msg; 
+        toast.classList.add('show'); 
+        setTimeout(() => toast.classList.remove('show'), 1800); 
+    }
+
+    function updateCartUI() { 
+        const count = cartItems.reduce((s, i) => s + i.qty, 0);
+        document.getElementById("cartCount").textContent = count;
+        saveCart();
+    }
+
+    function addToCart(name, price, size, options = {}) {
+        let displayName = name;
+        if (options.variant) {
+            displayName = `${name} (${options.variant})`;
+        }
+        if (options.subOption) {
+            displayName = `${displayName} - ${options.subOption}`;
+        }
+        let existing = cartItems.find(i => i.name === displayName && i.size === size);
+        if (existing) {
+            existing.qty++;
+        } else {
+            cartItems.push({ name: displayName, price, size, qty: 1, options: JSON.stringify(options) });
+        }
+        updateCartUI(); 
+        showToast(translations[currentLang].toastAdded.replace("{name}", displayName));
+        closeVariantModal();
+    }
+
     function translateDrinks(lang) {
-        // Deep copy der deutschen Daten
         let newData = JSON.parse(JSON.stringify(drinksDataMultilang.de));
-        const translations = drinkTranslations[lang];
+        const trans = drinkTranslations[lang];
+        if (!trans) return newData;
         
-        // Durch alle Kategorien und Items gehen und Namen übersetzen
         for (let categoryKey in newData) {
             if (newData[categoryKey] && newData[categoryKey].items) {
                 newData[categoryKey].items.forEach(item => {
-                    if (item.name && translations[item.name]) {
-                        item.name = translations[item.name];
+                    if (item.name && trans[item.name]) {
+                        item.name = trans[item.name];
                     }
-                    // Beschreibungen auch übersetzen (für Cocktails)
-                    if (item.desc) {
-                        // Beschreibungen werden separat übersetzt
-                        const descTranslations = {
-                            de: {
-                                "Weißer Rum, Zitronensaft, Erdbeer Sirup": "Weißer Rum, Zitronensaft, Erdbeer Sirup",
-                                "Gin, Triple Sec, Peach Tree, Maracuja, Ananas": "Gin, Triple Sec, Peach Tree, Maracuja, Ananas",
-                                // ... mehr deutsche Beschreibungen
-                            },
-                            ru: {
-                                "Weißer Rum, Zitronensaft, Erdbeer Sirup": "Белый ром, лимонный сок, клубничный сироп",
-                                "Gin, Triple Sec, Peach Tree, Maracuja, Ananas": "Джин, Трипл Сек, Пич Три, маракуйя, ананас",
-                                "Limette, Lime Juice, Brauner Zucker, Cachaca": "Лайм, сок лайма, коричневый сахар, Кашаса",
-                                "Limetten, Rum (Havanna), Rohrzucker, Cola": "Лайм, ром (Гаванна), тростниковый сахар, кола",
-                                "Vodka, Triple Sec, Zitrone, Ananas, Maracuja, Grenadine": "Водка, Трипл Сек, лимон, ананас, маракуйя, гренадин",
-                                "Zitronensaft, Lime Juice, Ananassaft, Rum, Brandy, Havanna": "Лимонный сок, сок лайма, ананасовый сок, ром, бренди, Гаванна",
-                                "Zitros, Lime Juice, Ceepers, Myers Rum, Havanna, Ananassaft, Orangensaft": "Лайм, ром, ананасовый сок, апельсиновый сок",
-                                "Orangensaft, Ananassaft, Vodka, Peachtree, Zitro": "Апельсиновый сок, ананасовый сок, водка, Пичтри",
-                                "Vodka, Kahlua, Sahne": "Водка, Калуа, сливки",
-                                "Zitro, Lime Juice, Vodka, Tequila, Havanna, Gin, Triple Sec": "Водка, текила, ром, джин, Трипл Сек",
-                                "Cocossirup, Myers Rum, Havanna, Ananassaft": "Кокосовый сироп, ром, ананасовый сок",
-                                "Rum, Peach Tree, Ananas, Pfirsich, Kokos, Sahne": "Ром, Пич Три, ананас, персик, кокос, сливки",
-                                "Campari, Vermuth bianco": "Кампари, вермут",
-                                "Limette, Minze, Rohrzucker, Sodawasser, Weißer Rum": "Лайм, мята, тростниковый сахар, содовая, белый ром",
-                                "Weißer Rum, Amaretto, Curacao Blue, Ananassaft, Sodawasser": "Белый ром, Амаретто, Курасао Блю, ананасовый сок, содовая",
-                                "Gin, Vodka, Tequila Silver, Triple Sec, Grenadine, Maracuja Saft, Zitrone, Lime": "Джин, водка, Текила Сильвер, Трипл Сек, гренадин, маракуйя, лимон, лайм"
-                            },
-                            en: {
-                                "Weißer Rum, Zitronensaft, Erdbeer Sirup": "White rum, lemon juice, strawberry syrup",
-                                "Gin, Triple Sec, Peach Tree, Maracuja, Ananas": "Gin, Triple Sec, Peach Tree, passion fruit, pineapple",
-                                "Limette, Lime Juice, Brauner Zucker, Cachaca": "Lime, lime juice, brown sugar, Cachaca",
-                                "Limetten, Rum (Havanna), Rohrzucker, Cola": "Lime, rum (Havana), cane sugar, cola",
-                                "Vodka, Triple Sec, Zitrone, Ananas, Maracuja, Grenadine": "Vodka, Triple Sec, lemon, pineapple, passion fruit, grenadine",
-                                "Zitronensaft, Lime Juice, Ananassaft, Rum, Brandy, Havanna": "Lemon juice, lime juice, pineapple juice, rum, brandy, Havana",
-                                "Zitros, Lime Juice, Ceepers, Myers Rum, Havanna, Ananassaft, Orangensaft": "Lime juice, rum, pineapple juice, orange juice",
-                                "Orangensaft, Ananassaft, Vodka, Peachtree, Zitro": "Orange juice, pineapple juice, vodka, Peachtree",
-                                "Vodka, Kahlua, Sahne": "Vodka, Kahlua, cream",
-                                "Zitro, Lime Juice, Vodka, Tequila, Havanna, Gin, Triple Sec": "Vodka, tequila, rum, gin, Triple Sec",
-                                "Cocossirup, Myers Rum, Havanna, Ananassaft": "Coconut syrup, rum, pineapple juice",
-                                "Rum, Peach Tree, Ananas, Pfirsich, Kokos, Sahne": "Rum, Peach Tree, pineapple, peach, coconut, cream",
-                                "Campari, Vermuth bianco": "Campari, vermouth",
-                                "Limette, Minze, Rohrzucker, Sodawasser, Weißer Rum": "Lime, mint, cane sugar, soda water, white rum",
-                                "Weißer Rum, Amaretto, Curacao Blue, Ananassaft, Sodawasser": "White rum, Amaretto, Blue Curacao, pineapple juice, soda",
-                                "Gin, Vodka, Tequila Silver, Triple Sec, Grenadine, Maracuja Saft, Zitrone, Lime": "Gin, vodka, Tequila Silver, Triple Sec, grenadine, passion fruit, lemon, lime"
-                            }
-                        };
-                        if (descTranslations[lang] && descTranslations[lang][item.desc]) {
-                            item.desc = descTranslations[lang][item.desc];
-                        }
+                    if (item.variants) {
+                        item.variants = item.variants.map(v => trans[v] || v);
                     }
                 });
             }
@@ -1182,23 +1179,10 @@
         return newData;
     }
 
-    // ==================== INIT ====================
-    let currentLang = "de";
-    let drinksData = translateDrinks("de");
-    let cartItems = [];
-    let selectedVariants = {};
-    let currentSelectedCategory = null;
-
-    function showToast(msg) { const toast = document.getElementById('toast'); toast.textContent = msg; toast.classList.add('show'); setTimeout(() => toast.classList.remove('show'), 1800); }
-    function updateCartUI() { document.getElementById("cartCount").textContent = cartItems.reduce((s, i) => s + i.qty, 0); }
-    function addToCart(name, price, size) { let existing = cartItems.find(i => i.name === name && i.size === size); if (existing) existing.qty++; else cartItems.push({ name, price, size, qty: 1 }); updateCartUI(); showToast(translations[currentLang].toastAdded.replace("{name}", name)); }
-
     function updateLanguage(lang) {
         currentLang = lang;
-        // Daten übersetzen
         drinksData = translateDrinks(lang);
         
-        // UI Texte aktualisieren
         document.getElementById("cartItemsText").innerText = translations[lang].cartItems;
         document.getElementById("resetBtnText").innerText = translations[lang].resetBtn;
         document.getElementById("orderBtnText").innerText = translations[lang].orderBtn;
@@ -1217,16 +1201,14 @@
             if (btn.getAttribute("data-lang") === lang) btn.classList.add("active"); 
         });
         
-        // Kategorie-Titel aktualisieren
-        const categoryOrder = ["bier", "softdrinks", "saefte", "cocktails", "cocktails_alkoholfrei", "longdrinks", "shots", "sekt", "flaschen", "spirituosen"];
         const categoryTitles = {
             de: { bier: "🍺 BIER", softdrinks: "🥤 SOFTDRINKS", saefte: "🧃 SÄFTE", cocktails: "🍹 COCKTAILS", cocktails_alkoholfrei: "✨ ALKOHOLFREIE COCKTAILS", longdrinks: "🥃 LONGDRINKS", shots: "💥 SHOTS", sekt: "🥂 SEKT & WEIN", flaschen: "🍾 FLASCHENVERKAUF", spirituosen: "🥃 SPIRITUOSEN" },
             ru: { bier: "🍺 ПИВО", softdrinks: "🥤 НАПИТКИ", saefte: "🧃 СОКИ", cocktails: "🍹 КОКТЕЙЛИ", cocktails_alkoholfrei: "✨ БЕЗАЛКОГОЛЬНЫЕ КОКТЕЙЛИ", longdrinks: "🥃 ЛОНГДРИНКИ", shots: "💥 ШОТЫ", sekt: "🥂 ИГРИСТОЕ & ВИНО", flaschen: "🍾 ПРОДАЖА БУТЫЛОК", spirituosen: "🥃 КРЕПКИЙ АЛКОГОЛЬ" },
             en: { bier: "🍺 BEER", softdrinks: "🥤 SOFT DRINKS", saefte: "🧃 JUICES", cocktails: "🍹 COCKTAILS", cocktails_alkoholfrei: "✨ NON-ALCOHOLIC COCKTAILS", longdrinks: "🥃 LONG DRINKS", shots: "💥 SHOTS", sekt: "🥂 SPARKLING & WINE", flaschen: "🍾 BOTTLE SALES", spirituosen: "🥃 SPIRITS" }
         };
-        for (let key of categoryOrder) {
-            if (drinksData[key]) {
-                drinksData[key].title = categoryTitles[lang][key] || drinksData[key].title;
+        for (let key in drinksData) {
+            if (categoryTitles[lang] && categoryTitles[lang][key]) {
+                drinksData[key].title = categoryTitles[lang][key];
             }
         }
         
@@ -1235,28 +1217,143 @@
         if (document.getElementById("orderOverlay").classList.contains("show")) refreshOrderSummary();
     }
 
-    function toggleTheme() { document.body.classList.toggle('dark'); localStorage.setItem('theme', document.body.classList.contains('dark') ? 'dark' : 'light'); showToast(document.body.classList.contains('dark') ? translations[currentLang].themeDark : translations[currentLang].themeLight); }
+    function toggleTheme() { 
+        document.body.classList.toggle('dark'); 
+        localStorage.setItem('theme', document.body.classList.contains('dark') ? 'dark' : 'light'); 
+        showToast(document.body.classList.contains('dark') ? translations[currentLang].themeDark : translations[currentLang].themeLight); 
+    }
 
-    function selectCategory(key) { currentSelectedCategory = key; document.getElementById("categoriesWrapper").classList.add("hide-categories"); document.querySelectorAll(".category-section").forEach(s => s.style.display = s.dataset.category === key ? "block" : "none"); window.scrollTo({ top: 0, behavior: 'smooth' }); }
-    function showAllCategories() { currentSelectedCategory = null; document.getElementById("categoriesWrapper").classList.remove("hide-categories"); document.querySelectorAll(".category-section").forEach(s => s.style.display = "block"); window.scrollTo({ top: 0, behavior: 'smooth' }); }
+    function selectCategory(key) { 
+        currentSelectedCategory = key; 
+        document.getElementById("categoriesWrapper").classList.add("hide-categories"); 
+        document.querySelectorAll(".category-section").forEach(s => s.style.display = s.dataset.category === key ? "block" : "none"); 
+        window.scrollTo({ top: 0, behavior: 'smooth' }); 
+    }
 
-    function removeFromCart(index) { let removed = cartItems[index]; cartItems.splice(index, 1); updateCartUI(); showToast(translations[currentLang].toastRemoved.replace("{name}", removed.name)); if (document.getElementById("orderOverlay").classList.contains("show")) refreshOrderSummary(); }
-    function resetCartWithConfirm() { if (cartItems.length === 0) { showToast(translations[currentLang].emptyCart); return; } document.getElementById("confirmOverlay").classList.add("show"); }
-    function executeResetCart() { cartItems = []; updateCartUI(); showToast(translations[currentLang].toastCleared); if (document.getElementById("orderOverlay").classList.contains("show")) refreshOrderSummary(); document.getElementById("confirmOverlay").classList.remove("show"); }
+    function showAllCategories() { 
+        currentSelectedCategory = null; 
+        document.getElementById("categoriesWrapper").classList.remove("hide-categories"); 
+        document.querySelectorAll(".category-section").forEach(s => s.style.display = "block"); 
+        window.scrollTo({ top: 0, behavior: 'smooth' }); 
+    }
+
+    function removeFromCart(index) { 
+        let removed = cartItems[index]; 
+        cartItems.splice(index, 1); 
+        updateCartUI(); 
+        showToast(translations[currentLang].toastRemoved.replace("{name}", removed.name)); 
+        if (document.getElementById("orderOverlay").classList.contains("show")) refreshOrderSummary(); 
+    }
+
+    function resetCartWithConfirm() { 
+        if (cartItems.length === 0) { showToast(translations[currentLang].emptyCart); return; } 
+        document.getElementById("confirmOverlay").classList.add("show"); 
+    }
+
+    function executeResetCart() { 
+        cartItems = []; 
+        updateCartUI(); 
+        showToast(translations[currentLang].toastCleared); 
+        if (document.getElementById("orderOverlay").classList.contains("show")) refreshOrderSummary(); 
+        document.getElementById("confirmOverlay").classList.remove("show"); 
+    }
+
     function cancelResetCart() { document.getElementById("confirmOverlay").classList.remove("show"); }
 
     function refreshOrderSummary() {
         let content = document.getElementById("orderSummaryContent");
         if (cartItems.length === 0) { content.innerHTML = `<div class="empty-cart">${translations[currentLang].emptyCart}</div>`; return; }
         let html = '<div class="order-items">', total = 0;
-        cartItems.forEach((item, idx) => { let subtotal = item.price * item.qty; total += subtotal; html += `<div class="order-item"><div class="order-item-info"><div class="order-item-name">${item.name}</div><div class="order-item-size">${item.size}</div></div><div class="order-item-qty">${item.qty}x</div><div class="order-item-price">${subtotal.toFixed(2)} €</div><button class="delete-item-btn" data-index="${idx}">✗</button></div>`; });
+        cartItems.forEach((item, idx) => { 
+            let subtotal = item.price * item.qty; 
+            total += subtotal; 
+            html += `<div class="order-item"><div class="order-item-info"><div class="order-item-name">${item.name}</div><div class="order-item-size">${item.size}</div></div><div class="order-item-qty">${item.qty}x</div><div class="order-item-price">${subtotal.toFixed(2)} €</div><button class="delete-item-btn" data-index="${idx}">✗</button></div>`; 
+        });
         html += `</div><div class="order-total"><span>Gesamtbetrag</span><span>${total.toFixed(2)} €</span></div><div class="speaking-head"><span>🗣️</span> ${translations[currentLang].speakingHead}</div><div style="text-align:center; font-size:9px; margin-top:6px;">${translations[currentLang].thankYou}</div>`;
         content.innerHTML = html;
         document.querySelectorAll('.delete-item-btn').forEach(btn => btn.addEventListener('click', (e) => { e.stopPropagation(); removeFromCart(parseInt(btn.dataset.index)); }));
     }
+
     function showOrderSummary() { refreshOrderSummary(); document.getElementById("orderOverlay").classList.add("show"); }
     function closeOrderSummary() { document.getElementById("orderOverlay").classList.remove("show"); }
 
+    // ==================== VARIANTEN MODAL ====================
+    let currentVariantData = null;
+
+    function openVariantModal(itemName, size, variants, basePrice, hasPriceVariants) {
+        const overlay = document.getElementById('variantModalOverlay');
+        const title = document.getElementById('variantModalTitle');
+        const sub = document.getElementById('variantModalSub');
+        const container = document.getElementById('variantOptionsContainer');
+        
+        title.textContent = itemName;
+        sub.textContent = translations[currentLang].selectOption || 'Bitte wählen Sie eine Option';
+        container.innerHTML = '';
+        
+        currentVariantData = { itemName, size, basePrice, hasPriceVariants };
+        
+        variants.forEach(v => {
+            let priceMatch = v.match(/(\d+)/);
+            let price = priceMatch ? parseFloat(priceMatch[1]) : basePrice;
+            let label = v;
+            let subOptions = null;
+            
+            // Prüfen ob diese Option Unteroptionen hat
+            for (let [key, subs] of Object.entries(subOptionMap)) {
+                if (v.includes(key)) {
+                    subOptions = subs;
+                    break;
+                }
+            }
+            
+            if (subOptions) {
+                // Option mit Unteroptionen
+                let div = document.createElement('div');
+                div.className = 'variant-option has-sub';
+                div.innerHTML = `<div class="main-option"><span>${v}</span><span class="option-price">${price.toFixed(2).replace('.', ',')} €</span></div>`;
+                let subDiv = document.createElement('div');
+                subDiv.className = 'sub-dropdown';
+                subOptions.forEach(sub => {
+                    let subItem = document.createElement('div');
+                    subItem.className = 'sub-option';
+                    subItem.innerHTML = `<span class="sub-label">${sub}</span><span class="sub-price">${price.toFixed(2).replace('.', ',')} €</span>`;
+                    subItem.addEventListener('click', () => {
+                        addToCart(itemName, price, size, { variant: v, subOption: sub });
+                    });
+                    subDiv.appendChild(subItem);
+                });
+                div.appendChild(subDiv);
+                container.appendChild(div);
+            } else {
+                // Normale Option
+                let div = document.createElement('div');
+                div.className = 'variant-option';
+                div.innerHTML = `<span class="option-label">${v}</span><span class="option-price">${price.toFixed(2).replace('.', ',')} €</span>`;
+                div.addEventListener('click', () => {
+                    addToCart(itemName, price, size, { variant: v });
+                });
+                container.appendChild(div);
+            }
+        });
+        
+        overlay.classList.add('show');
+    }
+
+    function closeVariantModal() {
+        document.getElementById('variantModalOverlay').classList.remove('show');
+        currentVariantData = null;
+    }
+
+    // Modal schließen bei Klick außerhalb
+    document.getElementById('variantModalOverlay').addEventListener('click', function(e) {
+        if (e.target === this) {
+            closeVariantModal();
+        }
+    });
+
+    document.getElementById('variantModalClose').addEventListener('click', closeVariantModal);
+
+    // ==================== RENDER DRINKS ====================
     function renderDrinks() {
         let catNav = document.getElementById("categoryNav");
         catNav.innerHTML = "";
@@ -1273,148 +1370,319 @@
             }
         }
         document.getElementById("showAllCategoriesBtn").onclick = () => showAllCategories();
+        
         let html = "";
         for (let [key, cat] of Object.entries(drinksData)) {
             html += `<div class="category-section" data-category="${key}"><div class="category-title">${cat.title}</div><div class="drinks-grid">`;
             cat.items.forEach((item, idx) => {
                 let itemId = `${key}_${idx}`;
+                let hasVariants = item.hasVariants || false;
                 let hasPriceVariants = item.hasPriceVariants || false;
+                let isBottle = item.isBottle || false;
                 let requireSelection = item.requireSelection || hasPriceVariants || false;
-                let currentVariant = selectedVariants[itemId] || null;
                 let badge = item.desc && item.desc.match(/^\d/) ? `<span class="badge">${item.desc}</span>` : "";
                 let desc = item.desc && !item.desc.match(/^\d/) ? `<div class="drink-desc">${item.desc}</div>` : "";
                 let size = item.size || "0,4l";
                 
                 let displayPrice = "";
-                if (hasPriceVariants) {
-                    if (item.variants && item.variants.length > 0) {
-                        let firstPrice = item.variants[0].match(/(\d+)/);
-                        let lastPrice = item.variants[item.variants.length-1].match(/(\d+)/);
-                        if (firstPrice && lastPrice) {
-                            displayPrice = firstPrice[1] + " - " + lastPrice[1] + " €";
-                        } else if (firstPrice) {
-                            displayPrice = "ab " + firstPrice[1] + " €";
+                let minPrice = null, maxPrice = null;
+                if (hasPriceVariants && item.variants) {
+                    let prices = [];
+                    item.variants.forEach(v => {
+                        let match = v.match(/(\d+)/);
+                        if (match) prices.push(parseFloat(match[1]));
+                    });
+                    if (prices.length > 0) {
+                        minPrice = Math.min(...prices);
+                        maxPrice = Math.max(...prices);
+                        if (minPrice === maxPrice) {
+                            displayPrice = minPrice.toFixed(2).replace('.', ',') + " €";
+                        } else {
+                            displayPrice = minPrice.toFixed(2).replace('.', ',') + " - " + maxPrice.toFixed(2).replace('.', ',') + " €";
                         }
                     } else {
                         displayPrice = "---";
                     }
                 } else if (item.price !== undefined) {
                     displayPrice = item.price.toFixed(2).replace('.', ',') + " €";
+                    minPrice = item.price;
+                    maxPrice = item.price;
                 }
                 
-                let showOrderBtn = !requireSelection || (requireSelection && currentVariant !== null);
+                html += `<div class="drink-item"><div class="drink-info"><div class="drink-name">${item.name}${badge}</div>${desc}<div class="drink-size">${size}</div></div>`;
+                html += `<div class="drink-price" id="price-${itemId}">${displayPrice}</div>`;
+                html += `<div class="drink-actions">`;
                 
-                html += `<div class="drink-item"><div class="drink-info"><div class="drink-name">${item.name}${badge}</div>${desc}<div class="drink-size">${size}</div>`;
-                if (item.hasVariants && item.variants) {
-                    html += `<div class="variation-select" data-id="${itemId}" data-require-selection="${requireSelection}">`;
-                    item.variants.forEach(v => { 
-                        let isActive = (currentVariant === v) ? 'active' : '';
-                        html += `<button class="var-btn ${isActive}" data-value="${v}">${v}</button>`;
-                    });
-                    html += `</div>`;
+                // Bestell-Button
+                let btnClass = 'order-btn';
+                if (hasVariants || hasPriceVariants) {
+                    btnClass += ' has-variants';
                 }
-                html += `</div><div class="drink-price" id="price-${itemId}">${displayPrice}</div><div class="drink-actions"><button class="order-btn ${showOrderBtn ? 'visible' : ''}" data-id="${itemId}" data-name="${item.name}" data-price="${item.price || 0}" data-size="${size}" data-has-variants="${item.hasVariants}" data-variant="${currentVariant || ''}" data-require-selection="${requireSelection}" data-has-price-variants="${hasPriceVariants}">+</button></div></div>`;
+                
+                if (hasVariants || hasPriceVariants) {
+                    // Mit Varianten - öffnet Modal
+                    let variants = item.variants || [];
+                    let basePrice = item.price || 0;
+                    html += `<button class="${btnClass}" onclick="openVariantModal('${item.name}', '${size}', ${JSON.stringify(variants).replace(/"/g, '&quot;')}, ${basePrice}, ${hasPriceVariants})">+</button>`;
+                } else {
+                    // Ohne Varianten - direkt hinzufügen
+                    html += `<button class="${btnClass}" onclick="addToCart('${item.name}', ${item.price}, '${size}')">+</button>`;
+                }
+                
+                html += `</div></div>`;
             });
             html += `</div></div>`;
         }
         document.getElementById("drinksContainer").innerHTML = html;
-        
-        document.querySelectorAll(".variation-select").forEach(select => { 
-            let id = select.dataset.id; 
-            let requireSelection = select.dataset.requireSelection === "true";
-            select.querySelectorAll(".var-btn").forEach(btn => { 
-                btn.addEventListener("click", (e) => { 
-                    e.stopPropagation(); 
-                    select.querySelectorAll(".var-btn").forEach(b => b.classList.remove("active")); 
-                    btn.classList.add("active"); 
-                    selectedVariants[id] = btn.dataset.value; 
-                    let orderBtn = select.closest(".drink-item")?.querySelector(".order-btn"); 
-                    let priceEl = select.closest(".drink-item")?.querySelector(".drink-price");
-                    
-                    if (orderBtn) {
-                        orderBtn.setAttribute("data-variant", selectedVariants[id]);
-                        if (requireSelection) {
-                            let hasPriceVariants = orderBtn.dataset.hasPriceVariants === "true";
-                            if (hasPriceVariants) {
-                                let priceMatch = selectedVariants[id].match(/(\d+)/);
-                                if (priceMatch && priceEl) {
-                                    priceEl.textContent = parseFloat(priceMatch[1]).toFixed(2).replace('.', ',') + " €";
-                                }
-                                let priceMatch2 = selectedVariants[id].match(/(\d+)/);
-                                if (priceMatch2) {
-                                    orderBtn.setAttribute("data-price", parseFloat(priceMatch2[1]));
-                                }
-                            }
-                            orderBtn.classList.add("visible");
-                        }
-                    }
-                }); 
-            }); 
-        });
-        
-        document.querySelectorAll(".order-btn").forEach(btn => { 
-            btn.addEventListener("click", () => { 
-                let name = btn.dataset.name, 
-                    variant = btn.dataset.variant, 
-                    hasVariants = btn.dataset.hasVariants === "true",
-                    hasPriceVariants = btn.dataset.hasPriceVariants === "true",
-                    price = parseFloat(btn.dataset.price), 
-                    size = btn.dataset.size, 
-                    fullName = name; 
-                if (hasVariants && variant) {
-                    if (name === "Jacky" && variant === "Cola") fullName = "Jacky Cola"; 
-                    else if (name === "Jacky" && variant === "Apfel") fullName = "Jacky Apfel"; 
-                    else if (name === "Softdrinks (Cola, Fanta, Sprite)" && ["Cola","Fanta","Sprite"].includes(variant)) fullName = `${variant} 1,0l Flasche`;
-                    else if (variant === "Saft") fullName = `${name}saft`; 
-                    else if (variant === "Schorle") fullName = `${name}schorle`; 
-                    else if (variant === "Nektar") fullName = `${name}nektar`; 
-                    else if (variant === "spritzig") fullName = `Wasser (spritzig)`; 
-                    else if (variant === "still") fullName = `Wasser (still)`; 
-                    else if (hasPriceVariants) {
-                        let includeText = variant.replace(/\d+€\s*/, "");
-                        fullName = `${name} (${includeText})`;
-                        let priceMatch = variant.match(/(\d+)/);
-                        if (priceMatch) {
-                            price = parseFloat(priceMatch[1]);
-                        }
-                    }
-                    else fullName = `${name} ${variant}`; 
-                }
-                addToCart(fullName, price, size); 
-            }); 
-        });
     }
 
-    function renderAdminPanel() { document.getElementById("adminContent").innerHTML = '<div style="text-align:center;padding:20px;">🔧 Admin Panel - Hier können Sie Getränke bearbeiten</div>'; }
-    function openAdminPanel() { renderAdminPanel(); document.getElementById("adminOverlay").classList.add("show"); }
+    // ==================== ADMIN-FUNKTIONEN ====================
+    function renderAdminPanel() {
+        let html = `
+            <div style="margin-bottom: 20px;">
+                <button class="add-category-btn" onclick="addCategory()">➕ Neue Kategorie hinzufügen</button>
+                <button class="add-category-btn" style="background:#17a2b8;" onclick="resetToDefault()">↩️ Auf Standard zurücksetzen</button>
+            </div>
+        `;
+        
+        for (let [catKey, catData] of Object.entries(drinksData)) {
+            html += `
+                <div class="admin-category" data-category="${catKey}">
+                    <div class="admin-category-title">
+                        <span>${catData.title}</span>
+                        <button class="delete-admin-btn" onclick="deleteCategory('${catKey}')">🗑️ Kategorie löschen</button>
+                    </div>
+                    <div class="admin-table">
+                        <div class="admin-table-header">
+                            <span style="width:100px;">Name</span>
+                            <span style="width:60px;">Größe</span>
+                            <span style="width:65px;">Preis</span>
+                            <span style="width:120px;">Beschreibung</span>
+                            <span style="width:120px;">Varianten</span>
+                            <span style="width:100px;">Optionen</span>
+                            <span style="width:30px;">Aktion</span>
+                        </div>
+            `;
+            
+            catData.items.forEach((item, idx) => {
+                const variantsStr = item.variants ? item.variants.join(', ') : '';
+                const isBottle = item.isBottle ? 'checked' : '';
+                const hasPriceVariants = item.hasPriceVariants ? 'checked' : '';
+                const requireSelection = item.requireSelection ? 'checked' : '';
+                const hasVariants = item.hasVariants ? 'checked' : '';
+                
+                html += `
+                    <div class="admin-item" data-index="${idx}">
+                        <input class="item-name" value="${item.name}" placeholder="Name">
+                        <input class="item-size" value="${item.size || ''}" placeholder="Größe">
+                        <input class="item-price" value="${item.price || ''}" placeholder="Preis" type="number" step="0.50">
+                        <input class="item-desc" value="${item.desc || ''}" placeholder="Beschreibung">
+                        <input class="item-variants" value="${variantsStr}" placeholder="Varianten (kommagetrennt)">
+                        <div style="display:flex;gap:4px;flex-wrap:wrap;font-size:10px;">
+                            <label><input type="checkbox" class="item-has-variants" ${hasVariants}> Varianten</label>
+                            <label><input type="checkbox" class="item-has-price-variants" ${hasPriceVariants}> Preisvar.</label>
+                            <label><input type="checkbox" class="item-is-bottle" ${isBottle}> Flasche</label>
+                            <label><input type="checkbox" class="item-require-selection" ${requireSelection}> Auswahl</label>
+                        </div>
+                        <button class="delete-admin-btn" onclick="deleteItem('${catKey}', ${idx})">✗</button>
+                    </div>
+                `;
+            });
+            
+            html += `
+                        <button class="add-item-btn" onclick="addItem('${catKey}')">+ Artikel hinzufügen</button>
+                    </div>
+                </div>
+            `;
+        }
+        
+        document.getElementById("adminContent").innerHTML = html;
+    }
+
+    function saveAllData() {
+        const categories = document.querySelectorAll('.admin-category');
+        categories.forEach(catEl => {
+            const catKey = catEl.dataset.category;
+            const items = [];
+            catEl.querySelectorAll('.admin-item').forEach(itemEl => {
+                const name = itemEl.querySelector('.item-name').value;
+                const size = itemEl.querySelector('.item-size').value;
+                const price = parseFloat(itemEl.querySelector('.item-price').value);
+                const desc = itemEl.querySelector('.item-desc').value;
+                const variantsStr = itemEl.querySelector('.item-variants').value;
+                const variants = variantsStr ? variantsStr.split(',').map(v => v.trim()).filter(v => v) : null;
+                const hasVariants = itemEl.querySelector('.item-has-variants').checked;
+                const hasPriceVariants = itemEl.querySelector('.item-has-price-variants').checked;
+                const isBottle = itemEl.querySelector('.item-is-bottle').checked;
+                const requireSelection = itemEl.querySelector('.item-require-selection').checked;
+                
+                if (name) {
+                    const item = { name, size, price, desc };
+                    if (variants && variants.length > 0) {
+                        item.variants = variants;
+                        item.hasVariants = hasVariants || variants.length > 0;
+                        if (hasPriceVariants) item.hasPriceVariants = true;
+                        if (isBottle) item.isBottle = true;
+                        if (requireSelection || hasPriceVariants) item.requireSelection = true;
+                    }
+                    items.push(item);
+                }
+            });
+            if (drinksData[catKey]) {
+                drinksData[catKey].items = items;
+            }
+        });
+        
+        localStorage.setItem('diamondDrinksData', JSON.stringify(drinksData));
+        showToast(translations[currentLang].dataSaved);
+        setTimeout(() => location.reload(), 1500);
+    }
+
+    function addCategory() {
+        const name = prompt('Name der neuen Kategorie (z.B. "🍺 BIER"):');
+        if (!name) return;
+        const key = 'kat_' + Date.now();
+        drinksData[key] = { title: name, items: [] };
+        renderAdminPanel();
+    }
+
+    function deleteCategory(key) {
+        if (!confirm(`Kategorie "${drinksData[key]?.title || key}" wirklich löschen?`)) return;
+        delete drinksData[key];
+        renderAdminPanel();
+    }
+
+    function addItem(catKey) {
+        if (!drinksData[catKey]) return;
+        drinksData[catKey].items.push({ name: "Neuer Artikel", size: "0,3l", price: 5.00 });
+        renderAdminPanel();
+    }
+
+    function deleteItem(catKey, index) {
+        if (!drinksData[catKey]) return;
+        drinksData[catKey].items.splice(index, 1);
+        renderAdminPanel();
+    }
+
+    function resetToDefault() {
+        if (!confirm('Alle Daten auf die Standardwerte zurücksetzen?')) return;
+        localStorage.removeItem('diamondDrinksData');
+        location.reload();
+    }
+
+    function openAdminPanel() { 
+        renderAdminPanel(); 
+        document.getElementById("adminOverlay").classList.add("show"); 
+    }
+
     function closeAdminPanel() { document.getElementById("adminOverlay").classList.remove("show"); }
-    function saveAllData() { showToast(translations[currentLang].dataSaved); setTimeout(() => location.reload(), 1500); }
 
-    let themeClickCount = 0, themeTimer = null, adminClickCount = 0, adminTimer = null;
+    // ==================== PIN & SECURITY ====================
     const ADMIN_PIN = "4433";
-    function showPinDialog() { document.getElementById("pinOverlay").classList.add("show"); document.getElementById("pinInput").focus(); }
+    let themeClickCount = 0, adminClickCount = 0;
+    let themeTimer = null, adminTimer = null;
+
+    function showPinDialog() { 
+        document.getElementById("pinOverlay").classList.add("show"); 
+        document.getElementById("pinInput").value = '';
+        document.getElementById("pinInput").focus(); 
+        document.getElementById("pinError").textContent = '';
+    }
+
     function hidePinDialog() { document.getElementById("pinOverlay").classList.remove("show"); }
-    function checkPin() { if (document.getElementById("pinInput").value === ADMIN_PIN) { hidePinDialog(); openAdminPanel(); } else { document.getElementById("pinError").textContent = "❌ Falsche PIN!"; document.getElementById("pinInput").value = ""; } }
 
-    document.getElementById("themeTriggerHeader").addEventListener("click", () => { themeClickCount++; if (themeTimer) clearTimeout(themeTimer); themeTimer = setTimeout(() => { themeClickCount = 0; }, 800); if (themeClickCount >= 2) { themeClickCount = 0; toggleTheme(); } });
-    document.getElementById("adminTriggerText").addEventListener("click", (e) => { e.stopPropagation(); adminClickCount++; if (adminTimer) clearTimeout(adminTimer); adminTimer = setTimeout(() => { adminClickCount = 0; }, 1000); if (adminClickCount >= 10) { adminClickCount = 0; showPinDialog(); } });
-    document.querySelectorAll(".lang-btn").forEach(btn => btn.addEventListener("click", () => updateLanguage(btn.getAttribute("data-lang"))));
-    document.getElementById("resetCartBtn").addEventListener("click", resetCartWithConfirm);
-    document.getElementById("orderCartBtn").addEventListener("click", showOrderSummary);
-    document.getElementById("closeOrderBtn").addEventListener("click", closeOrderSummary);
-    document.getElementById("orderOverlay").addEventListener("click", (e) => { if (e.target === document.getElementById("orderOverlay")) closeOrderSummary(); });
-    document.getElementById("closeAdminBtn").addEventListener("click", closeAdminPanel);
-    document.getElementById("saveAllDataBtn").addEventListener("click", saveAllData);
-    document.getElementById("pinSubmitBtn").addEventListener("click", checkPin);
-    document.getElementById("pinCancelBtn").addEventListener("click", hidePinDialog);
-    document.getElementById("pinInput").addEventListener("keypress", (e) => { if (e.key === "Enter") checkPin(); });
-    document.getElementById("confirmYesBtn").addEventListener("click", executeResetCart);
-    document.getElementById("confirmNoBtn").addEventListener("click", cancelResetCart);
-    document.getElementById("confirmOverlay").addEventListener("click", (e) => { if (e.target === document.getElementById("confirmOverlay")) cancelResetCart(); });
+    function checkPin() { 
+        if (document.getElementById("pinInput").value === ADMIN_PIN) { 
+            hidePinDialog(); 
+            openAdminPanel(); 
+        } else { 
+            document.getElementById("pinError").textContent = "❌ Falsche PIN!"; 
+            document.getElementById("pinInput").value = ""; 
+        } 
+    }
 
-    if (localStorage.getItem('theme') === 'dark') document.body.classList.add('dark');
-    renderDrinks();
-    showAllCategories();
+    // ==================== INIT ====================
+    function init() {
+        const savedData = localStorage.getItem('diamondDrinksData');
+        if (savedData) {
+            try {
+                const parsed = JSON.parse(savedData);
+                for (let key of Object.keys(drinksDataMultilang.de)) {
+                    if (parsed[key]) {
+                        drinksData[key].items = parsed[key].items || drinksData[key].items;
+                    }
+                }
+                for (let key of Object.keys(parsed)) {
+                    if (!drinksData[key] && parsed[key]) {
+                        drinksData[key] = parsed[key];
+                    }
+                }
+            } catch (e) {}
+        }
+        
+        loadCart();
+        if (localStorage.getItem('theme') === 'dark') document.body.classList.add('dark');
+        
+        renderDrinks();
+        showAllCategories();
+        updateCartUI();
+        
+        // Event-Listener
+        document.getElementById("themeTriggerHeader").addEventListener("click", () => { 
+            themeClickCount++; 
+            if (themeTimer) clearTimeout(themeTimer); 
+            themeTimer = setTimeout(() => { themeClickCount = 0; }, 800); 
+            if (themeClickCount >= 2) { themeClickCount = 0; toggleTheme(); } 
+        });
+        
+        document.getElementById("adminTriggerText").addEventListener("click", (e) => { 
+            e.stopPropagation(); 
+            adminClickCount++; 
+            if (adminTimer) clearTimeout(adminTimer); 
+            adminTimer = setTimeout(() => { adminClickCount = 0; }, 1000); 
+            if (adminClickCount >= 10) { adminClickCount = 0; showPinDialog(); } 
+        });
+        
+        document.querySelectorAll(".lang-btn").forEach(btn => btn.addEventListener("click", () => updateLanguage(btn.getAttribute("data-lang"))));
+        document.getElementById("resetCartBtn").addEventListener("click", resetCartWithConfirm);
+        document.getElementById("orderCartBtn").addEventListener("click", showOrderSummary);
+        document.getElementById("closeOrderBtn").addEventListener("click", closeOrderSummary);
+        document.getElementById("orderOverlay").addEventListener("click", (e) => { if (e.target === document.getElementById("orderOverlay")) closeOrderSummary(); });
+        document.getElementById("closeAdminBtn").addEventListener("click", closeAdminPanel);
+        document.getElementById("saveAllDataBtn").addEventListener("click", saveAllData);
+        document.getElementById("pinSubmitBtn").addEventListener("click", checkPin);
+        document.getElementById("pinCancelBtn").addEventListener("click", hidePinDialog);
+        document.getElementById("pinInput").addEventListener("keypress", (e) => { if (e.key === "Enter") checkPin(); });
+        document.getElementById("confirmYesBtn").addEventListener("click", executeResetCart);
+        document.getElementById("confirmNoBtn").addEventListener("click", cancelResetCart);
+        document.getElementById("confirmOverlay").addEventListener("click", (e) => { if (e.target === document.getElementById("confirmOverlay")) cancelResetCart(); });
+        
+        // Globale Funktionen
+        window.addCategory = addCategory;
+        window.deleteCategory = deleteCategory;
+        window.addItem = addItem;
+        window.deleteItem = deleteItem;
+        window.resetToDefault = resetToDefault;
+        window.renderAdminPanel = renderAdminPanel;
+        window.saveAllData = saveAllData;
+        window.openAdminPanel = openAdminPanel;
+        window.closeAdminPanel = closeAdminPanel;
+        window.showPinDialog = showPinDialog;
+        window.hidePinDialog = hidePinDialog;
+        window.checkPin = checkPin;
+        window.selectCategory = selectCategory;
+        window.showAllCategories = showAllCategories;
+        window.removeFromCart = removeFromCart;
+        window.executeResetCart = executeResetCart;
+        window.cancelResetCart = cancelResetCart;
+        window.showOrderSummary = showOrderSummary;
+        window.closeOrderSummary = closeOrderSummary;
+        window.openVariantModal = openVariantModal;
+        window.closeVariantModal = closeVariantModal;
+        window.addToCart = addToCart;
+    }
+
+    init();
 </script>
 </body>
 </html>
