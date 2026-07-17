@@ -91,7 +91,7 @@
             font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
             background: var(--bg-primary);
             color: var(--text-primary);
-            padding-bottom: 85px;
+            padding-bottom: 75px;
             touch-action: pan-x pan-y;
             overflow-x: hidden;
         }
@@ -398,29 +398,43 @@
             right: 0;
             background: var(--cart-bg);
             border-top: 1px solid rgba(255,255,255,0.15);
-            padding: 10px 16px;
+            padding: 10px 12px;
             display: flex;
             justify-content: space-between;
             align-items: center;
             z-index: 200;
+            flex-wrap: wrap;
+            gap: 6px;
+        }
+        .cart-bar .cart-left {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            flex: 1;
+            min-width: 100px;
         }
         .cart-bar span {
-            font-size: 14px;
+            font-size: 13px;
             font-weight: 600;
             cursor: pointer;
-            padding: 5px 8px;
+            padding: 4px 6px;
             border-radius: 30px;
             color: var(--cart-text);
             white-space: nowrap;
         }
-        .cart-buttons { display: flex; gap: 10px; }
+        .cart-buttons { 
+            display: flex; 
+            gap: 8px;
+            flex-wrap: wrap;
+            justify-content: flex-end;
+        }
         .cart-btn {
             border: none;
-            padding: 7px 14px;
+            padding: 6px 12px;
             border-radius: 40px;
             font-weight: 600;
             cursor: pointer;
-            font-size: 12px;
+            font-size: 11px;
             white-space: nowrap;
         }
         .cart-btn.reset { background: var(--reset-btn); color: white; }
@@ -793,6 +807,25 @@
         .category-section { animation: fadeIn 0.25s ease-out; }
         .variant-modal { animation: fadeIn 0.25s ease-out; }
 
+        /* Admin-Button-Container */
+        .admin-btn-group {
+            display: flex;
+            gap: 10px;
+            flex-wrap: wrap;
+            margin-bottom: 20px;
+        }
+        .admin-btn-group button {
+            flex: 1;
+            min-width: 120px;
+        }
+        .admin-btn-group .btn-download {
+            background: #007bff;
+            color: white;
+        }
+        .admin-btn-group .btn-download:hover {
+            background: #0069d9;
+        }
+
         @media print {
             .cart-bar, .header, .categories-wrapper, .lang-switcher, .info-note, #splashScreen { display: none !important; }
             body { padding-bottom: 0 !important; background: white !important; }
@@ -807,6 +840,34 @@
             .splash-btn-main { padding: 14px 36px; font-size: 14px; }
             .splash-social a { width: 48px; height: 48px; }
             .splash-social a img { width: 24px; height: 24px; }
+            
+            .cart-bar {
+                padding: 8px 10px;
+            }
+            .cart-bar span {
+                font-size: 12px;
+            }
+            .cart-btn {
+                font-size: 10px;
+                padding: 5px 10px;
+            }
+            .cart-buttons {
+                gap: 5px;
+            }
+        }
+
+        @media (max-width: 380px) {
+            .cart-bar .cart-left {
+                min-width: 70px;
+            }
+            .cart-bar span {
+                font-size: 11px;
+                padding: 3px 4px;
+            }
+            .cart-btn {
+                font-size: 9px;
+                padding: 4px 8px;
+            }
         }
     </style>
 </head>
@@ -863,7 +924,10 @@
     </div>
 
     <div class="cart-bar">
-        <span id="adminTriggerText">🛒 <span id="cartCount">0</span> <span id="cartItemsText">Artikel</span></span>
+        <div class="cart-left">
+            <span id="adminTriggerText">🛒 <span id="cartCount">0</span></span>
+            <span id="cartItemsText" style="font-weight:400;opacity:0.7;font-size:11px;">Artikel</span>
+        </div>
         <div class="cart-buttons">
             <button class="cart-btn reset" id="resetCartBtn"><span id="resetBtnText">Zurücksetzen</span></button>
             <button class="cart-btn order" id="orderCartBtn"><span id="orderBtnText">Bestellen</span></button>
@@ -1547,9 +1611,10 @@
     // ==================== ADMIN-FUNKTIONEN ====================
     function renderAdminPanel() {
         let html = `
-            <div style="margin-bottom: 20px;">
-                <button class="add-category-btn" onclick="addCategory()">➕ Neue Kategorie hinzufügen</button>
-                <button class="add-category-btn" style="background:#17a2b8;" onclick="resetToDefault()">↩️ Auf Standard zurücksetzen</button>
+            <div class="admin-btn-group">
+                <button class="add-category-btn" onclick="addCategory()">➕ Neue Kategorie</button>
+                <button class="add-category-btn" style="background:#17a2b8;" onclick="resetToDefault()">↩️ Standard</button>
+                <button class="add-category-btn btn-download" onclick="downloadHTML()">📥 HTML herunterladen</button>
             </div>
         `;
         
@@ -1605,6 +1670,32 @@
         }
         
         document.getElementById("adminContent").innerHTML = html;
+    }
+
+    // ==================== DOWNLOAD FUNKTION ====================
+    function downloadHTML() {
+        // Aktuelle Daten speichern
+        localStorage.setItem('diamondDrinksData', JSON.stringify(drinksData));
+        
+        // Die komplette HTML-Datei als String holen
+        const htmlContent = document.documentElement.outerHTML;
+        
+        // Blob erstellen
+        const blob = new Blob([
+            '<!DOCTYPE html>\n' + htmlContent
+        ], { type: 'text/html;charset=utf-8' });
+        
+        // Download-URL erstellen
+        const url = URL.createObjectURL(blob);
+        const a = document.createElement('a');
+        a.href = url;
+        a.download = 'index.html';
+        document.body.appendChild(a);
+        a.click();
+        document.body.removeChild(a);
+        URL.revokeObjectURL(url);
+        
+        showToast('📥 index.html wird heruntergeladen!');
     }
 
     function saveAllData() {
@@ -1878,6 +1969,7 @@
         window.addToCart = addToCart;
         window.toggleTheme = toggleTheme;
         window.updateLanguage = updateLanguage;
+        window.downloadHTML = downloadHTML;
     }
 
     init();
