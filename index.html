@@ -96,7 +96,6 @@
             overflow-x: hidden;
         }
 
-        /* ==================== SPLASH SCREEN ==================== */
         #splashScreen {
             position: fixed;
             top: 0;
@@ -214,7 +213,6 @@
             letter-spacing: 2px;
         }
 
-        /* ==================== HAUPT-APP ==================== */
         #mainApp {
             opacity: 0;
             transition: opacity 0.8s ease;
@@ -807,7 +805,6 @@
         .category-section { animation: fadeIn 0.25s ease-out; }
         .variant-modal { animation: fadeIn 0.25s ease-out; }
 
-        /* Admin-Button-Container */
         .admin-btn-group {
             display: flex;
             gap: 10px;
@@ -873,7 +870,6 @@
 </head>
 <body>
 
-<!-- ==================== SPLASH SCREEN ==================== -->
 <div id="splashScreen">
     <div class="splash-logo">CLUB · LOUNGE · COCKTAIL BAR</div>
     <div class="splash-title">DIAMOND</div>
@@ -891,7 +887,6 @@
     <div class="splash-footer">© CLUB DIAMOND</div>
 </div>
 
-<!-- ==================== HAUPT-APP ==================== -->
 <div id="mainApp" class="hidden">
     <div class="header" id="themeTriggerHeader">
         <div class="logo">CLUB · LOUNGE · COCKTAIL BAR</div>
@@ -934,7 +929,6 @@
         </div>
     </div>
 
-    <!-- Varianten-Modal -->
     <div class="variant-modal-overlay" id="variantModalOverlay">
         <div class="variant-modal" id="variantModal">
             <div class="variant-modal-title" id="variantModalTitle">Auswählen</div>
@@ -952,7 +946,6 @@
 </div>
 
 <script>
-    // ==================== SPLASH SCREEN LOGIC ====================
     document.addEventListener('DOMContentLoaded', function() {
         const splash = document.getElementById('splashScreen');
         const mainApp = document.getElementById('mainApp');
@@ -968,7 +961,6 @@
         });
     });
 
-    // ==================== MULTILANGUAGE TRANSLATIONS ====================
     const translations = {
         de: { 
             cartItems: "Artikel", resetBtn: "Zurücksetzen", orderBtn: "Bestellen", 
@@ -1008,17 +1000,17 @@
         }
     };
 
-    // ==================== GETRÄNKEDATEN ====================
+    // ==================== GETRÄNKEDATEN (AKTUALISIERT) ====================
     const drinksDataMultilang = {
         de: {
             bier: {
                 title: "🍺 BIER",
                 items: [
-                    { name: "Heineken", size: "0,25l", price: 4.00 },
-                    { name: "Heineken Alkoholfrei", size: "0,33l", price: 4.50 },
-                    { name: "Corona Bier", size: "0,33l", price: 4.50 },
-                    { name: "Hefe Weizen", size: "0,5l", price: 4.50 },
-                    { name: "Saltos (Verschiedene Sorten)", size: "0,33l", price: 4.50 }
+                    { name: "Heineken", size: "0,25l", price: 4.50 },
+                    { name: "Heineken Alkoholfrei", size: "0,33l", price: 5.00 },
+                    { name: "Corona Bier", size: "0,33l", price: 5.00 },
+                    { name: "Hefe Weizen", size: "0,5l", price: 5.50 },
+                    { name: "Saltos (Verschiedene Sorten)", size: "0,33l", price: 5.00 }
                 ]
             },
             softdrinks: {
@@ -1034,66 +1026,66 @@
                     { name: "Ginger Ale", size: "0,3l", price: 3.50, desc: "2" },
                     { name: "Wild Berry", size: "0,3l", price: 3.50, desc: "2" },
                     { name: "Energy", size: "0,3l", price: 4.00, desc: "1,2,3,4,6" },
-                    { name: "Red Bull (Verschiedene Sorten)", size: "0,25l", price: 4.50, desc: "1,2,3,4,6" }
+                    { name: "Red Bull (Verschiedene Sorten)", size: "0,25l", price: 5.00, desc: "1,2,3,4,6" }
                 ]
             },
             saefte: {
                 title: "🧃 SÄFTE",
                 items: [
-                    { name: "Kirschen", size: "0,25l", price: 4.00, hasVariants: true, variants: ["Nektar", "Schorle"], requireSelection: true },
-                    { name: "Banane", size: "0,25l", price: 4.00, hasVariants: true, variants: ["Nektar", "Schorle"], requireSelection: true },
-                    { name: "Johannisbeere", size: "0,25l", price: 4.00, hasVariants: true, variants: ["Nektar", "Schorle"], requireSelection: true },
-                    { name: "Apfel", size: "0,25l", price: 4.00, hasVariants: true, variants: ["Saft", "Schorle"], requireSelection: true },
-                    { name: "Orange", size: "0,25l", price: 4.00, hasVariants: true, variants: ["Saft", "Schorle"], requireSelection: true },
-                    { name: "Maracuja", size: "0,25l", price: 4.00, hasVariants: true, variants: ["Nektar", "Schorle"], requireSelection: true },
-                    { name: "Ananas", size: "0,25l", price: 4.00, hasVariants: true, variants: ["Saft", "Schorle"], requireSelection: true },
-                    { name: "Cranberry", size: "0,25l", price: 4.00, hasVariants: true, variants: ["Saft", "Schorle"], requireSelection: true }
+                    { name: "Kirschen", size: "0,33l", price: 4.00, hasVariants: true, variants: ["Nektar", "Schorle"], requireSelection: true },
+                    { name: "Banane", size: "0,33l", price: 4.00, hasVariants: true, variants: ["Nektar", "Schorle"], requireSelection: true },
+                    { name: "Johannisbeere", size: "0,33l", price: 4.00, hasVariants: true, variants: ["Nektar", "Schorle"], requireSelection: true },
+                    { name: "Apfel", size: "0,33l", price: 4.00, hasVariants: true, variants: ["Saft", "Schorle"], requireSelection: true },
+                    { name: "Orange", size: "0,33l", price: 4.00, hasVariants: true, variants: ["Saft", "Schorle"], requireSelection: true },
+                    { name: "Maracuja", size: "0,33l", price: 4.00, hasVariants: true, variants: ["Nektar", "Schorle"], requireSelection: true },
+                    { name: "Ananas", size: "0,33l", price: 4.00, hasVariants: true, variants: ["Saft", "Schorle"], requireSelection: true },
+                    { name: "Cranberry", size: "0,33l", price: 4.00, hasVariants: true, variants: ["Saft", "Schorle"], requireSelection: true }
                 ]
             },
             cocktails: {
                 title: "🍹 COCKTAILS",
                 items: [
-                    { name: "Daiquiri", desc: "Weißer Rum, Zitronensaft, Erdbeer Sirup", size: "0,4l", price: 10.00 },
-                    { name: "Lady Killer", desc: "Gin, Triple Sec, Peach Tree, Maracuja, Ananas", size: "0,4l", price: 10.00 },
-                    { name: "Caipirinha", desc: "Limette, Lime Juice, Brauner Zucker, Cachaca", size: "0,4l", price: 10.00 },
-                    { name: "Cuba Libre", desc: "Limetten, Rum (Havanna), Rohrzucker, Cola", size: "0,4l", price: 10.00 },
-                    { name: "Touch Down", desc: "Vodka, Triple Sec, Zitrone, Ananas, Maracuja, Grenadine", size: "0,4l", price: 10.00 },
-                    { name: "Mai Tai", desc: "Zitronensaft, Lime Juice, Ananassaft, Rum, Brandy, Havanna", size: "0,4l", price: 10.00 },
-                    { name: "Zombie", desc: "Zitros, Lime Juice, Ceepers, Myers Rum, Havanna, Ananassaft, Orangensaft", size: "0,4l", price: 10.00 },
-                    { name: "Sex on the Beach", desc: "Orangensaft, Ananassaft, Vodka, Peachtree, Zitro", size: "0,4l", price: 10.00 },
-                    { name: "White Russian", desc: "Vodka, Kahlua, Sahne", size: "0,4l", price: 10.00 },
-                    { name: "Long Island", desc: "Zitro, Lime Juice, Vodka, Tequila, Havanna, Gin, Triple Sec", size: "0,4l", price: 10.00 },
-                    { name: "Pina Colada", desc: "Cocossirup, Myers Rum, Havanna, Ananassaft", size: "0,4l", price: 10.00 },
-                    { name: "Peach Colada", desc: "Rum, Peach Tree, Ananas, Pfirsich, Kokos, Sahne", size: "0,4l", price: 10.00 },
-                    { name: "Americano", desc: "Campari, Vermuth bianco", size: "0,4l", price: 10.00 },
-                    { name: "Mojito", desc: "Limette, Minze, Rohrzucker, Sodawasser, Weißer Rum", size: "0,4l", price: 10.00 },
-                    { name: "Ocean Breeze", desc: "Weißer Rum, Amaretto, Curacao Blue, Ananassaft, Sodawasser", size: "0,4l", price: 10.00 },
-                    { name: "Diamond Special", desc: "Gin, Vodka, Tequila Silver, Triple Sec, Grenadine, Maracuja Saft, Zitrone, Lime", size: "0,4l", price: 10.00 }
+                    { name: "Daiquiri", desc: "Weißer Rum, Zitronensaft, Erdbeer Sirup", size: "0,3l", price: 12.00 },
+                    { name: "Lady Killer", desc: "Gin, Triple Sec, Peach Tree, Maracuja, Ananas", size: "0,3l", price: 12.00 },
+                    { name: "Caipirinha", desc: "Limette, Lime Juice, Brauner Zucker, Cachaca", size: "0,3l", price: 12.00 },
+                    { name: "Cuba Libre", desc: "Limetten, Rum (Havanna), Rohrzucker, Cola", size: "0,3l", price: 12.00 },
+                    { name: "Touch Down", desc: "Vodka, Triple Sec, Zitrone, Ananas, Maracuja, Grenadine", size: "0,3l", price: 12.00 },
+                    { name: "Mai Tai", desc: "Zitronensaft, Lime Juice, Ananassaft, Rum, Brandy, Havanna", size: "0,3l", price: 12.00 },
+                    { name: "Zombie", desc: "Zitros, Lime Juice, Ceepers, Myers Rum, Havanna, Ananassaft, Orangensaft", size: "0,3l", price: 12.00 },
+                    { name: "Sex on the Beach", desc: "Orangensaft, Ananassaft, Vodka, Peachtree, Zitro", size: "0,3l", price: 12.00 },
+                    { name: "White Russian", desc: "Vodka, Kahlua, Sahne", size: "0,3l", price: 12.00 },
+                    { name: "Long Island", desc: "Zitro, Lime Juice, Vodka, Tequila, Havanna, Gin, Triple Sec", size: "0,3l", price: 12.00 },
+                    { name: "Pina Colada", desc: "Cocossirup, Myers Rum, Havanna, Ananassaft", size: "0,3l", price: 12.00 },
+                    { name: "Peach Colada", desc: "Rum, Peach Tree, Ananas, Pfirsich, Kokos, Sahne", size: "0,3l", price: 12.00 },
+                    { name: "Americano", desc: "Campari, Vermuth bianco", size: "0,3l", price: 12.00 },
+                    { name: "Mojito", desc: "Limette, Minze, Rohrzucker, Sodawasser, Weißer Rum", size: "0,3l", price: 12.00 },
+                    { name: "Ocean Breeze", desc: "Weißer Rum, Amaretto, Curacao Blue, Ananassaft, Sodawasser", size: "0,3l", price: 12.00 },
+                    { name: "Diamond Special", desc: "Gin, Vodka, Tequila Silver, Triple Sec, Grenadine, Maracuja Saft, Zitrone, Lime", size: "0,3l", price: 12.00 }
                 ]
             },
             cocktails_alkoholfrei: {
                 title: "✨ ALKOHOLFREIE COCKTAILS",
                 items: [
-                    { name: "Coconut Kiss", desc: "Cocos, Sahne, Grenadine, Ananassaft", size: "0,4l", price: 9.00 },
-                    { name: "Virgin Capi", desc: "Limette, Lime Juice, Brauner Zucker, Ginger Ale", size: "0,4l", price: 9.00 },
-                    { name: "Diamond Special Fresh", desc: "Ananas, Orange, Zitrone, Grenadine", size: "0,4l", price: 9.00 },
-                    { name: "Exotik", desc: "Ananas, Orange, Zitrone, Minze Sirup", size: "0,4l", price: 9.00 },
-                    { name: "Mojito (alkoholfrei)", desc: "Limette, Minze, Rohrzucker, Tonic Wasser, Sodawasser", size: "0,4l", price: 9.00 },
-                    { name: "Caipirinha (alkoholfrei)", desc: "Limette, Rohrzucker, Ginger Ale", size: "0,4l", price: 9.00 },
-                    { name: "Cinderella", desc: "Orangensaft, Ananassaft, Kokossirup, Sahne, Grenadine", size: "0,4l", price: 9.00 }
+                    { name: "Coconut Kiss", desc: "Cocos, Sahne, Grenadine, Ananassaft", size: "0,3l", price: 12.00 },
+                    { name: "Virgin Capi", desc: "Limette, Lime Juice, Brauner Zucker, Ginger Ale", size: "0,3l", price: 12.00 },
+                    { name: "Diamond Special Fresh", desc: "Ananas, Orange, Zitrone, Grenadine", size: "0,3l", price: 12.00 },
+                    { name: "Exotik", desc: "Ananas, Orange, Zitrone, Minze Sirup", size: "0,3l", price: 12.00 },
+                    { name: "Mojito (alkoholfrei)", desc: "Limette, Minze, Rohrzucker, Tonic Wasser, Sodawasser", size: "0,3l", price: 12.00 },
+                    { name: "Caipirinha (alkoholfrei)", desc: "Limette, Rohrzucker, Ginger Ale", size: "0,3l", price: 12.00 },
+                    { name: "Cinderella", desc: "Orangensaft, Ananassaft, Kokossirup, Sahne, Grenadine", size: "0,3l", price: 12.00 }
                 ]
             },
             longdrinks: {
                 title: "🥃 LONGDRINKS",
                 items: [
-                    { name: "Malibu", size: "4cl", price: 9.00, hasVariants: true, variants: ["Maracuja", "Kirsch"], requireSelection: true },
-                    { name: "Jacky", size: "4cl", price: 9.00, hasVariants: true, variants: ["Cola", "Apfel"], desc: "1,2", requireSelection: true },
-                    { name: "Asbach Cola", desc: "1,2", size: "4cl", price: 9.00 },
-                    { name: "Captain Morgan Cola", desc: "1,2", size: "4cl", price: 9.00 },
-                    { name: "Gin", size: "4cl", price: 9.00, hasVariants: true, variants: ["Tonic", "Russian Wild Berry"], requireSelection: true },
-                    { name: "Jägermeister Energy", desc: "1,2,3,4,6", size: "4cl", price: 9.00 },
-                    { name: "Vodka Energy", desc: "1,2,3,4,6", size: "4cl", price: 9.00 },
-                    { name: "Vodka", size: "4cl", price: 9.00, hasVariants: true, variants: ["Lemon", "Orange"], desc: "3", requireSelection: true }
+                    { name: "Malibu", size: "4cl", price: 10.00, hasVariants: true, variants: ["Maracuja", "Kirsch"], requireSelection: true },
+                    { name: "Jacky", size: "4cl", price: 10.00, hasVariants: true, variants: ["Cola", "Apfel"], desc: "1,2", requireSelection: true },
+                    { name: "Asbach Cola", desc: "1,2", size: "4cl", price: 10.00 },
+                    { name: "Captain Morgan Cola", desc: "1,2", size: "4cl", price: 10.00 },
+                    { name: "Gin", size: "4cl", price: 10.00, hasVariants: true, variants: ["Tonic", "Russian Wild Berry"], requireSelection: true },
+                    { name: "Jägermeister Energy", desc: "1,2,3,4,6", size: "4cl", price: 10.00 },
+                    { name: "Vodka Energy", desc: "1,2,3,4,6", size: "4cl", price: 10.00 },
+                    { name: "Vodka", size: "4cl", price: 10.00, hasVariants: true, variants: ["Lemon", "Orange"], desc: "3", requireSelection: true }
                 ]
             },
             shots: {
@@ -1110,16 +1102,19 @@
             sekt: {
                 title: "🥂 SEKT & WEIN",
                 items: [
-                    { name: "Scavi & Ray Prosecco", size: "0,2l", price: 6.00 },
+                    { name: "Scavi & Ray Prosecco", size: "0,2l", price: 6.50 },
                     { name: "Scavi & Ray Ice Prestige", size: "0,2l", price: 7.00 },
-                    { name: "Aperol Spritz", size: "0,2l", price: 7.00 },
-                    { name: "Hugo", size: "0,2l", price: 7.00 },
+                    { name: "Aperol Spritz", size: "0,2l", price: 8.00 },
+                    { name: "Hugo", size: "0,2l", price: 8.00 },
+                    { name: "Sapphire Spritz", size: "0,2l", price: 8.00 },
+                    { name: "Ruby Fizz", size: "0,2l", price: 8.00 },
+                    { name: "Aperol Suprise", size: "0,2l", price: 8.00 },
                     { name: "Scavi & Ray IL Bianco", size: "0,75l", price: 35.00 },
                     { name: "Scavi & Ray IL Rosso", size: "0,75l", price: 35.00 },
                     { name: "Scavi & Ray IL Rosato", size: "0,75l", price: 35.00 },
-                    { name: "Rotwein", size: "0,2l", price: 6.00 },
-                    { name: "Weißwein", size: "0,2l", price: 6.00 },
-                    { name: "Lille Berry", size: "0,2l", price: 7.00 }
+                    { name: "Rotwein", size: "0,2l", price: 7.00 },
+                    { name: "Weißwein", size: "0,2l", price: 7.00 },
+                    { name: "Lille Berry", size: "0,2l", price: 8.00 }
                 ]
             },
             flaschen: {
@@ -1151,25 +1146,24 @@
                 items: [
                     { name: "Vodka", size: "2cl", price: 3.00 },
                     { name: "Vodka Melone", size: "2cl", price: 3.00 },
-                    { name: "Havanna Club", size: "2cl", price: 3.00 },
-                    { name: "Tequila (Silver / Gold)", size: "2cl", price: 3.00 },
-                    { name: "Malibu", size: "2cl", price: 3.00 },
+                    { name: "Havanna Club", size: "2cl", price: 3.50 },
+                    { name: "Tequila (Silver / Gold)", size: "2cl", price: 3.50 },
+                    { name: "Malibu", size: "2cl", price: 3.50 },
                     { name: "Baileys", size: "4cl", price: 6.00, desc: "1,2" },
                     { name: "Ficken", size: "2cl", price: 3.00 },
-                    { name: "Jägermeister", size: "2cl", price: 3.00 },
-                    { name: "Jack Daniels", size: "2cl", price: 3.00 },
-                    { name: "Asbach", size: "2cl", price: 3.00 },
-                    { name: "Hennessy", size: "2cl", price: 5.00 },
-                    { name: "Bacardi/Razz", size: "2cl", price: 3.00 },
-                    { name: "Gordon's Dry Gin", size: "2cl", price: 3.00 },
-                    { name: "Captain Morgan Gold", size: "2cl", price: 3.00 }
+                    { name: "Jägermeister", size: "2cl", price: 3.50 },
+                    { name: "Jack Daniels", size: "2cl", price: 3.50 },
+                    { name: "Asbach", size: "2cl", price: 3.50 },
+                    { name: "Hennessy", size: "2cl", price: 6.00 },
+                    { name: "Bacardi/Razz", size: "2cl", price: 3.50 },
+                    { name: "Gordon's Dry Gin", size: "2cl", price: 3.50 },
+                    { name: "Captain Morgan Gold", size: "2cl", price: 3.50 }
                 ]
             }
         },
         ru: {}, en: {}
     };
 
-    // ==================== GETRÄNKEÜBERSETZUNGEN ====================
     const drinkTranslations = {
         de: {},
         ru: {
@@ -1238,6 +1232,9 @@
             "Scavi & Ray Ice Prestige": "Скави & Рэй Айс Престиж",
             "Aperol Spritz": "Апероль Шприц",
             "Hugo": "Хуго",
+            "Sapphire Spritz": "Сапфир Шприц",
+            "Ruby Fizz": "Руби Физз",
+            "Aperol Suprise": "Апероль Сюрприз",
             "Scavi & Ray IL Bianco": "Скави & Рэй Иль Бьянко",
             "Scavi & Ray IL Rosso": "Скави & Рэй Иль Россо",
             "Scavi & Ray IL Rosato": "Скави & Рэй Иль Розато",
@@ -1337,6 +1334,9 @@
             "Scavi & Ray Ice Prestige": "Scavi & Ray Ice Prestige",
             "Aperol Spritz": "Aperol Spritz",
             "Hugo": "Hugo",
+            "Sapphire Spritz": "Sapphire Spritz",
+            "Ruby Fizz": "Ruby Fizz",
+            "Aperol Suprise": "Aperol Suprise",
             "Scavi & Ray IL Bianco": "Scavi & Ray IL Bianco",
             "Scavi & Ray IL Rosso": "Scavi & Ray IL Rosso",
             "Scavi & Ray IL Rosato": "Scavi & Ray IL Rosato",
@@ -1372,13 +1372,11 @@
         }
     };
 
-    // ==================== DEFINITIONEN FÜR SUB-OPTIONEN ====================
     const subOptionMap = {
         "mit Softdrinks": ["Cola", "Fanta", "Sprite"],
         "mit Saft": ["Kirschen", "Banane", "Johannisbeere", "Apfel", "Orange", "Maracuja", "Ananas", "Cranberry"]
     };
 
-    // ==================== FUNKTIONEN ====================
     let currentLang = "de";
     let drinksData = JSON.parse(JSON.stringify(drinksDataMultilang.de));
     let cartItems = [];
@@ -1549,7 +1547,6 @@
     function showOrderSummary() { refreshOrderSummary(); document.getElementById("orderOverlay").classList.add("show"); }
     function closeOrderSummary() { document.getElementById("orderOverlay").classList.remove("show"); }
 
-    // ==================== VARIANTEN MODAL ====================
     function openVariantModal(itemName, size, variants, basePrice, hasPriceVariants) {
         const overlay = document.getElementById('variantModalOverlay');
         const title = document.getElementById('variantModalTitle');
@@ -1563,7 +1560,6 @@
         variants.forEach(v => {
             let priceMatch = v.match(/(\d+)/);
             let price = priceMatch ? parseFloat(priceMatch[1]) : basePrice;
-            let label = v;
             let subOptions = null;
             
             for (let [key, subs] of Object.entries(subOptionMap)) {
@@ -1608,7 +1604,6 @@
         document.getElementById('variantModalOverlay').classList.remove('show');
     }
 
-    // ==================== ADMIN-FUNKTIONEN ====================
     function renderAdminPanel() {
         let html = `
             <div class="admin-btn-group">
@@ -1672,20 +1667,10 @@
         document.getElementById("adminContent").innerHTML = html;
     }
 
-    // ==================== DOWNLOAD FUNKTION ====================
     function downloadHTML() {
-        // Aktuelle Daten speichern
         localStorage.setItem('diamondDrinksData', JSON.stringify(drinksData));
-        
-        // Die komplette HTML-Datei als String holen
         const htmlContent = document.documentElement.outerHTML;
-        
-        // Blob erstellen
-        const blob = new Blob([
-            '<!DOCTYPE html>\n' + htmlContent
-        ], { type: 'text/html;charset=utf-8' });
-        
-        // Download-URL erstellen
+        const blob = new Blob(['<!DOCTYPE html>\n' + htmlContent], { type: 'text/html;charset=utf-8' });
         const url = URL.createObjectURL(blob);
         const a = document.createElement('a');
         a.href = url;
@@ -1694,7 +1679,6 @@
         a.click();
         document.body.removeChild(a);
         URL.revokeObjectURL(url);
-        
         showToast('📥 index.html wird heruntergeladen!');
     }
 
@@ -1778,7 +1762,6 @@
         document.getElementById("adminOverlay").classList.remove("show"); 
     }
 
-    // ==================== PIN & SECURITY ====================
     const ADMIN_PIN = "4433";
     let themeClickCount = 0, adminClickCount = 0;
     let themeTimer = null, adminTimer = null;
@@ -1806,7 +1789,6 @@
         } 
     }
 
-    // ==================== RENDER DRINKS ====================
     function renderDrinks() {
         let catNav = document.getElementById("categoryNav");
         catNav.innerHTML = "";
@@ -1882,7 +1864,6 @@
         document.getElementById("drinksContainer").innerHTML = html;
     }
 
-    // ==================== INIT ====================
     function init() {
         const savedData = localStorage.getItem('diamondDrinksData');
         if (savedData) {
@@ -1908,7 +1889,6 @@
         showAllCategories();
         updateCartUI();
         
-        // Event-Listener
         document.getElementById("themeTriggerHeader").addEventListener("click", () => { 
             themeClickCount++; 
             if (themeTimer) clearTimeout(themeTimer); 
@@ -1944,7 +1924,6 @@
             }
         });
         
-        // Globale Funktionen für inline onclick
         window.addCategory = addCategory;
         window.deleteCategory = deleteCategory;
         window.addItem = addItem;
