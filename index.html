@@ -2,14 +2,14 @@
 <html lang="de">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover, user-scalable=yes, maximum-scale=1.0, user-scalable=no">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, viewfit=cover, user-scalable=yes, maximum-scale=1.0, user-scalable=no">
     <title>CLUB, LOUNGE, COCKTAIL BAR DIAMOND · Getränkekarte</title>
     <style>
         * {
             margin: 0;
             padding: 0;
             box-sizing: border-box;
-            transition: background-color 0.3s ease, border-color 0.2s ease;
+            transition: background-color 0.3s ease, border-color 0.2s ease, opacity 0.5s ease, transform 0.5s ease;
             -webkit-tap-highlight-color: transparent;
         }
 
@@ -40,6 +40,15 @@
             --reset-btn-hover: #c82333;
             --order-btn: #28a745;
             --order-btn-hover: #218838;
+            --modal-bg: #ffffff;
+            --modal-overlay: rgba(0,0,0,0.7);
+            --modal-shadow: 0 20px 60px rgba(0,0,0,0.3);
+            --splash-bg: #0a0a0a;
+            --splash-text: #ffffff;
+            --splash-accent: #c9a84c;
+            --splash-btn: rgba(255,255,255,0.12);
+            --splash-btn-hover: rgba(255,255,255,0.2);
+            --splash-border: rgba(255,255,255,0.15);
         }
 
         body.dark {
@@ -69,16 +78,152 @@
             --reset-btn-hover: #b02a37;
             --order-btn: #28a745;
             --order-btn-hover: #218838;
+            --modal-bg: #1a1a1a;
+            --modal-overlay: rgba(0,0,0,0.85);
+            --splash-bg: #000000;
+            --splash-text: #ffffff;
+            --splash-btn: rgba(255,255,255,0.08);
+            --splash-btn-hover: rgba(255,255,255,0.15);
+            --splash-border: rgba(255,255,255,0.1);
         }
 
         body {
             font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
             background: var(--bg-primary);
             color: var(--text-primary);
-            padding-bottom: 85px;
+            padding-bottom: 75px;
             touch-action: pan-x pan-y;
             overflow-x: hidden;
-            max-width: 100%;
+        }
+
+        /* ==================== SPLASH SCREEN ==================== */
+        #splashScreen {
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: var(--splash-bg);
+            z-index: 9999;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            padding: 30px;
+            transition: opacity 0.6s ease, transform 0.6s ease;
+        }
+        #splashScreen.hide {
+            opacity: 0;
+            transform: scale(1.05);
+            pointer-events: none;
+        }
+        #splashScreen .splash-logo {
+            font-size: 14px;
+            letter-spacing: 4px;
+            color: var(--splash-text);
+            opacity: 0.4;
+            margin-bottom: 8px;
+            text-transform: uppercase;
+        }
+        #splashScreen .splash-title {
+            font-size: 42px;
+            font-weight: 300;
+            letter-spacing: 4px;
+            color: var(--splash-text);
+            margin-bottom: 4px;
+        }
+        #splashScreen .splash-title span {
+            font-weight: 700;
+            color: var(--splash-accent);
+        }
+        #splashScreen .splash-sub {
+            font-size: 10px;
+            letter-spacing: 6px;
+            color: var(--splash-text);
+            opacity: 0.3;
+            margin-bottom: 40px;
+            text-transform: uppercase;
+        }
+        .splash-divider {
+            width: 60px;
+            height: 2px;
+            background: var(--splash-accent);
+            margin: 8px auto 40px;
+            border-radius: 2px;
+        }
+        .splash-btn-main {
+            background: var(--splash-accent);
+            color: #000000;
+            border: none;
+            padding: 16px 48px;
+            border-radius: 50px;
+            font-size: 16px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            letter-spacing: 1px;
+            margin-bottom: 10px;
+            box-shadow: 0 4px 30px rgba(201, 168, 76, 0.3);
+        }
+        .splash-btn-main:hover {
+            transform: scale(1.03);
+            box-shadow: 0 6px 40px rgba(201, 168, 76, 0.4);
+        }
+        .splash-btn-main:active {
+            transform: scale(0.97);
+        }
+        .splash-social {
+            display: flex;
+            gap: 20px;
+            margin-top: 30px;
+        }
+        .splash-social a {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            width: 56px;
+            height: 56px;
+            border-radius: 50%;
+            background: var(--splash-btn);
+            border: 1px solid var(--splash-border);
+            color: var(--splash-text);
+            text-decoration: none;
+            font-size: 24px;
+            transition: all 0.3s ease;
+            overflow: hidden;
+        }
+        .splash-social a:hover {
+            background: var(--splash-btn-hover);
+            transform: translateY(-2px);
+        }
+        .splash-social a:active {
+            transform: scale(0.95);
+        }
+        .splash-social a img {
+            width: 28px;
+            height: 28px;
+            object-fit: contain;
+            display: block;
+        }
+        .splash-footer {
+            position: absolute;
+            bottom: 30px;
+            font-size: 8px;
+            color: var(--splash-text);
+            opacity: 0.15;
+            letter-spacing: 2px;
+        }
+
+        /* ==================== HAUPT-APP ==================== */
+        #mainApp {
+            opacity: 0;
+            transition: opacity 0.8s ease;
+        }
+        #mainApp.show {
+            opacity: 1;
+        }
+        #mainApp.hidden {
+            display: none;
         }
 
         .header {
@@ -86,16 +231,19 @@
             padding: 12px 12px 8px 12px;
             text-align: center;
             border-bottom: 1px solid var(--border-color);
+            position: sticky;
+            top: 0;
+            z-index: 100;
         }
         .logo { font-size: 9px; letter-spacing: 3px; color: var(--text-muted); margin-bottom: 4px; }
-        .header h1 { font-size: 22px; letter-spacing: 2px; font-weight: 300; cursor: pointer; }
+        .header h1 { font-size: 24px; letter-spacing: 2px; font-weight: 300; cursor: pointer; }
         .header h1 span { font-weight: 700; }
         .header .subtitle { font-size: 8px; opacity: 0.5; margin-top: 4px; }
 
         .lang-switcher {
             display: flex;
             justify-content: center;
-            gap: 10px;
+            gap: 12px;
             margin-top: 8px;
             flex-wrap: wrap;
         }
@@ -103,8 +251,8 @@
             background: rgba(0,0,0,0.05);
             border: 1px solid var(--border-color);
             border-radius: 30px;
-            padding: 3px 10px;
-            font-size: 10px;
+            padding: 4px 12px;
+            font-size: 11px;
             font-weight: 500;
             cursor: pointer;
             color: var(--text-primary);
@@ -116,33 +264,33 @@
         .categories {
             display: grid;
             grid-template-columns: repeat(2, 1fr);
-            gap: 8px;
-            padding: 12px;
+            gap: 10px;
+            padding: 16px;
         }
         .categories-wrapper.hide-categories .categories { display: none; }
         .categories-wrapper.hide-categories .single-category-mode { display: block; }
-        .single-category-mode { display: none; padding: 12px; text-align: center; }
+        .single-category-mode { display: none; padding: 16px; text-align: center; }
         .show-all-categories-btn {
             background: rgba(255,255,255,0.2);
             border: 1px solid rgba(255,255,255,0.3);
-            padding: 10px 16px;
+            padding: 12px 20px;
             border-radius: 40px;
-            font-size: 12px;
+            font-size: 14px;
             font-weight: 600;
             cursor: pointer;
             color: var(--category-text);
             display: inline-flex;
             align-items: center;
             justify-content: center;
-            gap: 8px;
+            gap: 10px;
             width: 100%;
         }
         .category-btn {
             background: rgba(255,255,255,0.12);
             border: 1px solid rgba(255,255,255,0.25);
-            padding: 10px 6px;
-            border-radius: 14px;
-            font-size: 11px;
+            padding: 12px 8px;
+            border-radius: 16px;
+            font-size: 13px;
             font-weight: 600;
             cursor: pointer;
             text-align: center;
@@ -150,22 +298,22 @@
             display: flex;
             align-items: center;
             justify-content: center;
-            gap: 6px;
+            gap: 8px;
         }
-        .category-btn .cat-icon { font-size: 15px; }
+        .category-btn .cat-icon { font-size: 18px; }
 
-        .drinks-container { padding: 10px; display: flex; flex-direction: column; gap: 14px; margin-bottom: 10px; }
+        .drinks-container { padding: 12px; display: flex; flex-direction: column; gap: 16px; margin-bottom: 10px; }
         .category-section {
             background: var(--bg-card);
-            border-radius: 18px;
-            padding: 12px;
+            border-radius: 20px;
+            padding: 14px;
             border: 1px solid var(--border-color);
         }
         .category-title {
-            font-size: 15px;
+            font-size: 17px;
             font-weight: 700;
-            margin-bottom: 10px;
-            padding-bottom: 4px;
+            margin-bottom: 12px;
+            padding-bottom: 6px;
             border-bottom: 2px solid var(--accent);
             display: inline-block;
         }
@@ -174,74 +322,72 @@
             display: flex;
             justify-content: space-between;
             align-items: center;
-            padding: 8px 0;
+            padding: 10px 0;
             border-bottom: 1px solid var(--border-light);
-            gap: 6px;
+            gap: 8px;
             flex-wrap: wrap;
+            position: relative;
         }
         .drink-item:last-child { border-bottom: none; }
-        .drink-info { flex: 2; min-width: 110px; }
-        .drink-name { font-size: 12px; font-weight: 600; margin-bottom: 2px; color: var(--text-primary); word-break: break-word; }
-        .drink-desc { font-size: 8px; color: var(--text-secondary); line-height: 1.3; }
-        .drink-size { font-size: 8px; color: var(--text-muted); margin-top: 2px; }
-        .drink-price { font-size: 12px; font-weight: 700; color: var(--text-primary); white-space: nowrap; min-width: 50px; text-align: right; }
-        .drink-actions { display: flex; flex-direction: column; align-items: flex-end; gap: 4px; }
+        .drink-info { flex: 2; min-width: 140px; }
+        .drink-name { font-size: 13px; font-weight: 600; margin-bottom: 3px; color: var(--text-primary); }
+        .drink-desc { font-size: 9px; color: var(--text-secondary); line-height: 1.3; }
+        .drink-size { font-size: 9px; color: var(--text-muted); margin-top: 2px; }
+        .drink-price { font-size: 14px; font-weight: 700; color: var(--text-primary); white-space: nowrap; min-width: 60px; text-align: right; }
+        .drink-actions { display: flex; flex-direction: column; align-items: flex-end; gap: 6px; position: relative; }
 
-        .variation-select { display: flex; gap: 4px; flex-wrap: wrap; margin-top: 4px; }
-        .var-btn {
-            background: var(--select-bg);
+        .order-btn {
+            background: var(--btn-bg);
             border: 1px solid var(--border-color);
+            padding: 5px 14px;
             border-radius: 30px;
-            padding: 2px 6px;
-            font-size: 8px;
+            font-size: 13px;
+            font-weight: 600;
             cursor: pointer;
-            color: var(--text-secondary);
+            color: var(--text-primary);
+            display: inline-block;
+            min-width: 40px;
+            text-align: center;
             transition: all 0.2s;
         }
-        .var-btn.active {
+        .order-btn:hover {
             background: var(--accent);
             color: var(--bg-primary);
             border-color: var(--accent);
         }
-        .order-btn {
-            background: var(--btn-bg);
-            border: 1px solid var(--border-color);
-            padding: 4px 10px;
-            border-radius: 30px;
-            font-size: 10px;
-            font-weight: 600;
-            cursor: pointer;
-            color: var(--text-primary);
-            display: none;
+        .order-btn.has-variants {
+            background: var(--accent);
+            color: var(--bg-primary);
+            border-color: var(--accent);
         }
-        .order-btn.visible { display: inline-block; }
+        .order-btn.has-variants:hover {
+            opacity: 0.8;
+        }
+        
         .badge {
             display: inline-block;
             background: var(--badge-bg);
             color: var(--text-muted);
-            font-size: 6px;
-            padding: 1px 4px;
+            font-size: 7px;
+            padding: 1px 5px;
             border-radius: 20px;
-            margin-left: 4px;
+            margin-left: 5px;
         }
 
         .info-note {
             background: var(--bg-card);
             border-left: 3px solid var(--accent);
-            padding: 8px 10px;
-            margin: 10px;
-            font-size: 7px;
+            padding: 10px 12px;
+            margin: 12px;
+            font-size: 8px;
             color: var(--text-secondary);
             border-radius: 10px;
             margin-bottom: 80px;
             line-height: 1.6;
-            overflow-wrap: break-word;
-            word-wrap: break-word;
-            word-break: break-word;
         }
         .info-note .star-item {
             display: block;
-            padding-left: 6px;
+            padding-left: 8px;
             margin-top: 2px;
         }
 
@@ -252,16 +398,23 @@
             right: 0;
             background: var(--cart-bg);
             border-top: 1px solid rgba(255,255,255,0.15);
-            padding: 8px 12px;
+            padding: 10px 12px;
             display: flex;
             justify-content: space-between;
             align-items: center;
             z-index: 200;
             flex-wrap: wrap;
-            gap: 4px;
+            gap: 6px;
+        }
+        .cart-bar .cart-left {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            flex: 1;
+            min-width: 100px;
         }
         .cart-bar span {
-            font-size: 12px;
+            font-size: 13px;
             font-weight: 600;
             cursor: pointer;
             padding: 4px 6px;
@@ -269,14 +422,19 @@
             color: var(--cart-text);
             white-space: nowrap;
         }
-        .cart-buttons { display: flex; gap: 8px; flex-wrap: wrap; }
+        .cart-buttons { 
+            display: flex; 
+            gap: 8px;
+            flex-wrap: wrap;
+            justify-content: flex-end;
+        }
         .cart-btn {
             border: none;
-            padding: 5px 12px;
+            padding: 6px 12px;
             border-radius: 40px;
             font-weight: 600;
             cursor: pointer;
-            font-size: 10px;
+            font-size: 11px;
             white-space: nowrap;
         }
         .cart-btn.reset { background: var(--reset-btn); color: white; }
@@ -289,9 +447,9 @@
             transform: translateX(-50%) scale(0.9);
             background: var(--toast-bg);
             color: var(--toast-text);
-            padding: 6px 14px;
+            padding: 8px 16px;
             border-radius: 50px;
-            font-size: 10px;
+            font-size: 12px;
             font-weight: 500;
             opacity: 0;
             visibility: hidden;
@@ -300,9 +458,6 @@
             pointer-events: none;
             box-shadow: 0 4px 15px rgba(0,0,0,0.2);
             text-align: center;
-            max-width: 90%;
-            white-space: normal;
-            word-break: break-word;
         }
         .toast.show { opacity: 1; visibility: visible; transform: translateX(-50%) scale(1); }
 
@@ -312,7 +467,7 @@
             left: 0;
             right: 0;
             bottom: 0;
-            background: rgba(0,0,0,0.85);
+            background: var(--modal-overlay);
             backdrop-filter: blur(5px);
             z-index: 2500;
             display: flex;
@@ -322,26 +477,42 @@
             visibility: hidden;
             transition: all 0.3s ease;
         }
-        .confirm-overlay.show, .order-overlay.show, .pin-overlay.show { opacity: 1; visibility: visible; }
-        .admin-overlay { background: var(--bg-primary); z-index: 2000; overflow-y: auto; padding: 16px; display: none; }
-        .admin-overlay.show { display: block; }
+        .confirm-overlay.show, .order-overlay.show, .pin-overlay.show, .variant-modal-overlay.show { 
+            opacity: 1; 
+            visibility: visible; 
+        }
+        .admin-overlay { 
+            background: var(--bg-primary); 
+            z-index: 2000; 
+            overflow-y: auto; 
+            padding: 20px; 
+            display: none;
+            backdrop-filter: none;
+        }
+        .admin-overlay.show { 
+            display: block;
+            opacity: 1;
+            visibility: visible;
+        }
         
-        .confirm-dialog, .order-modal, .pin-dialog {
-            background: var(--bg-card);
-            border-radius: 24px;
-            padding: 20px;
-            width: 90%;
-            max-width: 320px;
+        .confirm-dialog, .order-modal, .pin-dialog, .variant-modal {
+            background: var(--modal-bg);
+            border-radius: 28px;
+            padding: 24px;
+            width: 320px;
+            max-width: 90%;
             text-align: center;
             border: 1px solid var(--border-color);
+            box-shadow: var(--modal-shadow);
             max-height: 80vh;
             overflow-y: auto;
         }
-        .order-modal { max-width: 340px; padding: 18px; }
-        .pin-dialog { padding: 28px 20px; max-width: 280px; }
+        .order-modal { max-width: 350px; width: 90%; max-height: 80vh; overflow-y: auto; padding: 20px; }
+        .pin-dialog { padding: 32px 24px; }
+        .variant-modal { max-width: 360px; padding: 20px; }
         
-        .confirm-buttons, .pin-buttons { display: flex; gap: 10px; margin-top: 16px; }
-        .confirm-buttons button, .pin-buttons button { flex: 1; padding: 8px; border-radius: 40px; border: none; font-weight: 600; cursor: pointer; font-size: 12px; }
+        .confirm-buttons, .pin-buttons { display: flex; gap: 12px; margin-top: 20px; }
+        .confirm-buttons button, .pin-buttons button { flex: 1; padding: 10px; border-radius: 40px; border: none; font-weight: 600; cursor: pointer; }
         .confirm-yes, .pin-submit { background: var(--accent); color: var(--bg-primary); }
         .confirm-no, .pin-cancel { background: var(--delete-bg); color: white; }
         
@@ -349,22 +520,22 @@
             display: flex;
             justify-content: space-between;
             align-items: center;
-            padding: 8px 0;
+            padding: 10px 0;
             border-bottom: 1px solid var(--border-light);
-            gap: 6px;
+            gap: 8px;
         }
         .order-item-info { flex: 2; text-align: left; }
-        .order-item-name { font-size: 12px; font-weight: 600; word-break: break-word; }
-        .order-item-size { font-size: 8px; color: var(--text-muted); }
-        .order-item-qty { font-size: 11px; margin: 0 6px; min-width: 30px; text-align: center; }
-        .order-item-price { font-size: 11px; font-weight: 700; color: var(--accent); min-width: 45px; text-align: right; }
+        .order-item-name { font-size: 13px; font-weight: 600; }
+        .order-item-size { font-size: 9px; color: var(--text-muted); }
+        .order-item-qty { font-size: 12px; margin: 0 8px; min-width: 35px; text-align: center; }
+        .order-item-price { font-size: 13px; font-weight: 700; color: var(--accent); min-width: 55px; text-align: right; }
         .delete-item-btn {
             background: var(--delete-bg);
             border: none;
             border-radius: 50%;
-            width: 28px;
-            height: 28px;
-            font-size: 14px;
+            width: 32px;
+            height: 32px;
+            font-size: 16px;
             cursor: pointer;
             color: white;
             display: flex;
@@ -374,10 +545,10 @@
         .order-total {
             display: flex;
             justify-content: space-between;
-            padding: 12px 0;
-            margin-top: 6px;
+            padding: 14px 0;
+            margin-top: 8px;
             border-top: 2px solid var(--border-color);
-            font-size: 14px;
+            font-size: 16px;
             font-weight: 700;
         }
         .speaking-head {
@@ -387,198 +558,416 @@
             gap: 6px;
             background: var(--accent);
             color: var(--bg-primary);
-            padding: 6px 10px;
+            padding: 8px 14px;
             border-radius: 40px;
-            margin: 12px 0 6px;
-            font-size: 10px;
+            margin: 16px 0 8px;
+            font-size: 11px;
             font-weight: 500;
         }
         .close-order-btn {
             background: var(--accent);
             color: var(--bg-primary);
             border: none;
-            padding: 8px 16px;
+            padding: 10px 20px;
             border-radius: 40px;
-            font-size: 12px;
+            font-size: 13px;
             font-weight: 600;
             cursor: pointer;
             width: 100%;
-            margin-top: 10px;
+            margin-top: 12px;
         }
-        .empty-cart { text-align: center; padding: 24px; color: var(--text-muted); font-size: 11px; }
+        .empty-cart { text-align: center; padding: 28px; color: var(--text-muted); font-size: 13px; }
+
+        .variant-modal-title {
+            font-size: 18px;
+            font-weight: 700;
+            margin-bottom: 4px;
+        }
+        .variant-modal-sub {
+            font-size: 12px;
+            color: var(--text-secondary);
+            margin-bottom: 16px;
+        }
+        .variant-option {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 12px 16px;
+            border-bottom: 1px solid var(--border-light);
+            cursor: pointer;
+            transition: background 0.2s;
+            border-radius: 12px;
+            margin: 2px 0;
+        }
+        .variant-option:hover {
+            background: var(--accent-light);
+        }
+        .variant-option .option-label {
+            font-size: 13px;
+            font-weight: 500;
+            text-align: left;
+        }
+        .variant-option .option-price {
+            font-size: 13px;
+            font-weight: 700;
+            color: var(--accent);
+            white-space: nowrap;
+        }
+        .variant-option.has-sub {
+            flex-direction: column;
+            align-items: stretch;
+            padding: 8px 0;
+        }
+        .variant-option.has-sub .main-option {
+            display: flex;
+            justify-content: space-between;
+            padding: 8px 16px;
+            font-weight: 600;
+            color: var(--text-secondary);
+            font-size: 12px;
+        }
+        .sub-option {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 8px 16px 8px 32px;
+            cursor: pointer;
+            transition: background 0.2s;
+            border-radius: 8px;
+            margin: 2px 0;
+        }
+        .sub-option:hover {
+            background: var(--accent-light);
+        }
+        .sub-option .sub-label {
+            font-size: 12px;
+        }
+        .sub-option .sub-price {
+            font-size: 12px;
+            font-weight: 600;
+            color: var(--accent);
+        }
+        .variant-close-btn {
+            background: var(--btn-bg);
+            border: 1px solid var(--border-color);
+            padding: 10px 20px;
+            border-radius: 40px;
+            font-size: 13px;
+            font-weight: 600;
+            cursor: pointer;
+            color: var(--text-primary);
+            width: 100%;
+            margin-top: 16px;
+        }
+        .variant-close-btn:hover {
+            background: var(--accent-light);
+        }
 
         .admin-header {
             display: flex;
             justify-content: space-between;
             align-items: center;
-            margin-bottom: 16px;
-            padding-bottom: 8px;
+            margin-bottom: 20px;
+            padding-bottom: 10px;
             border-bottom: 2px solid var(--accent);
             flex-wrap: wrap;
-            gap: 8px;
+            gap: 10px;
         }
-        .admin-header h2 { font-size: 17px; }
-        .close-admin { background: var(--delete-bg); color: white; border: none; padding: 6px 12px; border-radius: 30px; cursor: pointer; font-size: 11px; }
+        .admin-header h2 { font-size: 20px; color: var(--text-primary); }
+        .close-admin { 
+            background: var(--delete-bg); 
+            color: white; 
+            border: none; 
+            padding: 8px 16px; 
+            border-radius: 30px; 
+            cursor: pointer;
+            font-weight: 600;
+        }
         .admin-category {
             background: var(--bg-card);
-            border-radius: 14px;
-            padding: 12px;
-            margin-bottom: 16px;
+            border-radius: 16px;
+            padding: 16px;
+            margin-bottom: 20px;
             border: 1px solid var(--border-color);
         }
         .admin-category-title {
-            font-size: 15px;
+            font-size: 18px;
             font-weight: 700;
-            margin-bottom: 10px;
+            margin-bottom: 12px;
             display: flex;
             justify-content: space-between;
             flex-wrap: wrap;
-            gap: 8px;
+            gap: 10px;
+            color: var(--text-primary);
         }
-        .admin-table { width: 100%; overflow-x: auto; -webkit-overflow-scrolling: touch; }
+        .admin-table { width: 100%; overflow-x: auto; }
         .admin-table-header {
             display: flex;
-            gap: 4px;
-            padding: 6px;
+            gap: 8px;
+            padding: 8px;
             background: var(--admin-bg);
-            border-radius: 10px;
-            margin-bottom: 6px;
-            font-size: 8px;
+            border-radius: 12px;
+            margin-bottom: 8px;
+            font-size: 10px;
             font-weight: 600;
             color: var(--text-secondary);
-            flex-wrap: nowrap;
         }
-        .admin-table-header span { text-align: center; font-size: 7px; white-space: nowrap; }
         .admin-item {
             display: flex;
-            gap: 4px;
-            margin-bottom: 6px;
-            padding: 6px;
+            gap: 8px;
+            margin-bottom: 8px;
+            padding: 8px;
             background: var(--admin-bg);
-            border-radius: 10px;
+            border-radius: 12px;
             flex-wrap: wrap;
             align-items: center;
         }
         .admin-item input, .admin-item select {
-            padding: 4px 6px;
-            border-radius: 6px;
+            padding: 6px 8px;
+            border-radius: 8px;
             border: 1px solid var(--border-color);
             background: var(--bg-card);
             color: var(--text-primary);
-            font-size: 9px;
-            max-width: 100%;
+            font-size: 11px;
         }
-        .admin-item .item-name { width: 80px; }
-        .admin-item .item-size { width: 45px; }
-        .admin-item .item-price { width: 50px; }
-        .admin-item .item-desc { width: 90px; }
-        .admin-item .item-variants { width: 90px; }
-        .admin-item .item-has-variants { width: 80px; font-size: 8px; }
-        .sort-buttons { display: flex; gap: 3px; }
-        .sort-up, .sort-down {
-            background: var(--sort-bg);
-            border: 1px solid var(--border-color);
-            border-radius: 6px;
-            padding: 3px 6px;
-            cursor: pointer;
-            font-size: 10px;
-            color: var(--text-primary);
-        }
+        .admin-item .item-name { width: 100px; }
+        .admin-item .item-size { width: 55px; }
+        .admin-item .item-price { width: 65px; }
+        .admin-item .item-desc { width: 130px; }
+        .admin-item .item-variants { width: 130px; }
         .delete-admin-btn {
             background: var(--delete-bg);
             color: white;
             border: none;
-            padding: 4px 8px;
-            border-radius: 6px;
+            padding: 6px 10px;
+            border-radius: 8px;
             cursor: pointer;
-            font-size: 9px;
+            font-size: 11px;
         }
         .add-item-btn {
             background: var(--accent);
             color: var(--bg-primary);
             border: none;
-            padding: 4px 10px;
+            padding: 6px 12px;
             border-radius: 20px;
             cursor: pointer;
-            font-size: 9px;
-            margin-top: 6px;
+            font-size: 11px;
+            margin-top: 8px;
         }
         .add-category-btn, .admin-save-all {
             background: #28a745;
             color: white;
             border: none;
-            padding: 8px 16px;
+            padding: 10px 20px;
             border-radius: 30px;
             cursor: pointer;
-            font-size: 11px;
-            margin-top: 8px;
+            font-size: 13px;
+            margin-top: 10px;
             width: 100%;
+        }
+        .add-category-btn:hover, .admin-save-all:hover {
+            opacity: 0.9;
         }
         .pin-input {
             width: 100%;
-            padding: 10px;
-            font-size: 20px;
+            padding: 14px;
+            font-size: 24px;
             text-align: center;
-            letter-spacing: 6px;
-            border-radius: 12px;
+            letter-spacing: 8px;
+            border-radius: 16px;
             border: 1px solid var(--border-color);
             background: var(--bg-card);
             color: var(--text-primary);
-            margin-bottom: 16px;
+            margin-bottom: 20px;
         }
-        .pin-error { color: #dc3545; font-size: 10px; margin-top: 10px; min-height: 24px; }
+        .pin-error { color: #dc3545; font-size: 11px; margin-top: 12px; min-height: 30px; }
+
+        .variant-modal-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: var(--modal-overlay);
+            backdrop-filter: blur(5px);
+            z-index: 3000;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            opacity: 0;
+            visibility: hidden;
+            transition: all 0.3s ease;
+        }
+        .variant-modal-overlay.show {
+            opacity: 1;
+            visibility: visible;
+        }
 
         @keyframes fadeIn { from { opacity: 0; transform: translateY(8px); } to { opacity: 1; transform: translateY(0); } }
         .category-section { animation: fadeIn 0.25s ease-out; }
+        .variant-modal { animation: fadeIn 0.25s ease-out; }
+
+        /* Admin-Button-Container */
+        .admin-btn-group {
+            display: flex;
+            gap: 10px;
+            flex-wrap: wrap;
+            margin-bottom: 20px;
+        }
+        .admin-btn-group button {
+            flex: 1;
+            min-width: 120px;
+        }
+        .admin-btn-group .btn-download {
+            background: #007bff;
+            color: white;
+        }
+        .admin-btn-group .btn-download:hover {
+            background: #0069d9;
+        }
+
+        @media print {
+            .cart-bar, .header, .categories-wrapper, .lang-switcher, .info-note, #splashScreen { display: none !important; }
+            body { padding-bottom: 0 !important; background: white !important; }
+            .category-section { break-inside: avoid; border: 1px solid #ddd !important; }
+            .drink-item { border-bottom: 1px solid #eee !important; }
+            .order-btn { display: none !important; }
+            #mainApp { opacity: 1 !important; display: block !important; }
+        }
+
+        @media (max-width: 480px) {
+            #splashScreen .splash-title { font-size: 32px; }
+            .splash-btn-main { padding: 14px 36px; font-size: 14px; }
+            .splash-social a { width: 48px; height: 48px; }
+            .splash-social a img { width: 24px; height: 24px; }
+            
+            .cart-bar {
+                padding: 8px 10px;
+            }
+            .cart-bar span {
+                font-size: 12px;
+            }
+            .cart-btn {
+                font-size: 10px;
+                padding: 5px 10px;
+            }
+            .cart-buttons {
+                gap: 5px;
+            }
+        }
+
+        @media (max-width: 380px) {
+            .cart-bar .cart-left {
+                min-width: 70px;
+            }
+            .cart-bar span {
+                font-size: 11px;
+                padding: 3px 4px;
+            }
+            .cart-btn {
+                font-size: 9px;
+                padding: 4px 8px;
+            }
+        }
     </style>
 </head>
 <body>
 
-<div class="header" id="themeTriggerHeader">
-    <div class="logo">CLUB · LOUNGE · COCKTAIL BAR</div>
-    <h1>DIAMOND</h1>
-    <div class="subtitle">GETRÄNKEKARTE</div>
-    <div class="lang-switcher">
-        <button class="lang-btn active" data-lang="de">🇩🇪 DE</button>
-        <button class="lang-btn" data-lang="ru">🇷🇺 RU</button>
-        <button class="lang-btn" data-lang="en">🇬🇧 EN</button>
+<!-- ==================== SPLASH SCREEN ==================== -->
+<div id="splashScreen">
+    <div class="splash-logo">CLUB · LOUNGE · COCKTAIL BAR</div>
+    <div class="splash-title">DIAMOND</div>
+    <div class="splash-sub">Getränkekarte</div>
+    <div class="splash-divider"></div>
+    <button class="splash-btn-main" id="splashEnterBtn">📋 Getränkekarte</button>
+    <div class="splash-social">
+        <a href="https://www.instagram.com/club_diamond_sw" target="_blank" rel="noopener noreferrer" aria-label="Instagram">
+            <img src="https://i.postimg.cc/ZYdpk7vz/sozial.png" alt="Instagram">
+        </a>
+        <a href="https://www.facebook.com/ClubLoungeDiamondOfficial" target="_blank" rel="noopener noreferrer" aria-label="Facebook">
+            <img src="https://i.postimg.cc/kMbKr160/facebook.png" alt="Facebook">
+        </a>
     </div>
+    <div class="splash-footer">© CLUB DIAMOND</div>
 </div>
 
-<div class="categories-wrapper" id="categoriesWrapper">
-    <div class="categories" id="categoryNav"></div>
-    <div class="single-category-mode" id="singleCategoryMode">
-        <button class="show-all-categories-btn" id="showAllCategoriesBtn">
-            <span>📋</span> <span id="showAllText">Alle Kategorien anzeigen</span>
-        </button>
+<!-- ==================== HAUPT-APP ==================== -->
+<div id="mainApp" class="hidden">
+    <div class="header" id="themeTriggerHeader">
+        <div class="logo">CLUB · LOUNGE · COCKTAIL BAR</div>
+        <h1>DIAMOND</h1>
+        <div class="subtitle">GETRÄNKEKARTE</div>
+        <div class="lang-switcher">
+            <button class="lang-btn active" data-lang="de">🇩🇪 DE</button>
+            <button class="lang-btn" data-lang="ru">🇷🇺 RU</button>
+            <button class="lang-btn" data-lang="en">🇬🇧 EN</button>
+        </div>
     </div>
-</div>
 
-<div class="drinks-container" id="drinksContainer"></div>
-
-<div class="info-note" id="infoNote">
-    ⓘ Zusatzstoffe: 1=Farbstoffe | 2=coffeinhaltig | 3=chininhaltig | 4=niacinhaltig | 5=Herkunft: Frankreich | 6=Säuerungsmittel<br>
-    <span class="star-item">⭐ * Inclusive 1l Softdrinks (Cola/Fanta/Sprite)</span>
-    <span class="star-item">⭐ * Inclusive 1l Saft (verschiedene Sorten)</span>
-    <span class="star-item">⭐ * Inclusive 6 Red Bull's</span>
-    💰 Alle Preise inkl. MwSt. | **Sonstiges: Preis auf Anfrage
-</div>
-
-<div class="cart-bar">
-    <span id="adminTriggerText">🛒 <span id="cartCount">0</span> <span id="cartItemsText">Artikel</span></span>
-    <div class="cart-buttons">
-        <button class="cart-btn reset" id="resetCartBtn"><span id="resetBtnText">Zurücksetzen</span></button>
-        <button class="cart-btn order" id="orderCartBtn"><span id="orderBtnText">Bestellen</span></button>
+    <div class="categories-wrapper" id="categoriesWrapper">
+        <div class="categories" id="categoryNav"></div>
+        <div class="single-category-mode" id="singleCategoryMode">
+            <button class="show-all-categories-btn" id="showAllCategoriesBtn">
+                <span>📋</span> <span id="showAllText">Alle Kategorien anzeigen</span>
+            </button>
+        </div>
     </div>
-</div>
 
-<div class="toast" id="toast">✨ Getränk hinzugefügt</div>
-<div class="confirm-overlay" id="confirmOverlay"><div class="confirm-dialog"><h3 id="confirmTitle">⚠️ Warenkorb zurücksetzen</h3><p id="confirmMessage">Möchten Sie wirklich alle Artikel aus dem Warenkorb entfernen?</p><div class="confirm-buttons"><button class="confirm-yes" id="confirmYesBtn"><span id="confirmYesText">Ja, zurücksetzen</span></button><button class="confirm-no" id="confirmNoBtn"><span id="confirmNoText">Abbrechen</span></button></div></div></div>
-<div class="order-overlay" id="orderOverlay"><div class="order-modal"><h2 id="orderTitle">Ihre Bestellung</h2><div class="sub" id="orderSubtitle">Bitte überprüfen Sie Ihre Auswahl</div><div id="orderSummaryContent"></div><button class="close-order-btn" id="closeOrderBtn"><span id="closeBtnText">Schließen</span></button></div></div>
-<div class="admin-overlay" id="adminOverlay"><div class="admin-header"><h2>🔧 Admin-Bereich - Getränkekarte bearbeiten</h2><button class="close-admin" id="closeAdminBtn">✗ Schließen</button></div><div id="adminContent"></div><button class="admin-save-all" id="saveAllDataBtn">💾 Alle Änderungen speichern & Seite neu laden</button></div>
-<div class="pin-overlay" id="pinOverlay"><div class="pin-dialog"><h3>🔒 Admin-Zugang</h3><p>Bitte PIN eingeben</p><input type="password" id="pinInput" class="pin-input" maxlength="4" inputmode="numeric"><div class="pin-buttons"><button class="pin-cancel" id="pinCancelBtn">Abbrechen</button><button class="pin-submit" id="pinSubmitBtn">Bestätigen</button></div><div id="pinError" class="pin-error"></div></div></div>
+    <div class="drinks-container" id="drinksContainer"></div>
+
+    <div class="info-note" id="infoNote">
+        ⓘ Zusatzstoffe: 1=Farbstoffe | 2=coffeinhaltig | 3=chininhaltig | 4=niacinhaltig | 5=Herkunft: Frankreich | 6=Säuerungsmittel<br>
+        <span class="star-item">⭐ * Inclusive 1l Softdrinks (Cola/Fanta/Sprite)</span>
+        <span class="star-item">⭐ * Inclusive 1l Saft (verschiedene Sorten)</span>
+        <span class="star-item">⭐ * Inclusive 6 Red Bull's</span>
+        💰 Alle Preise inkl. MwSt. | **Sonstiges: Preis auf Anfrage
+    </div>
+
+    <div class="cart-bar">
+        <div class="cart-left">
+            <span id="adminTriggerText">🛒 <span id="cartCount">0</span></span>
+            <span id="cartItemsText" style="font-weight:400;opacity:0.7;font-size:11px;">Artikel</span>
+        </div>
+        <div class="cart-buttons">
+            <button class="cart-btn reset" id="resetCartBtn"><span id="resetBtnText">Zurücksetzen</span></button>
+            <button class="cart-btn order" id="orderCartBtn"><span id="orderBtnText">Bestellen</span></button>
+        </div>
+    </div>
+
+    <!-- Varianten-Modal -->
+    <div class="variant-modal-overlay" id="variantModalOverlay">
+        <div class="variant-modal" id="variantModal">
+            <div class="variant-modal-title" id="variantModalTitle">Auswählen</div>
+            <div class="variant-modal-sub" id="variantModalSub">Bitte wählen Sie eine Option</div>
+            <div id="variantOptionsContainer"></div>
+            <button class="variant-close-btn" id="variantModalClose">Abbrechen</button>
+        </div>
+    </div>
+
+    <div class="toast" id="toast">✨ Getränk hinzugefügt</div>
+    <div class="confirm-overlay" id="confirmOverlay"><div class="confirm-dialog"><h3 id="confirmTitle">⚠️ Warenkorb zurücksetzen</h3><p id="confirmMessage">Möchten Sie wirklich alle Artikel aus dem Warenkorb entfernen?</p><div class="confirm-buttons"><button class="confirm-yes" id="confirmYesBtn"><span id="confirmYesText">Ja, zurücksetzen</span></button><button class="confirm-no" id="confirmNoBtn"><span id="confirmNoText">Abbrechen</span></button></div></div></div>
+    <div class="order-overlay" id="orderOverlay"><div class="order-modal"><h2 id="orderTitle">Ihre Bestellung</h2><div class="sub" id="orderSubtitle">Bitte überprüfen Sie Ihre Auswahl</div><div id="orderSummaryContent"></div><button class="close-order-btn" id="closeOrderBtn"><span id="closeBtnText">Schließen</span></button></div></div>
+    <div class="admin-overlay" id="adminOverlay"><div class="admin-header"><h2>🔧 Admin-Bereich - Getränkekarte bearbeiten</h2><button class="close-admin" id="closeAdminBtn">✗ Schließen</button></div><div id="adminContent"></div><button class="admin-save-all" id="saveAllDataBtn">💾 Alle Änderungen speichern & Seite neu laden</button></div>
+    <div class="pin-overlay" id="pinOverlay"><div class="pin-dialog"><h3>🔒 Admin-Zugang</h3><p>Bitte PIN eingeben</p><input type="password" id="pinInput" class="pin-input" maxlength="4" inputmode="numeric"><div class="pin-buttons"><button class="pin-cancel" id="pinCancelBtn">Abbrechen</button><button class="pin-submit" id="pinSubmitBtn">Bestätigen</button></div><div id="pinError" class="pin-error"></div></div></div>
+</div>
 
 <script>
+    // ==================== SPLASH SCREEN LOGIC ====================
+    document.addEventListener('DOMContentLoaded', function() {
+        const splash = document.getElementById('splashScreen');
+        const mainApp = document.getElementById('mainApp');
+        const enterBtn = document.getElementById('splashEnterBtn');
+
+        enterBtn.addEventListener('click', function() {
+            splash.classList.add('hide');
+            mainApp.classList.remove('hidden');
+            setTimeout(function() {
+                mainApp.classList.add('show');
+                splash.style.display = 'none';
+            }, 600);
+        });
+    });
+
     // ==================== MULTILANGUAGE TRANSLATIONS ====================
     const translations = {
         de: { 
@@ -590,7 +979,8 @@
             showAllCategories: "Alle Kategorien anzeigen", emptyCart: "Ihr Warenkorb ist leer",
             toastAdded: "➕ {name} hinzugefügt", toastCleared: "🗑️ Warenkorb wurde geleert", toastRemoved: "🗑️ {name} entfernt",
             themeDark: "🌙 Dark Mode aktiviert", themeLight: "☀️ Light Mode aktiviert", dataSaved: "💾 Daten gespeichert! Seite wird neu geladen...",
-            infoText: "ⓘ Zusatzstoffe: 1=Farbstoffe | 2=coffeinhaltig | 3=chininhaltig | 4=niacinhaltig | 5=Herkunft: Frankreich | 6=Säuerungsmittel<br><span class='star-item'>⭐ * Inclusive 1l Softdrinks (Cola/Fanta/Sprite)</span><br><span class='star-item'>⭐ * Inclusive 1l Saft (verschiedene Sorten)</span><br><span class='star-item'>⭐ * Inclusive 6 Red Bull's</span><br>💰 Alle Preise inkl. MwSt. | **Sonstiges: Preis auf Anfrage"
+            infoText: "ⓘ Zusatzstoffe: 1=Farbstoffe | 2=coffeinhaltig | 3=chininhaltig | 4=niacinhaltig | 5=Herkunft: Frankreich | 6=Säuerungsmittel<br><span class='star-item'>⭐ * Inclusive 1l Softdrinks (Cola/Fanta/Sprite)</span><br><span class='star-item'>⭐ * Inclusive 1l Saft (verschiedene Sorten)</span><br><span class='star-item'>⭐ * Inclusive 6 Red Bull's</span><br>💰 Alle Preise inkl. MwSt. | **Sonstiges: Preis auf Anfrage",
+            selectOption: "Bitte wählen Sie eine Option"
         },
         ru: { 
             cartItems: "Позиции", resetBtn: "Сбросить", orderBtn: "Заказать",
@@ -601,7 +991,8 @@
             showAllCategories: "Показать все категории", emptyCart: "Ваша корзина пуста",
             toastAdded: "➕ {name} добавлено", toastCleared: "🗑️ Корзина очищена", toastRemoved: "🗑️ {name} удалено",
             themeDark: "🌙 Темный режим активирован", themeLight: "☀️ Светлый режим активирован", dataSaved: "💾 Данные сохранены! Страница будет перезагружена...",
-            infoText: "ⓘ Добавки: 1=Красители | 2=Содержит кофеин | 3=Содержит хинин | 4=Содержит ниацин | 5=Происхождение: Франция | 6=Регулятор кислотности<br><span class='star-item'>⭐ * Включено 1л безалкогольных напитков (Cola/Fanta/Sprite)</span><br><span class='star-item'>⭐ * Включено 1л сока (разные сорта)</span><br><span class='star-item'>⭐ * Включено 6 Red Bull's</span><br>💰 Все цены с НДС | **Другое: Цена по запросу"
+            infoText: "ⓘ Добавки: 1=Красители | 2=Содержит кофеин | 3=Содержит хинин | 4=Содержит ниацин | 5=Происхождение: Франция | 6=Регулятор кислотности<br><span class='star-item'>⭐ * Включено 1л безалкогольных напитков (Cola/Fanta/Sprite)</span><br><span class='star-item'>⭐ * Включено 1л сока (разные сорта)</span><br><span class='star-item'>⭐ * Включено 6 Red Bull's</span><br>💰 Все цены с НДС | **Другое: Цена по запросу",
+            selectOption: "Пожалуйста, выберите опцию"
         },
         en: { 
             cartItems: "Items", resetBtn: "Reset", orderBtn: "Order",
@@ -612,294 +1003,453 @@
             showAllCategories: "Show all categories", emptyCart: "Your cart is empty",
             toastAdded: "➕ {name} added", toastCleared: "🗑️ Cart cleared", toastRemoved: "🗑️ {name} removed",
             themeDark: "🌙 Dark Mode activated", themeLight: "☀️ Light Mode activated", dataSaved: "💾 Data saved! Page will reload...",
-            infoText: "ⓘ Additives: 1=Colorings | 2=Caffeine | 3=Quinine | 4=Niacin | 5=Origin: France | 6=Acidulant<br><span class='star-item'>⭐ * Inclusive 1l Softdrinks (Cola/Fanta/Sprite)</span><br><span class='star-item'>⭐ * Inclusive 1l Juice (various flavors)</span><br><span class='star-item'>⭐ * Inclusive 6 Red Bull's</span><br>💰 All prices incl. VAT | **Others: Price on request"
+            infoText: "ⓘ Additives: 1=Colorings | 2=Caffeine | 3=Quinine | 4=Niacin | 5=Origin: France | 6=Acidulant<br><span class='star-item'>⭐ * Inclusive 1l Softdrinks (Cola/Fanta/Sprite)</span><br><span class='star-item'>⭐ * Inclusive 1l Juice (various flavors)</span><br><span class='star-item'>⭐ * Inclusive 6 Red Bull's</span><br>💰 All prices incl. VAT | **Others: Price on request",
+            selectOption: "Please select an option"
         }
     };
 
-    // ==================== MEHRSPRACHIGE GETRÄNKEDATEN ====================
-    const baseDrinks = {
-        bier: {
-            title: "🍺 BIER",
-            items: [
-                { name: "Heineken", size: "0,25l", price: 4.50 },
-                { name: "Heineken Alkoholfrei", size: "0,33l", price: 5.00 },
-                { name: "Corona Bier", size: "0,33l", price: 5.00 },
-                { name: "Hefe Weizen", size: "0,5l", price: 5.50 },
-                { name: "Saltos (Verschiedene Sorten)", size: "0,33l", price: 5.00 }
-            ]
-        },
-        softdrinks: {
-            title: "🥤 SOFTDRINKS",
-            items: [
-                { name: "Coca Cola", size: "0,3l", price: 3.50, desc: "1,2" },
-                { name: "Coca Cola Zero", size: "0,3l", price: 3.50, desc: "1,2" },
-                { name: "Fanta", size: "0,3l", price: 3.50, desc: "1" },
-                { name: "Sprite", size: "0,3l", price: 3.50, desc: "1" },
-                { name: "Wasser", size: "0,25l", price: 3.00, hasVariants: true, variants: ["spritzig", "still"], requireSelection: true },
-                { name: "Tonic Water", size: "0,3l", price: 3.50, desc: "3" },
-                { name: "Bitter Lemon", size: "0,3l", price: 3.50, desc: "3" },
-                { name: "Ginger Ale", size: "0,3l", price: 3.50, desc: "2" },
-                { name: "Wild Berry", size: "0,3l", price: 3.50, desc: "2" },
-                { name: "Energy", size: "0,3l", price: 4.00, desc: "1,2,3,4,6" },
-                { name: "Red Bull (Verschiedene Sorten)", size: "0,25l", price: 5.00, desc: "1,2,3,4,6" }
-            ]
-        },
-        saefte: {
-            title: "🧃 SÄFTE",
-            items: [
-                { name: "Kirschen", size: "0,33l", price: 4.00, hasVariants: true, variants: ["Nektar", "Schorle"], requireSelection: true },
-                { name: "Banane", size: "0,33l", price: 4.00, hasVariants: true, variants: ["Nektar", "Schorle"], requireSelection: true },
-                { name: "Johannisbeere", size: "0,33l", price: 4.00, hasVariants: true, variants: ["Nektar", "Schorle"], requireSelection: true },
-                { name: "Apfel", size: "0,33l", price: 4.00, hasVariants: true, variants: ["Saft", "Schorle"], requireSelection: true },
-                { name: "Orange", size: "0,33l", price: 4.00, hasVariants: true, variants: ["Saft", "Schorle"], requireSelection: true },
-                { name: "Maracuja", size: "0,33l", price: 4.00, hasVariants: true, variants: ["Nektar", "Schorle"], requireSelection: true },
-                { name: "Ananas", size: "0,33l", price: 4.00, hasVariants: true, variants: ["Saft", "Schorle"], requireSelection: true },
-                { name: "Cranberry", size: "0,33l", price: 4.00, hasVariants: true, variants: ["Saft", "Schorle"], requireSelection: true }
-            ]
-        },
-        cocktails: {
-            title: "🍹 COCKTAILS",
-            items: [
-                { name: "Daiquiri", desc: "Weißer Rum, Zitronensaft, Erdbeer Sirup", size: "0,3l", price: 12.00 },
-                { name: "Lady Killer", desc: "Gin, Triple Sec, Peach Tree, Maracuja, Ananas", size: "0,3l", price: 12.00 },
-                { name: "Caipirinha", desc: "Limette, Lime Juice, Brauner Zucker, Cachaca", size: "0,3l", price: 12.00 },
-                { name: "Cuba Libre", desc: "Limetten, Rum (Havanna), Rohrzucker, Cola", size: "0,3l", price: 12.00 },
-                { name: "Touch Down", desc: "Vodka, Triple Sec, Zitrone, Ananas, Maracuja, Grenadine", size: "0,3l", price: 12.00 },
-                { name: "Mai Tai", desc: "Zitronensaft, Lime Juice, Ananassaft, Rum, Brandy, Havanna", size: "0,3l", price: 12.00 },
-                { name: "Zombie", desc: "Zitros, Lime Juice, Ceepers, Myers Rum, Havanna, Ananassaft, Orangensaft", size: "0,3l", price: 12.00 },
-                { name: "Sex on the Beach", desc: "Orangensaft, Ananassaft, Vodka, Peachtree, Zitro", size: "0,3l", price: 12.00 },
-                { name: "White Russian", desc: "Vodka, Kahlua, Sahne", size: "0,3l", price: 12.00 },
-                { name: "Long Island", desc: "Zitro, Lime Juice, Vodka, Tequila, Havanna, Gin, Triple Sec", size: "0,3l", price: 12.00 },
-                { name: "Pina Colada", desc: "Cocossirup, Myers Rum, Havanna, Ananassaft", size: "0,3l", price: 12.00 },
-                { name: "Peach Colada", desc: "Rum, Peach Tree, Ananas, Pfirsich, Kokos, Sahne", size: "0,3l", price: 12.00 },
-                { name: "Americano", desc: "Campari, Vermuth bianco", size: "0,3l", price: 12.00 },
-                { name: "Mojito", desc: "Limette, Minze, Rohrzucker, Sodawasser, Weißer Rum", size: "0,3l", price: 12.00 },
-                { name: "Ocean Breeze", desc: "Weißer Rum, Amaretto, Curacao Blue, Ananassaft, Sodawasser", size: "0,3l", price: 12.00 },
-                { name: "Diamond Special", desc: "Gin, Vodka, Tequila Silver, Triple Sec, Grenadine, Maracuja Saft, Zitrone, Lime", size: "0,3l", price: 12.00 }
-            ]
-        },
-        cocktails_alkoholfrei: {
-            title: "✨ ALKOHOLFREIE COCKTAILS",
-            items: [
-                { name: "Coconut Kiss", desc: "Cocos, Sahne, Grenadine, Ananassaft", size: "0,3l", price: 12.00 },
-                { name: "Virgin Capi", desc: "Limette, Lime Juice, Brauner Zucker, Ginger Ale", size: "0,3l", price: 12.00 },
-                { name: "Diamond Special Fresh", desc: "Ananas, Orange, Zitrone, Grenadine", size: "0,3l", price: 12.00 },
-                { name: "Exotik", desc: "Ananas, Orange, Zitrone, Minze Sirup", size: "0,3l", price: 12.00 },
-                { name: "Mojito (alkoholfrei)", desc: "Limette, Minze, Rohrzucker, Tonic Wasser, Sodawasser", size: "0,3l", price: 12.00 },
-                { name: "Caipirinha (alkoholfrei)", desc: "Limette, Rohrzucker, Ginger Ale", size: "0,3l", price: 12.00 },
-                { name: "Cinderella", desc: "Orangensaft, Ananassaft, Kokossirup, Sahne, Grenadine", size: "0,3l", price: 12.00 }
-            ]
-        },
-        longdrinks: {
-            title: "🥃 LONGDRINKS",
-            items: [
-                { name: "Malibu", size: "4cl", price: 10.00, hasVariants: true, variants: ["Maracuja", "Kirsch"], requireSelection: true },
-                { name: "Jacky", size: "4cl", price: 10.00, hasVariants: true, variants: ["Cola", "Apfel"], desc: "1,2", requireSelection: true },
-                { name: "Asbach Cola", desc: "1,2", size: "4cl", price: 10.00 },
-                { name: "Captain Morgan Cola", desc: "1,2", size: "4cl", price: 10.00 },
-                { name: "Gin", size: "4cl", price: 10.00, hasVariants: true, variants: ["Tonic", "Russian Wild Berry"], requireSelection: true },
-                { name: "Jägermeister Energy", desc: "1,2,3,4,6", size: "4cl", price: 10.00 },
-                { name: "Vodka Energy", desc: "1,2,3,4,6", size: "4cl", price: 10.00 },
-                { name: "Vodka", size: "4cl", price: 10.00, hasVariants: true, variants: ["Lemon", "Orange"], desc: "3", requireSelection: true }
-            ]
-        },
-        shots: {
-            title: "💥 SHOTS",
-            items: [
-                { name: "B52", size: "4cl", price: 6.00 },
-                { name: "Havanna Lime", size: "4cl", price: 6.00 },
-                { name: "Vodka Lime", size: "4cl", price: 6.00 },
-                { name: "Orgasmus", size: "4cl", price: 6.00 },
-                { name: "Russian Roulette", size: "4cl", price: 6.00 },
-                { name: "Kamikaze", size: "4cl", price: 6.00 }
-            ]
-        },
-        sekt: {
-            title: "🥂 SEKT & WEIN",
-            items: [
-                { name: "Scavi & Ray Prosecco", size: "0,2l", price: 6.50 },
-                { name: "Scavi & Ray Ice Prestige", size: "0,2l", price: 7.00 },
-                { name: "Aperol Spritz", size: "0,2l", price: 8.00 },
-                { name: "Hugo", size: "0,2l", price: 8.00 },
-                { name: "Sapphire Spritz", size: "0,2l", price: 8.00 },
-                { name: "Ruby Fizz", size: "0,2l", price: 8.00 },
-                { name: "Aperol Suprise", size: "0,2l", price: 8.00 },
-                { name: "Scavi & Ray IL Bianco", size: "0,75l", price: 35.00 },
-                { name: "Scavi & Ray IL Rosso", size: "0,75l", price: 35.00 },
-                { name: "Scavi & Ray IL Rosato", size: "0,75l", price: 35.00 },
-                { name: "Rotwein", size: "0,2l", price: 7.00 },
-                { name: "Weißwein", size: "0,2l", price: 7.00 },
-                { name: "Lille Berry", size: "0,2l", price: 8.00 }
-            ]
-        },
-        flaschen: {
-            title: "🍾 FLASCHENVERKAUF",
-            items: [
-                { name: "Softdrinks (Cola, Fanta, Sprite)", size: "1,0l", price: 10.00, hasVariants: true, variants: ["Cola", "Fanta", "Sprite"], requireSelection: true },
-                { name: "Säfte (Verschiedene Sorten)", size: "1,0l", price: 15.00 },
-                { name: "Effect Classic Energy", size: "1,0l", price: 10.00 },
-                { name: "Vodka Smirnoff Red Label *", size: "0,7l", hasVariants: true, hasPriceVariants: true, variants: ["65€ mit Softdrinks", "70€ mit Saft", "80€ mit 6 Red Bull's"], requireSelection: true },
-                { name: "Vodka Absolut *", size: "0,7l", hasVariants: true, hasPriceVariants: true, variants: ["75€ mit Softdrinks", "80€ mit Saft", "90€ mit 6 Red Bull's"], requireSelection: true },
-                { name: "Vodka Belvedere *", size: "0,7l", hasVariants: true, hasPriceVariants: true, variants: ["135€ mit Softdrinks", "140€ mit Saft", "150€ mit 6 Red Bull's"], requireSelection: true },
-                { name: "Vodka 9 Mile *", size: "0,7l", hasVariants: true, hasPriceVariants: true, variants: ["75€ mit Softdrinks", "80€ mit Saft", "90€ mit 6 Red Bull's"], requireSelection: true },
-                { name: "Tequila Gold / Silver *", size: "0,7l", hasVariants: true, hasPriceVariants: true, variants: ["80€ mit Softdrinks", "85€ mit Saft", "95€ mit 6 Red Bull's"], requireSelection: true },
-                { name: "Jägermeister *", size: "0,7l", hasVariants: true, hasPriceVariants: true, variants: ["80€ mit Softdrinks", "85€ mit Saft", "95€ mit 6 Red Bull's"], requireSelection: true },
-                { name: "Captain Morgan *", size: "0,7l", hasVariants: true, hasPriceVariants: true, variants: ["80€ mit Softdrinks", "85€ mit Saft", "95€ mit 6 Red Bull's"], requireSelection: true },
-                { name: "Gordon's Gin *", size: "0,7l", hasVariants: true, hasPriceVariants: true, variants: ["80€ mit Softdrinks", "85€ mit Saft", "95€ mit 6 Red Bull's"], requireSelection: true },
-                { name: "Ficken", size: "0,7l", price: 50.00 },
-                { name: "Havanna *", size: "0,7l", hasVariants: true, hasPriceVariants: true, variants: ["80€ mit Softdrinks", "85€ mit Saft", "95€ mit 6 Red Bull's"], requireSelection: true },
-                { name: "Vodka Melone", size: "0,7l", price: 50.00 },
-                { name: "Hennessy *", size: "0,7l", hasVariants: true, hasPriceVariants: true, variants: ["135€ mit Softdrinks", "140€ mit Saft", "150€ mit 6 Red Bull's"], requireSelection: true },
-                { name: "Jack Daniels *", size: "0,7l", hasVariants: true, hasPriceVariants: true, variants: ["80€ mit Softdrinks", "85€ mit Saft", "95€ mit 6 Red Bull's"], requireSelection: true },
-                { name: "Moet & Chandon Brut", size: "0,7l", price: 120.00 },
-                { name: "Scavi & Ray Prosecco", size: "0,75l", price: 35.00 },
-                { name: "Scavi & Ray Ice Prestige", size: "0,75l", price: 40.00 }
-            ]
-        },
-        spirituosen: {
-            title: "🥃 SPIRITUOSEN",
-            items: [
-                { name: "Vodka", size: "2cl", price: 3.00 },
-                { name: "Vodka Melone", size: "2cl", price: 3.00 },
-                { name: "Havanna Club", size: "2cl", price: 3.50 },
-                { name: "Tequila (Silver / Gold)", size: "2cl", price: 3.50 },
-                { name: "Malibu", size: "2cl", price: 3.50 },
-                { name: "Baileys", size: "4cl", price: 6.00, desc: "1,2" },
-                { name: "Ficken", size: "2cl", price: 3.00 },
-                { name: "Jägermeister", size: "2cl", price: 3.50 },
-                { name: "Jack Daniels", size: "2cl", price: 3.50 },
-                { name: "Asbach", size: "2cl", price: 3.50 },
-                { name: "Hennessy", size: "2cl", price: 6.00 },
-                { name: "Bacardi/Razz", size: "2cl", price: 3.50 },
-                { name: "Gordon's Dry Gin", size: "2cl", price: 3.50 },
-                { name: "Captain Morgan Gold", size: "2cl", price: 3.50 }
-            ]
-        }
-    };
-
-    // ==================== SPRACHÜBERSETZUNGEN FÜR GETRÄNKE ====================
-    const drinkTranslations = {
+    // ==================== GETRÄNKEDATEN ====================
+    const drinksDataMultilang = {
         de: {
-            "Saltos (Verschiedene Sorten)": "Saltos (Verschiedene Sorten)",
-            "Red Bull (Verschiedene Sorten)": "Red Bull (Verschiedene Sorten)",
-            "Sapphire Spritz": "Sapphire Spritz",
-            "Ruby Fizz": "Ruby Fizz",
-            "Aperol Suprise": "Aperol Suprise",
-            "Weißer Rum, Zitronensaft, Erdbeer Sirup": "Weißer Rum, Zitronensaft, Erdbeer Sirup",
-            "Gin, Triple Sec, Peach Tree, Maracuja, Ananas": "Gin, Triple Sec, Peach Tree, Maracuja, Ananas",
-            "Limette, Lime Juice, Brauner Zucker, Cachaca": "Limette, Lime Juice, Brauner Zucker, Cachaca",
-            "Limetten, Rum (Havanna), Rohrzucker, Cola": "Limetten, Rum (Havanna), Rohrzucker, Cola",
-            "Vodka, Triple Sec, Zitrone, Ananas, Maracuja, Grenadine": "Vodka, Triple Sec, Zitrone, Ananas, Maracuja, Grenadine",
-            "Zitronensaft, Lime Juice, Ananassaft, Rum, Brandy, Havanna": "Zitronensaft, Lime Juice, Ananassaft, Rum, Brandy, Havanna",
-            "Zitros, Lime Juice, Ceepers, Myers Rum, Havanna, Ananassaft, Orangensaft": "Zitros, Lime Juice, Ceepers, Myers Rum, Havanna, Ananassaft, Orangensaft",
-            "Orangensaft, Ananassaft, Vodka, Peachtree, Zitro": "Orangensaft, Ananassaft, Vodka, Peachtree, Zitro",
-            "Vodka, Kahlua, Sahne": "Vodka, Kahlua, Sahne",
-            "Zitro, Lime Juice, Vodka, Tequila, Havanna, Gin, Triple Sec": "Zitro, Lime Juice, Vodka, Tequila, Havanna, Gin, Triple Sec",
-            "Cocossirup, Myers Rum, Havanna, Ananassaft": "Cocossirup, Myers Rum, Havanna, Ananassaft",
-            "Rum, Peach Tree, Ananas, Pfirsich, Kokos, Sahne": "Rum, Peach Tree, Ananas, Pfirsich, Kokos, Sahne",
-            "Campari, Vermuth bianco": "Campari, Vermuth bianco",
-            "Limette, Minze, Rohrzucker, Sodawasser, Weißer Rum": "Limette, Minze, Rohrzucker, Sodawasser, Weißer Rum",
-            "Weißer Rum, Amaretto, Curacao Blue, Ananassaft, Sodawasser": "Weißer Rum, Amaretto, Curacao Blue, Ananassaft, Sodawasser",
-            "Gin, Vodka, Tequila Silver, Triple Sec, Grenadine, Maracuja Saft, Zitrone, Lime": "Gin, Vodka, Tequila Silver, Triple Sec, Grenadine, Maracuja Saft, Zitrone, Lime",
-            "Cocos, Sahne, Grenadine, Ananassaft": "Cocos, Sahne, Grenadine, Ananassaft",
-            "Limette, Lime Juice, Brauner Zucker, Ginger Ale": "Limette, Lime Juice, Brauner Zucker, Ginger Ale",
-            "Ananas, Orange, Zitrone, Grenadine": "Ananas, Orange, Zitrone, Grenadine",
-            "Ananas, Orange, Zitrone, Minze Sirup": "Ananas, Orange, Zitrone, Minze Sirup",
-            "Limette, Minze, Rohrzucker, Tonic Wasser, Sodawasser": "Limette, Minze, Rohrzucker, Tonic Wasser, Sodawasser",
-            "Limette, Rohrzucker, Ginger Ale": "Limette, Rohrzucker, Ginger Ale",
-            "Orangensaft, Ananassaft, Kokossirup, Sahne, Grenadine": "Orangensaft, Ananassaft, Kokossirup, Sahne, Grenadine"
+            bier: {
+                title: "🍺 BIER",
+                items: [
+                    { name: "Heineken", size: "0,25l", price: 4.00 },
+                    { name: "Heineken Alkoholfrei", size: "0,33l", price: 4.50 },
+                    { name: "Corona Bier", size: "0,33l", price: 4.50 },
+                    { name: "Hefe Weizen", size: "0,5l", price: 4.50 },
+                    { name: "Saltos (Verschiedene Sorten)", size: "0,33l", price: 4.50 }
+                ]
+            },
+            softdrinks: {
+                title: "🥤 SOFTDRINKS",
+                items: [
+                    { name: "Coca Cola", size: "0,3l", price: 3.50, desc: "1,2" },
+                    { name: "Coca Cola Zero", size: "0,3l", price: 3.50, desc: "1,2" },
+                    { name: "Fanta", size: "0,3l", price: 3.50, desc: "1" },
+                    { name: "Sprite", size: "0,3l", price: 3.50, desc: "1" },
+                    { name: "Wasser", size: "0,25l", price: 3.00, hasVariants: true, variants: ["spritzig", "still"], requireSelection: true },
+                    { name: "Tonic Water", size: "0,3l", price: 3.50, desc: "3" },
+                    { name: "Bitter Lemon", size: "0,3l", price: 3.50, desc: "3" },
+                    { name: "Ginger Ale", size: "0,3l", price: 3.50, desc: "2" },
+                    { name: "Wild Berry", size: "0,3l", price: 3.50, desc: "2" },
+                    { name: "Energy", size: "0,3l", price: 4.00, desc: "1,2,3,4,6" },
+                    { name: "Red Bull (Verschiedene Sorten)", size: "0,25l", price: 4.50, desc: "1,2,3,4,6" }
+                ]
+            },
+            saefte: {
+                title: "🧃 SÄFTE",
+                items: [
+                    { name: "Kirschen", size: "0,25l", price: 4.00, hasVariants: true, variants: ["Nektar", "Schorle"], requireSelection: true },
+                    { name: "Banane", size: "0,25l", price: 4.00, hasVariants: true, variants: ["Nektar", "Schorle"], requireSelection: true },
+                    { name: "Johannisbeere", size: "0,25l", price: 4.00, hasVariants: true, variants: ["Nektar", "Schorle"], requireSelection: true },
+                    { name: "Apfel", size: "0,25l", price: 4.00, hasVariants: true, variants: ["Saft", "Schorle"], requireSelection: true },
+                    { name: "Orange", size: "0,25l", price: 4.00, hasVariants: true, variants: ["Saft", "Schorle"], requireSelection: true },
+                    { name: "Maracuja", size: "0,25l", price: 4.00, hasVariants: true, variants: ["Nektar", "Schorle"], requireSelection: true },
+                    { name: "Ananas", size: "0,25l", price: 4.00, hasVariants: true, variants: ["Saft", "Schorle"], requireSelection: true },
+                    { name: "Cranberry", size: "0,25l", price: 4.00, hasVariants: true, variants: ["Saft", "Schorle"], requireSelection: true }
+                ]
+            },
+            cocktails: {
+                title: "🍹 COCKTAILS",
+                items: [
+                    { name: "Daiquiri", desc: "Weißer Rum, Zitronensaft, Erdbeer Sirup", size: "0,4l", price: 10.00 },
+                    { name: "Lady Killer", desc: "Gin, Triple Sec, Peach Tree, Maracuja, Ananas", size: "0,4l", price: 10.00 },
+                    { name: "Caipirinha", desc: "Limette, Lime Juice, Brauner Zucker, Cachaca", size: "0,4l", price: 10.00 },
+                    { name: "Cuba Libre", desc: "Limetten, Rum (Havanna), Rohrzucker, Cola", size: "0,4l", price: 10.00 },
+                    { name: "Touch Down", desc: "Vodka, Triple Sec, Zitrone, Ananas, Maracuja, Grenadine", size: "0,4l", price: 10.00 },
+                    { name: "Mai Tai", desc: "Zitronensaft, Lime Juice, Ananassaft, Rum, Brandy, Havanna", size: "0,4l", price: 10.00 },
+                    { name: "Zombie", desc: "Zitros, Lime Juice, Ceepers, Myers Rum, Havanna, Ananassaft, Orangensaft", size: "0,4l", price: 10.00 },
+                    { name: "Sex on the Beach", desc: "Orangensaft, Ananassaft, Vodka, Peachtree, Zitro", size: "0,4l", price: 10.00 },
+                    { name: "White Russian", desc: "Vodka, Kahlua, Sahne", size: "0,4l", price: 10.00 },
+                    { name: "Long Island", desc: "Zitro, Lime Juice, Vodka, Tequila, Havanna, Gin, Triple Sec", size: "0,4l", price: 10.00 },
+                    { name: "Pina Colada", desc: "Cocossirup, Myers Rum, Havanna, Ananassaft", size: "0,4l", price: 10.00 },
+                    { name: "Peach Colada", desc: "Rum, Peach Tree, Ananas, Pfirsich, Kokos, Sahne", size: "0,4l", price: 10.00 },
+                    { name: "Americano", desc: "Campari, Vermuth bianco", size: "0,4l", price: 10.00 },
+                    { name: "Mojito", desc: "Limette, Minze, Rohrzucker, Sodawasser, Weißer Rum", size: "0,4l", price: 10.00 },
+                    { name: "Ocean Breeze", desc: "Weißer Rum, Amaretto, Curacao Blue, Ananassaft, Sodawasser", size: "0,4l", price: 10.00 },
+                    { name: "Diamond Special", desc: "Gin, Vodka, Tequila Silver, Triple Sec, Grenadine, Maracuja Saft, Zitrone, Lime", size: "0,4l", price: 10.00 }
+                ]
+            },
+            cocktails_alkoholfrei: {
+                title: "✨ ALKOHOLFREIE COCKTAILS",
+                items: [
+                    { name: "Coconut Kiss", desc: "Cocos, Sahne, Grenadine, Ananassaft", size: "0,4l", price: 9.00 },
+                    { name: "Virgin Capi", desc: "Limette, Lime Juice, Brauner Zucker, Ginger Ale", size: "0,4l", price: 9.00 },
+                    { name: "Diamond Special Fresh", desc: "Ananas, Orange, Zitrone, Grenadine", size: "0,4l", price: 9.00 },
+                    { name: "Exotik", desc: "Ananas, Orange, Zitrone, Minze Sirup", size: "0,4l", price: 9.00 },
+                    { name: "Mojito (alkoholfrei)", desc: "Limette, Minze, Rohrzucker, Tonic Wasser, Sodawasser", size: "0,4l", price: 9.00 },
+                    { name: "Caipirinha (alkoholfrei)", desc: "Limette, Rohrzucker, Ginger Ale", size: "0,4l", price: 9.00 },
+                    { name: "Cinderella", desc: "Orangensaft, Ananassaft, Kokossirup, Sahne, Grenadine", size: "0,4l", price: 9.00 }
+                ]
+            },
+            longdrinks: {
+                title: "🥃 LONGDRINKS",
+                items: [
+                    { name: "Malibu", size: "4cl", price: 9.00, hasVariants: true, variants: ["Maracuja", "Kirsch"], requireSelection: true },
+                    { name: "Jacky", size: "4cl", price: 9.00, hasVariants: true, variants: ["Cola", "Apfel"], desc: "1,2", requireSelection: true },
+                    { name: "Asbach Cola", desc: "1,2", size: "4cl", price: 9.00 },
+                    { name: "Captain Morgan Cola", desc: "1,2", size: "4cl", price: 9.00 },
+                    { name: "Gin", size: "4cl", price: 9.00, hasVariants: true, variants: ["Tonic", "Russian Wild Berry"], requireSelection: true },
+                    { name: "Jägermeister Energy", desc: "1,2,3,4,6", size: "4cl", price: 9.00 },
+                    { name: "Vodka Energy", desc: "1,2,3,4,6", size: "4cl", price: 9.00 },
+                    { name: "Vodka", size: "4cl", price: 9.00, hasVariants: true, variants: ["Lemon", "Orange"], desc: "3", requireSelection: true }
+                ]
+            },
+            shots: {
+                title: "💥 SHOTS",
+                items: [
+                    { name: "B52", size: "4cl", price: 6.00 },
+                    { name: "Havanna Lime", size: "4cl", price: 6.00 },
+                    { name: "Vodka Lime", size: "4cl", price: 6.00 },
+                    { name: "Orgasmus", size: "4cl", price: 6.00 },
+                    { name: "Russian Roulette", size: "4cl", price: 6.00 },
+                    { name: "Kamikaze", size: "4cl", price: 6.00 }
+                ]
+            },
+            sekt: {
+                title: "🥂 SEKT & WEIN",
+                items: [
+                    { name: "Scavi & Ray Prosecco", size: "0,2l", price: 6.00 },
+                    { name: "Scavi & Ray Ice Prestige", size: "0,2l", price: 7.00 },
+                    { name: "Aperol Spritz", size: "0,2l", price: 7.00 },
+                    { name: "Hugo", size: "0,2l", price: 7.00 },
+                    { name: "Scavi & Ray IL Bianco", size: "0,75l", price: 35.00 },
+                    { name: "Scavi & Ray IL Rosso", size: "0,75l", price: 35.00 },
+                    { name: "Scavi & Ray IL Rosato", size: "0,75l", price: 35.00 },
+                    { name: "Rotwein", size: "0,2l", price: 6.00 },
+                    { name: "Weißwein", size: "0,2l", price: 6.00 },
+                    { name: "Lille Berry", size: "0,2l", price: 7.00 }
+                ]
+            },
+            flaschen: {
+                title: "🍾 FLASCHENVERKAUF",
+                items: [
+                    { name: "Softdrinks (Cola, Fanta, Sprite)", size: "1,0l", price: 10.00, hasVariants: true, variants: ["Cola", "Fanta", "Sprite"], requireSelection: true },
+                    { name: "Säfte (Verschiedene Sorten)", size: "1,0l", price: 15.00, hasVariants: true, variants: ["Kirschen", "Banane", "Johannisbeere", "Apfel", "Orange", "Maracuja", "Ananas", "Cranberry"], requireSelection: true },
+                    { name: "Effect Classic Energy", size: "1,0l", price: 10.00 },
+                    { name: "Vodka Smirnoff Red Label *", size: "0,7l", hasPriceVariants: true, variants: ["65€ mit Softdrinks", "70€ mit Saft", "80€ mit 6 Red Bull's"], requireSelection: true, isBottle: true },
+                    { name: "Vodka Absolut *", size: "0,7l", hasPriceVariants: true, variants: ["75€ mit Softdrinks", "80€ mit Saft", "90€ mit 6 Red Bull's"], requireSelection: true, isBottle: true },
+                    { name: "Vodka Belvedere *", size: "0,7l", hasPriceVariants: true, variants: ["135€ mit Softdrinks", "140€ mit Saft", "150€ mit 6 Red Bull's"], requireSelection: true, isBottle: true },
+                    { name: "Vodka 9 Mile *", size: "0,7l", hasPriceVariants: true, variants: ["75€ mit Softdrinks", "80€ mit Saft", "90€ mit 6 Red Bull's"], requireSelection: true, isBottle: true },
+                    { name: "Tequila Gold / Silver *", size: "0,7l", hasPriceVariants: true, variants: ["80€ mit Softdrinks", "85€ mit Saft", "95€ mit 6 Red Bull's"], requireSelection: true, isBottle: true },
+                    { name: "Jägermeister *", size: "0,7l", hasPriceVariants: true, variants: ["80€ mit Softdrinks", "85€ mit Saft", "95€ mit 6 Red Bull's"], requireSelection: true, isBottle: true },
+                    { name: "Captain Morgan *", size: "0,7l", hasPriceVariants: true, variants: ["80€ mit Softdrinks", "85€ mit Saft", "95€ mit 6 Red Bull's"], requireSelection: true, isBottle: true },
+                    { name: "Gordon's Gin *", size: "0,7l", hasPriceVariants: true, variants: ["80€ mit Softdrinks", "85€ mit Saft", "95€ mit 6 Red Bull's"], requireSelection: true, isBottle: true },
+                    { name: "Ficken", size: "0,7l", price: 50.00 },
+                    { name: "Havanna *", size: "0,7l", hasPriceVariants: true, variants: ["80€ mit Softdrinks", "85€ mit Saft", "95€ mit 6 Red Bull's"], requireSelection: true, isBottle: true },
+                    { name: "Vodka Melone", size: "0,7l", price: 50.00 },
+                    { name: "Hennessy *", size: "0,7l", hasPriceVariants: true, variants: ["135€ mit Softdrinks", "140€ mit Saft", "150€ mit 6 Red Bull's"], requireSelection: true, isBottle: true },
+                    { name: "Jack Daniels *", size: "0,7l", hasPriceVariants: true, variants: ["80€ mit Softdrinks", "85€ mit Saft", "95€ mit 6 Red Bull's"], requireSelection: true, isBottle: true },
+                    { name: "Moet & Chandon Brut", size: "0,7l", price: 120.00 },
+                    { name: "Scavi & Ray Prosecco", size: "0,75l", price: 35.00 },
+                    { name: "Scavi & Ray Ice Prestige", size: "0,75l", price: 40.00 }
+                ]
+            },
+            spirituosen: {
+                title: "🥃 SPIRITUOSEN",
+                items: [
+                    { name: "Vodka", size: "2cl", price: 3.00 },
+                    { name: "Vodka Melone", size: "2cl", price: 3.00 },
+                    { name: "Havanna Club", size: "2cl", price: 3.00 },
+                    { name: "Tequila (Silver / Gold)", size: "2cl", price: 3.00 },
+                    { name: "Malibu", size: "2cl", price: 3.00 },
+                    { name: "Baileys", size: "4cl", price: 6.00, desc: "1,2" },
+                    { name: "Ficken", size: "2cl", price: 3.00 },
+                    { name: "Jägermeister", size: "2cl", price: 3.00 },
+                    { name: "Jack Daniels", size: "2cl", price: 3.00 },
+                    { name: "Asbach", size: "2cl", price: 3.00 },
+                    { name: "Hennessy", size: "2cl", price: 5.00 },
+                    { name: "Bacardi/Razz", size: "2cl", price: 3.00 },
+                    { name: "Gordon's Dry Gin", size: "2cl", price: 3.00 },
+                    { name: "Captain Morgan Gold", size: "2cl", price: 3.00 }
+                ]
+            }
         },
+        ru: {}, en: {}
+    };
+
+    // ==================== GETRÄNKEÜBERSETZUNGEN ====================
+    const drinkTranslations = {
+        de: {},
         ru: {
-            "Saltos (Verschiedene Sorten)": "Сальтос (Разные сорта)",
-            "Red Bull (Verschiedene Sorten)": "Ред Булл (Разные сорта)",
-            "Sapphire Spritz": "Сапфир Шприц",
-            "Ruby Fizz": "Руби Физз",
-            "Aperol Suprise": "Апероль Сюрприз",
-            "Weißer Rum, Zitronensaft, Erdbeer Sirup": "Белый ром, лимонный сок, клубничный сироп",
-            "Gin, Triple Sec, Peach Tree, Maracuja, Ananas": "Джин, Трипл Сек, Пич Три, маракуйя, ананас",
-            "Limette, Lime Juice, Brauner Zucker, Cachaca": "Лайм, сок лайма, коричневый сахар, Кашаса",
-            "Limetten, Rum (Havanna), Rohrzucker, Cola": "Лайм, ром (Гаванна), тростниковый сахар, кола",
-            "Vodka, Triple Sec, Zitrone, Ananas, Maracuja, Grenadine": "Водка, Трипл Сек, лимон, ананас, маракуйя, гренадин",
-            "Zitronensaft, Lime Juice, Ananassaft, Rum, Brandy, Havanna": "Лимонный сок, сок лайма, ананасовый сок, ром, бренди, Гаванна",
-            "Zitros, Lime Juice, Ceepers, Myers Rum, Havanna, Ananassaft, Orangensaft": "Лайм, ром, ананасовый сок, апельсиновый сок",
-            "Orangensaft, Ananassaft, Vodka, Peachtree, Zitro": "Апельсиновый сок, ананасовый сок, водка, Пичтри",
-            "Vodka, Kahlua, Sahne": "Водка, Калуа, сливки",
-            "Zitro, Lime Juice, Vodka, Tequila, Havanna, Gin, Triple Sec": "Водка, текила, ром, джин, Трипл Сек",
-            "Cocossirup, Myers Rum, Havanna, Ananassaft": "Кокосовый сироп, ром, ананасовый сок",
-            "Rum, Peach Tree, Ananas, Pfirsich, Kokos, Sahne": "Ром, Пич Три, ананас, персик, кокос, сливки",
-            "Campari, Vermuth bianco": "Кампари, вермут",
-            "Limette, Minze, Rohrzucker, Sodawasser, Weißer Rum": "Лайм, мята, тростниковый сахар, содовая, белый ром",
-            "Weißer Rum, Amaretto, Curacao Blue, Ananassaft, Sodawasser": "Белый ром, Амаретто, Курасао Блю, ананасовый сок, содовая",
-            "Gin, Vodka, Tequila Silver, Triple Sec, Grenadine, Maracuja Saft, Zitrone, Lime": "Джин, водка, Текила Сильвер, Трипл Сек, гренадин, маракуйя, лимон, лайм",
-            "Cocos, Sahne, Grenadine, Ananassaft": "Кокос, сливки, гренадин, ананасовый сок",
-            "Limette, Lime Juice, Brauner Zucker, Ginger Ale": "Лайм, сок лайма, коричневый сахар, Имбирный эль",
-            "Ananas, Orange, Zitrone, Grenadine": "Ананас, апельсин, лимон, гренадин",
-            "Ananas, Orange, Zitrone, Minze Sirup": "Ананас, апельсин, лимон, мятный сироп",
-            "Limette, Minze, Rohrzucker, Tonic Wasser, Sodawasser": "Лайм, мята, тростниковый сахар, тоник, содовая",
-            "Limette, Rohrzucker, Ginger Ale": "Лайм, коричневый сахар, Имбирный эль",
-            "Orangensaft, Ananassaft, Kokossirup, Sahne, Grenadine": "Апельсиновый сок, ананасовый сок, кокосовый сироп, сливки, гренадин"
+            "Heineken": "Хайнекен",
+            "Heineken Alkoholfrei": "Хайнекен Безалкогольное",
+            "Corona Bier": "Корона",
+            "Hefe Weizen": "Пшеничное",
+            "Saltos (Verschiedene Sorten)": "Сальтос (разные сорта)",
+            "Coca Cola": "Кока Кола",
+            "Coca Cola Zero": "Кока Кола Зеро",
+            "Fanta": "Фанта",
+            "Sprite": "Спрайт",
+            "Wasser": "Вода",
+            "Tonic Water": "Тоник",
+            "Bitter Lemon": "Биттер Лимон",
+            "Ginger Ale": "Имбирный эль",
+            "Wild Berry": "Уайлд Берри",
+            "Energy": "Энергетик",
+            "Red Bull (Verschiedene Sorten)": "Ред Булл (разные сорта)",
+            "Kirschen": "Вишня",
+            "Banane": "Банан",
+            "Johannisbeere": "Смородина",
+            "Apfel": "Яблоко",
+            "Orange": "Апельсин",
+            "Maracuja": "Маракуйя",
+            "Ananas": "Ананас",
+            "Cranberry": "Клюква",
+            "Daiquiri": "Дайкири",
+            "Lady Killer": "Леди Киллер",
+            "Caipirinha": "Кайпиринья",
+            "Cuba Libre": "Куба Либре",
+            "Touch Down": "Тач Даун",
+            "Mai Tai": "Май Тай",
+            "Zombie": "Зомби",
+            "Sex on the Beach": "Секс на пляже",
+            "White Russian": "Белый русский",
+            "Long Island": "Лонг-Айленд",
+            "Pina Colada": "Пина Колада",
+            "Peach Colada": "Пич Колада",
+            "Americano": "Американо",
+            "Mojito": "Мохито",
+            "Ocean Breeze": "Оушен Бриз",
+            "Diamond Special": "Даймонд Спешиал",
+            "Coconut Kiss": "Кокосовый поцелуй",
+            "Virgin Capi": "Вирджин Капи",
+            "Diamond Special Fresh": "Даймонд Фреш",
+            "Exotik": "Экзотик",
+            "Mojito (alkoholfrei)": "Мохито (безалк.)",
+            "Caipirinha (alkoholfrei)": "Кайпиринья (безалк.)",
+            "Cinderella": "Золушка",
+            "Malibu": "Малибу",
+            "Jacky": "Джеки",
+            "Asbach Cola": "Асбах Кола",
+            "Captain Morgan Cola": "Капитан Морган Кола",
+            "Gin": "Джин",
+            "Jägermeister Energy": "Егермейстер Энерджи",
+            "Vodka Energy": "Водка Энерджи",
+            "Vodka": "Водка",
+            "B52": "B52",
+            "Havanna Lime": "Гаванна Лайм",
+            "Vodka Lime": "Водка Лайм",
+            "Orgasmus": "Оргазмус",
+            "Russian Roulette": "Русская рулетка",
+            "Kamikaze": "Камикадзе",
+            "Scavi & Ray Prosecco": "Скави & Рэй Просекко",
+            "Scavi & Ray Ice Prestige": "Скави & Рэй Айс Престиж",
+            "Aperol Spritz": "Апероль Шприц",
+            "Hugo": "Хуго",
+            "Scavi & Ray IL Bianco": "Скави & Рэй Иль Бьянко",
+            "Scavi & Ray IL Rosso": "Скави & Рэй Иль Россо",
+            "Scavi & Ray IL Rosato": "Скави & Рэй Иль Розато",
+            "Rotwein": "Красное вино",
+            "Weißwein": "Белое вино",
+            "Lille Berry": "Лиль Берри",
+            "Softdrinks (Cola, Fanta, Sprite)": "Напитки (Кола, Фанта, Спрайт)",
+            "Säfte (Verschiedene Sorten)": "Соки (разные сорта)",
+            "Effect Classic Energy": "Эффект Классик Энерджи",
+            "Vodka Smirnoff Red Label *": "Водка Смирнофф Ред Лейбл *",
+            "Vodka Absolut *": "Водка Абсолют *",
+            "Vodka Belvedere *": "Водка Бельведер *",
+            "Vodka 9 Mile *": "Водка 9 Майл *",
+            "Tequila Gold / Silver *": "Текила Голд / Сильвер *",
+            "Jägermeister *": "Егермейстер *",
+            "Captain Morgan *": "Капитан Морган *",
+            "Gordon's Gin *": "Гордонс Джин *",
+            "Ficken": "Фикен",
+            "Havanna *": "Гаванна *",
+            "Vodka Melone": "Водка Мелон",
+            "Hennessy *": "Хеннесси *",
+            "Jack Daniels *": "Джек Дэниэлс *",
+            "Moet & Chandon Brut": "Моэт & Шандон Брют",
+            "Havanna Club": "Гаванна Клаб",
+            "Tequila (Silver / Gold)": "Текила (Сильвер / Голд)",
+            "Baileys": "Бейлис",
+            "Jack Daniels": "Джек Дэниэлс",
+            "Asbach": "Асбах",
+            "Hennessy": "Хеннесси",
+            "Bacardi/Razz": "Бакарди/Разз",
+            "Gordon's Dry Gin": "Гордонс Драй Джин",
+            "Captain Morgan Gold": "Капитан Морган Голд"
         },
         en: {
-            "Saltos (Verschiedene Sorten)": "Saltos (Various flavors)",
-            "Red Bull (Verschiedene Sorten)": "Red Bull (Various flavors)",
-            "Sapphire Spritz": "Sapphire Spritz",
-            "Ruby Fizz": "Ruby Fizz",
-            "Aperol Suprise": "Aperol Surprise",
-            "Weißer Rum, Zitronensaft, Erdbeer Sirup": "White rum, lemon juice, strawberry syrup",
-            "Gin, Triple Sec, Peach Tree, Maracuja, Ananas": "Gin, Triple Sec, Peach Tree, passion fruit, pineapple",
-            "Limette, Lime Juice, Brauner Zucker, Cachaca": "Lime, lime juice, brown sugar, Cachaca",
-            "Limetten, Rum (Havanna), Rohrzucker, Cola": "Lime, rum (Havana), cane sugar, cola",
-            "Vodka, Triple Sec, Zitrone, Ananas, Maracuja, Grenadine": "Vodka, Triple Sec, lemon, pineapple, passion fruit, grenadine",
-            "Zitronensaft, Lime Juice, Ananassaft, Rum, Brandy, Havanna": "Lemon juice, lime juice, pineapple juice, rum, brandy, Havana",
-            "Zitros, Lime Juice, Ceepers, Myers Rum, Havanna, Ananassaft, Orangensaft": "Lime juice, rum, pineapple juice, orange juice",
-            "Orangensaft, Ananassaft, Vodka, Peachtree, Zitro": "Orange juice, pineapple juice, vodka, Peachtree",
-            "Vodka, Kahlua, Sahne": "Vodka, Kahlua, cream",
-            "Zitro, Lime Juice, Vodka, Tequila, Havanna, Gin, Triple Sec": "Vodka, tequila, rum, gin, Triple Sec",
-            "Cocossirup, Myers Rum, Havanna, Ananassaft": "Coconut syrup, rum, pineapple juice",
-            "Rum, Peach Tree, Ananas, Pfirsich, Kokos, Sahne": "Rum, Peach Tree, pineapple, peach, coconut, cream",
-            "Campari, Vermuth bianco": "Campari, vermouth",
-            "Limette, Minze, Rohrzucker, Sodawasser, Weißer Rum": "Lime, mint, cane sugar, soda water, white rum",
-            "Weißer Rum, Amaretto, Curacao Blue, Ananassaft, Sodawasser": "White rum, Amaretto, Blue Curacao, pineapple juice, soda",
-            "Gin, Vodka, Tequila Silver, Triple Sec, Grenadine, Maracuja Saft, Zitrone, Lime": "Gin, vodka, Tequila Silver, Triple Sec, grenadine, passion fruit, lemon, lime",
-            "Cocos, Sahne, Grenadine, Ananassaft": "Coconut, cream, grenadine, pineapple juice",
-            "Limette, Lime Juice, Brauner Zucker, Ginger Ale": "Lime, lime juice, brown sugar, Ginger Ale",
-            "Ananas, Orange, Zitrone, Grenadine": "Pineapple, orange, lemon, grenadine",
-            "Ananas, Orange, Zitrone, Minze Sirup": "Pineapple, orange, lemon, mint syrup",
-            "Limette, Minze, Rohrzucker, Tonic Wasser, Sodawasser": "Lime, mint, cane sugar, tonic, soda",
-            "Limette, Rohrzucker, Ginger Ale": "Lime, brown sugar, Ginger Ale",
-            "Orangensaft, Ananassaft, Kokossirup, Sahne, Grenadine": "Orange juice, pineapple juice, coconut syrup, cream, grenadine"
+            "Heineken": "Heineken",
+            "Heineken Alkoholfrei": "Heineken Non-Alcoholic",
+            "Corona Bier": "Corona Beer",
+            "Hefe Weizen": "Hefe Wheat",
+            "Saltos (Verschiedene Sorten)": "Saltos (various flavors)",
+            "Coca Cola": "Coca Cola",
+            "Coca Cola Zero": "Coca Cola Zero",
+            "Fanta": "Fanta",
+            "Sprite": "Sprite",
+            "Wasser": "Water",
+            "Tonic Water": "Tonic Water",
+            "Bitter Lemon": "Bitter Lemon",
+            "Ginger Ale": "Ginger Ale",
+            "Wild Berry": "Wild Berry",
+            "Energy": "Energy Drink",
+            "Red Bull (Verschiedene Sorten)": "Red Bull (various flavors)",
+            "Kirschen": "Cherry",
+            "Banane": "Banana",
+            "Johannisbeere": "Blackcurrant",
+            "Apfel": "Apple",
+            "Orange": "Orange",
+            "Maracuja": "Passion Fruit",
+            "Ananas": "Pineapple",
+            "Cranberry": "Cranberry",
+            "Daiquiri": "Daiquiri",
+            "Lady Killer": "Lady Killer",
+            "Caipirinha": "Caipirinha",
+            "Cuba Libre": "Cuba Libre",
+            "Touch Down": "Touch Down",
+            "Mai Tai": "Mai Tai",
+            "Zombie": "Zombie",
+            "Sex on the Beach": "Sex on the Beach",
+            "White Russian": "White Russian",
+            "Long Island": "Long Island",
+            "Pina Colada": "Pina Colada",
+            "Peach Colada": "Peach Colada",
+            "Americano": "Americano",
+            "Mojito": "Mojito",
+            "Ocean Breeze": "Ocean Breeze",
+            "Diamond Special": "Diamond Special",
+            "Coconut Kiss": "Coconut Kiss",
+            "Virgin Capi": "Virgin Capi",
+            "Diamond Special Fresh": "Diamond Special Fresh",
+            "Exotik": "Exotik",
+            "Mojito (alkoholfrei)": "Mojito (non-alc)",
+            "Caipirinha (alkoholfrei)": "Caipirinha (non-alc)",
+            "Cinderella": "Cinderella",
+            "Malibu": "Malibu",
+            "Jacky": "Jacky",
+            "Asbach Cola": "Asbach Cola",
+            "Captain Morgan Cola": "Captain Morgan Cola",
+            "Gin": "Gin",
+            "Jägermeister Energy": "Jägermeister Energy",
+            "Vodka Energy": "Vodka Energy",
+            "Vodka": "Vodka",
+            "B52": "B52",
+            "Havanna Lime": "Havanna Lime",
+            "Vodka Lime": "Vodka Lime",
+            "Orgasmus": "Orgasm",
+            "Russian Roulette": "Russian Roulette",
+            "Kamikaze": "Kamikaze",
+            "Scavi & Ray Prosecco": "Scavi & Ray Prosecco",
+            "Scavi & Ray Ice Prestige": "Scavi & Ray Ice Prestige",
+            "Aperol Spritz": "Aperol Spritz",
+            "Hugo": "Hugo",
+            "Scavi & Ray IL Bianco": "Scavi & Ray IL Bianco",
+            "Scavi & Ray IL Rosso": "Scavi & Ray IL Rosso",
+            "Scavi & Ray IL Rosato": "Scavi & Ray IL Rosato",
+            "Rotwein": "Red Wine",
+            "Weißwein": "White Wine",
+            "Lille Berry": "Lille Berry",
+            "Softdrinks (Cola, Fanta, Sprite)": "Soft Drinks (Cola, Fanta, Sprite)",
+            "Säfte (Verschiedene Sorten)": "Juices (various flavors)",
+            "Effect Classic Energy": "Effect Classic Energy",
+            "Vodka Smirnoff Red Label *": "Vodka Smirnoff Red Label *",
+            "Vodka Absolut *": "Vodka Absolut *",
+            "Vodka Belvedere *": "Vodka Belvedere *",
+            "Vodka 9 Mile *": "Vodka 9 Mile *",
+            "Tequila Gold / Silver *": "Tequila Gold / Silver *",
+            "Jägermeister *": "Jägermeister *",
+            "Captain Morgan *": "Captain Morgan *",
+            "Gordon's Gin *": "Gordon's Gin *",
+            "Ficken": "Ficken",
+            "Havanna *": "Havanna *",
+            "Vodka Melone": "Vodka Melon",
+            "Hennessy *": "Hennessy *",
+            "Jack Daniels *": "Jack Daniels *",
+            "Moet & Chandon Brut": "Moet & Chandon Brut",
+            "Havanna Club": "Havanna Club",
+            "Tequila (Silver / Gold)": "Tequila (Silver / Gold)",
+            "Baileys": "Baileys",
+            "Jack Daniels": "Jack Daniels",
+            "Asbach": "Asbach",
+            "Hennessy": "Hennessy",
+            "Bacardi/Razz": "Bacardi/Razz",
+            "Gordon's Dry Gin": "Gordon's Dry Gin",
+            "Captain Morgan Gold": "Captain Morgan Gold"
         }
     };
 
+    // ==================== DEFINITIONEN FÜR SUB-OPTIONEN ====================
+    const subOptionMap = {
+        "mit Softdrinks": ["Cola", "Fanta", "Sprite"],
+        "mit Saft": ["Kirschen", "Banane", "Johannisbeere", "Apfel", "Orange", "Maracuja", "Ananas", "Cranberry"]
+    };
+
+    // ==================== FUNKTIONEN ====================
+    let currentLang = "de";
+    let drinksData = JSON.parse(JSON.stringify(drinksDataMultilang.de));
+    let cartItems = [];
+    let currentSelectedCategory = null;
+
+    function loadCart() {
+        const saved = localStorage.getItem('diamondCart');
+        if (saved) {
+            try {
+                cartItems = JSON.parse(saved);
+            } catch (e) {
+                cartItems = [];
+            }
+        }
+    }
+
+    function saveCart() {
+        localStorage.setItem('diamondCart', JSON.stringify(cartItems));
+    }
+
+    function showToast(msg) { 
+        const toast = document.getElementById('toast'); 
+        toast.textContent = msg; 
+        toast.classList.add('show'); 
+        setTimeout(() => toast.classList.remove('show'), 1800); 
+    }
+
+    function updateCartUI() { 
+        const count = cartItems.reduce((s, i) => s + i.qty, 0);
+        document.getElementById("cartCount").textContent = count;
+        saveCart();
+    }
+
+    function addToCart(name, price, size, options = {}) {
+        let displayName = name;
+        if (options.variant) {
+            displayName = `${name} (${options.variant})`;
+        }
+        if (options.subOption) {
+            displayName = `${displayName} - ${options.subOption}`;
+        }
+        let existing = cartItems.find(i => i.name === displayName && i.size === size);
+        if (existing) {
+            existing.qty++;
+        } else {
+            cartItems.push({ name: displayName, price, size, qty: 1, options: JSON.stringify(options) });
+        }
+        updateCartUI(); 
+        showToast(translations[currentLang].toastAdded.replace("{name}", displayName));
+        closeVariantModal();
+    }
+
     function translateDrinks(lang) {
-        let newData = JSON.parse(JSON.stringify(baseDrinks));
-        const translations = drinkTranslations[lang];
+        let newData = JSON.parse(JSON.stringify(drinksDataMultilang.de));
+        const trans = drinkTranslations[lang];
+        if (!trans) return newData;
         
         for (let categoryKey in newData) {
             if (newData[categoryKey] && newData[categoryKey].items) {
                 newData[categoryKey].items.forEach(item => {
-                    if (item.name && translations[item.name]) {
-                        item.name = translations[item.name];
+                    if (item.name && trans[item.name]) {
+                        item.name = trans[item.name];
                     }
-                    if (item.desc && translations[item.desc]) {
-                        item.desc = translations[item.desc];
+                    if (item.variants) {
+                        item.variants = item.variants.map(v => trans[v] || v);
                     }
                 });
             }
         }
         return newData;
     }
-
-    // ==================== INIT ====================
-    let currentLang = "de";
-    let drinksData = translateDrinks("de");
-    let cartItems = [];
-    let selectedVariants = {};
-    let currentSelectedCategory = null;
-
-    function showToast(msg) { const toast = document.getElementById('toast'); toast.textContent = msg; toast.classList.add('show'); setTimeout(() => toast.classList.remove('show'), 1800); }
-    function updateCartUI() { document.getElementById("cartCount").textContent = cartItems.reduce((s, i) => s + i.qty, 0); }
-    function addToCart(name, price, size) { let existing = cartItems.find(i => i.name === name && i.size === size); if (existing) existing.qty++; else cartItems.push({ name, price, size, qty: 1 }); updateCartUI(); showToast(translations[currentLang].toastAdded.replace("{name}", name)); }
 
     function updateLanguage(lang) {
         currentLang = lang;
@@ -925,11 +1475,13 @@
         
         const categoryTitles = {
             de: { bier: "🍺 BIER", softdrinks: "🥤 SOFTDRINKS", saefte: "🧃 SÄFTE", cocktails: "🍹 COCKTAILS", cocktails_alkoholfrei: "✨ ALKOHOLFREIE COCKTAILS", longdrinks: "🥃 LONGDRINKS", shots: "💥 SHOTS", sekt: "🥂 SEKT & WEIN", flaschen: "🍾 FLASCHENVERKAUF", spirituosen: "🥃 SPIRITUOSEN" },
-            ru: { bier: "🍺 ПИВО", softdrinks: "🥤 НАПИТКИ", saefte: "🧃 СОКИ", cocktails: "🍹 КОКТЕЙЛИ", cocktails_alkoholfrei: "✨ БЕЗАЛКОГОЛЬНЫЕ", longdrinks: "🥃 ЛОНГДРИНКИ", shots: "💥 ШОТЫ", sekt: "🥂 ИГРИСТОЕ & ВИНО", flaschen: "🍾 ПРОДАЖА БУТЫЛОК", spirituosen: "🥃 КРЕПКИЙ АЛКОГОЛЬ" },
-            en: { bier: "🍺 BEER", softdrinks: "🥤 SOFT DRINKS", saefte: "🧃 JUICES", cocktails: "🍹 COCKTAILS", cocktails_alkoholfrei: "✨ NON-ALCOHOLIC", longdrinks: "🥃 LONG DRINKS", shots: "💥 SHOTS", sekt: "🥂 SPARKLING & WINE", flaschen: "🍾 BOTTLE SALES", spirituosen: "🥃 SPIRITS" }
+            ru: { bier: "🍺 ПИВО", softdrinks: "🥤 НАПИТКИ", saefte: "🧃 СОКИ", cocktails: "🍹 КОКТЕЙЛИ", cocktails_alkoholfrei: "✨ БЕЗАЛКОГОЛЬНЫЕ КОКТЕЙЛИ", longdrinks: "🥃 ЛОНГДРИНКИ", shots: "💥 ШОТЫ", sekt: "🥂 ИГРИСТОЕ & ВИНО", flaschen: "🍾 ПРОДАЖА БУТЫЛОК", spirituosen: "🥃 КРЕПКИЙ АЛКОГОЛЬ" },
+            en: { bier: "🍺 BEER", softdrinks: "🥤 SOFT DRINKS", saefte: "🧃 JUICES", cocktails: "🍹 COCKTAILS", cocktails_alkoholfrei: "✨ NON-ALCOHOLIC COCKTAILS", longdrinks: "🥃 LONG DRINKS", shots: "💥 SHOTS", sekt: "🥂 SPARKLING & WINE", flaschen: "🍾 BOTTLE SALES", spirituosen: "🥃 SPIRITS" }
         };
-        for (let key in categoryTitles[lang]) {
-            if (drinksData[key]) drinksData[key].title = categoryTitles[lang][key];
+        for (let key in drinksData) {
+            if (categoryTitles[lang] && categoryTitles[lang][key]) {
+                drinksData[key].title = categoryTitles[lang][key];
+            }
         }
         
         if (currentSelectedCategory) { renderDrinks(); selectCategory(currentSelectedCategory); } 
@@ -937,28 +1489,324 @@
         if (document.getElementById("orderOverlay").classList.contains("show")) refreshOrderSummary();
     }
 
-    function toggleTheme() { document.body.classList.toggle('dark'); localStorage.setItem('theme', document.body.classList.contains('dark') ? 'dark' : 'light'); showToast(document.body.classList.contains('dark') ? translations[currentLang].themeDark : translations[currentLang].themeLight); }
+    function toggleTheme() { 
+        document.body.classList.toggle('dark'); 
+        localStorage.setItem('theme', document.body.classList.contains('dark') ? 'dark' : 'light'); 
+        showToast(document.body.classList.contains('dark') ? translations[currentLang].themeDark : translations[currentLang].themeLight); 
+    }
 
-    function selectCategory(key) { currentSelectedCategory = key; document.getElementById("categoriesWrapper").classList.add("hide-categories"); document.querySelectorAll(".category-section").forEach(s => s.style.display = s.dataset.category === key ? "block" : "none"); window.scrollTo({ top: 0, behavior: 'smooth' }); }
-    function showAllCategories() { currentSelectedCategory = null; document.getElementById("categoriesWrapper").classList.remove("hide-categories"); document.querySelectorAll(".category-section").forEach(s => s.style.display = "block"); window.scrollTo({ top: 0, behavior: 'smooth' }); }
+    function selectCategory(key) { 
+        currentSelectedCategory = key; 
+        document.getElementById("categoriesWrapper").classList.add("hide-categories"); 
+        document.querySelectorAll(".category-section").forEach(s => s.style.display = s.dataset.category === key ? "block" : "none"); 
+        window.scrollTo({ top: 0, behavior: 'smooth' }); 
+    }
 
-    function removeFromCart(index) { let removed = cartItems[index]; cartItems.splice(index, 1); updateCartUI(); showToast(translations[currentLang].toastRemoved.replace("{name}", removed.name)); if (document.getElementById("orderOverlay").classList.contains("show")) refreshOrderSummary(); }
-    function resetCartWithConfirm() { if (cartItems.length === 0) { showToast(translations[currentLang].emptyCart); return; } document.getElementById("confirmOverlay").classList.add("show"); }
-    function executeResetCart() { cartItems = []; updateCartUI(); showToast(translations[currentLang].toastCleared); if (document.getElementById("orderOverlay").classList.contains("show")) refreshOrderSummary(); document.getElementById("confirmOverlay").classList.remove("show"); }
+    function showAllCategories() { 
+        currentSelectedCategory = null; 
+        document.getElementById("categoriesWrapper").classList.remove("hide-categories"); 
+        document.querySelectorAll(".category-section").forEach(s => s.style.display = "block"); 
+        window.scrollTo({ top: 0, behavior: 'smooth' }); 
+    }
+
+    function removeFromCart(index) { 
+        let removed = cartItems[index]; 
+        cartItems.splice(index, 1); 
+        updateCartUI(); 
+        showToast(translations[currentLang].toastRemoved.replace("{name}", removed.name)); 
+        if (document.getElementById("orderOverlay").classList.contains("show")) refreshOrderSummary(); 
+    }
+
+    function resetCartWithConfirm() { 
+        if (cartItems.length === 0) { showToast(translations[currentLang].emptyCart); return; } 
+        document.getElementById("confirmOverlay").classList.add("show"); 
+    }
+
+    function executeResetCart() { 
+        cartItems = []; 
+        updateCartUI(); 
+        showToast(translations[currentLang].toastCleared); 
+        if (document.getElementById("orderOverlay").classList.contains("show")) refreshOrderSummary(); 
+        document.getElementById("confirmOverlay").classList.remove("show"); 
+    }
+
     function cancelResetCart() { document.getElementById("confirmOverlay").classList.remove("show"); }
 
     function refreshOrderSummary() {
         let content = document.getElementById("orderSummaryContent");
         if (cartItems.length === 0) { content.innerHTML = `<div class="empty-cart">${translations[currentLang].emptyCart}</div>`; return; }
         let html = '<div class="order-items">', total = 0;
-        cartItems.forEach((item, idx) => { let subtotal = item.price * item.qty; total += subtotal; html += `<div class="order-item"><div class="order-item-info"><div class="order-item-name">${item.name}</div><div class="order-item-size">${item.size}</div></div><div class="order-item-qty">${item.qty}x</div><div class="order-item-price">${subtotal.toFixed(2)} €</div><button class="delete-item-btn" data-index="${idx}">✗</button></div>`; });
-        html += `</div><div class="order-total"><span>Gesamtbetrag</span><span>${total.toFixed(2)} €</span></div><div class="speaking-head"><span>🗣️</span> ${translations[currentLang].speakingHead}</div><div style="text-align:center; font-size:8px; margin-top:4px;">${translations[currentLang].thankYou}</div>`;
+        cartItems.forEach((item, idx) => { 
+            let subtotal = item.price * item.qty; 
+            total += subtotal; 
+            html += `<div class="order-item"><div class="order-item-info"><div class="order-item-name">${item.name}</div><div class="order-item-size">${item.size}</div></div><div class="order-item-qty">${item.qty}x</div><div class="order-item-price">${subtotal.toFixed(2)} €</div><button class="delete-item-btn" data-index="${idx}">✗</button></div>`; 
+        });
+        html += `</div><div class="order-total"><span>Gesamtbetrag</span><span>${total.toFixed(2)} €</span></div><div class="speaking-head"><span>🗣️</span> ${translations[currentLang].speakingHead}</div><div style="text-align:center; font-size:9px; margin-top:6px;">${translations[currentLang].thankYou}</div>`;
         content.innerHTML = html;
         document.querySelectorAll('.delete-item-btn').forEach(btn => btn.addEventListener('click', (e) => { e.stopPropagation(); removeFromCart(parseInt(btn.dataset.index)); }));
     }
+
     function showOrderSummary() { refreshOrderSummary(); document.getElementById("orderOverlay").classList.add("show"); }
     function closeOrderSummary() { document.getElementById("orderOverlay").classList.remove("show"); }
 
+    // ==================== VARIANTEN MODAL ====================
+    function openVariantModal(itemName, size, variants, basePrice, hasPriceVariants) {
+        const overlay = document.getElementById('variantModalOverlay');
+        const title = document.getElementById('variantModalTitle');
+        const sub = document.getElementById('variantModalSub');
+        const container = document.getElementById('variantOptionsContainer');
+        
+        title.textContent = itemName;
+        sub.textContent = translations[currentLang].selectOption || 'Bitte wählen Sie eine Option';
+        container.innerHTML = '';
+        
+        variants.forEach(v => {
+            let priceMatch = v.match(/(\d+)/);
+            let price = priceMatch ? parseFloat(priceMatch[1]) : basePrice;
+            let label = v;
+            let subOptions = null;
+            
+            for (let [key, subs] of Object.entries(subOptionMap)) {
+                if (v.includes(key)) {
+                    subOptions = subs;
+                    break;
+                }
+            }
+            
+            if (subOptions) {
+                let div = document.createElement('div');
+                div.className = 'variant-option has-sub';
+                div.innerHTML = `<div class="main-option"><span>${v}</span><span class="option-price">${price.toFixed(2).replace('.', ',')} €</span></div>`;
+                let subDiv = document.createElement('div');
+                subDiv.className = 'sub-dropdown';
+                subOptions.forEach(sub => {
+                    let subItem = document.createElement('div');
+                    subItem.className = 'sub-option';
+                    subItem.innerHTML = `<span class="sub-label">${sub}</span><span class="sub-price">${price.toFixed(2).replace('.', ',')} €</span>`;
+                    subItem.addEventListener('click', () => {
+                        addToCart(itemName, price, size, { variant: v, subOption: sub });
+                    });
+                    subDiv.appendChild(subItem);
+                });
+                div.appendChild(subDiv);
+                container.appendChild(div);
+            } else {
+                let div = document.createElement('div');
+                div.className = 'variant-option';
+                div.innerHTML = `<span class="option-label">${v}</span><span class="option-price">${price.toFixed(2).replace('.', ',')} €</span>`;
+                div.addEventListener('click', () => {
+                    addToCart(itemName, price, size, { variant: v });
+                });
+                container.appendChild(div);
+            }
+        });
+        
+        overlay.classList.add('show');
+    }
+
+    function closeVariantModal() {
+        document.getElementById('variantModalOverlay').classList.remove('show');
+    }
+
+    // ==================== ADMIN-FUNKTIONEN ====================
+    function renderAdminPanel() {
+        let html = `
+            <div class="admin-btn-group">
+                <button class="add-category-btn" onclick="addCategory()">➕ Neue Kategorie</button>
+                <button class="add-category-btn" style="background:#17a2b8;" onclick="resetToDefault()">↩️ Standard</button>
+                <button class="add-category-btn btn-download" onclick="downloadHTML()">📥 HTML herunterladen</button>
+            </div>
+        `;
+        
+        for (let [catKey, catData] of Object.entries(drinksData)) {
+            html += `
+                <div class="admin-category" data-category="${catKey}">
+                    <div class="admin-category-title">
+                        <span>${catData.title}</span>
+                        <button class="delete-admin-btn" onclick="deleteCategory('${catKey}')">🗑️ Kategorie löschen</button>
+                    </div>
+                    <div class="admin-table">
+                        <div class="admin-table-header">
+                            <span style="width:100px;">Name</span>
+                            <span style="width:60px;">Größe</span>
+                            <span style="width:65px;">Preis</span>
+                            <span style="width:120px;">Beschreibung</span>
+                            <span style="width:120px;">Varianten</span>
+                            <span style="width:100px;">Optionen</span>
+                            <span style="width:30px;">Aktion</span>
+                        </div>
+            `;
+            
+            catData.items.forEach((item, idx) => {
+                const variantsStr = item.variants ? item.variants.join(', ') : '';
+                const isBottle = item.isBottle ? 'checked' : '';
+                const hasPriceVariants = item.hasPriceVariants ? 'checked' : '';
+                const requireSelection = item.requireSelection ? 'checked' : '';
+                const hasVariants = item.hasVariants ? 'checked' : '';
+                
+                html += `
+                    <div class="admin-item" data-index="${idx}">
+                        <input class="item-name" value="${item.name}" placeholder="Name">
+                        <input class="item-size" value="${item.size || ''}" placeholder="Größe">
+                        <input class="item-price" value="${item.price || ''}" placeholder="Preis" type="number" step="0.50">
+                        <input class="item-desc" value="${item.desc || ''}" placeholder="Beschreibung">
+                        <input class="item-variants" value="${variantsStr}" placeholder="Varianten (kommagetrennt)">
+                        <div style="display:flex;gap:4px;flex-wrap:wrap;font-size:10px;">
+                            <label><input type="checkbox" class="item-has-variants" ${hasVariants}> Varianten</label>
+                            <label><input type="checkbox" class="item-has-price-variants" ${hasPriceVariants}> Preisvar.</label>
+                            <label><input type="checkbox" class="item-is-bottle" ${isBottle}> Flasche</label>
+                            <label><input type="checkbox" class="item-require-selection" ${requireSelection}> Auswahl</label>
+                        </div>
+                        <button class="delete-admin-btn" onclick="deleteItem('${catKey}', ${idx})">✗</button>
+                    </div>
+                `;
+            });
+            
+            html += `
+                        <button class="add-item-btn" onclick="addItem('${catKey}')">+ Artikel hinzufügen</button>
+                    </div>
+                </div>
+            `;
+        }
+        
+        document.getElementById("adminContent").innerHTML = html;
+    }
+
+    // ==================== DOWNLOAD FUNKTION ====================
+    function downloadHTML() {
+        // Aktuelle Daten speichern
+        localStorage.setItem('diamondDrinksData', JSON.stringify(drinksData));
+        
+        // Die komplette HTML-Datei als String holen
+        const htmlContent = document.documentElement.outerHTML;
+        
+        // Blob erstellen
+        const blob = new Blob([
+            '<!DOCTYPE html>\n' + htmlContent
+        ], { type: 'text/html;charset=utf-8' });
+        
+        // Download-URL erstellen
+        const url = URL.createObjectURL(blob);
+        const a = document.createElement('a');
+        a.href = url;
+        a.download = 'index.html';
+        document.body.appendChild(a);
+        a.click();
+        document.body.removeChild(a);
+        URL.revokeObjectURL(url);
+        
+        showToast('📥 index.html wird heruntergeladen!');
+    }
+
+    function saveAllData() {
+        const categories = document.querySelectorAll('.admin-category');
+        categories.forEach(catEl => {
+            const catKey = catEl.dataset.category;
+            const items = [];
+            catEl.querySelectorAll('.admin-item').forEach(itemEl => {
+                const name = itemEl.querySelector('.item-name').value;
+                const size = itemEl.querySelector('.item-size').value;
+                const price = parseFloat(itemEl.querySelector('.item-price').value);
+                const desc = itemEl.querySelector('.item-desc').value;
+                const variantsStr = itemEl.querySelector('.item-variants').value;
+                const variants = variantsStr ? variantsStr.split(',').map(v => v.trim()).filter(v => v) : null;
+                const hasVariants = itemEl.querySelector('.item-has-variants').checked;
+                const hasPriceVariants = itemEl.querySelector('.item-has-price-variants').checked;
+                const isBottle = itemEl.querySelector('.item-is-bottle').checked;
+                const requireSelection = itemEl.querySelector('.item-require-selection').checked;
+                
+                if (name) {
+                    const item = { name, size, price, desc };
+                    if (variants && variants.length > 0) {
+                        item.variants = variants;
+                        item.hasVariants = hasVariants || variants.length > 0;
+                        if (hasPriceVariants) item.hasPriceVariants = true;
+                        if (isBottle) item.isBottle = true;
+                        if (requireSelection || hasPriceVariants) item.requireSelection = true;
+                    }
+                    items.push(item);
+                }
+            });
+            if (drinksData[catKey]) {
+                drinksData[catKey].items = items;
+            }
+        });
+        
+        localStorage.setItem('diamondDrinksData', JSON.stringify(drinksData));
+        showToast(translations[currentLang].dataSaved);
+        setTimeout(() => location.reload(), 1500);
+    }
+
+    function addCategory() {
+        const name = prompt('Name der neuen Kategorie (z.B. "🍺 BIER"):');
+        if (!name) return;
+        const key = 'kat_' + Date.now();
+        drinksData[key] = { title: name, items: [] };
+        renderAdminPanel();
+    }
+
+    function deleteCategory(key) {
+        if (!confirm(`Kategorie "${drinksData[key]?.title || key}" wirklich löschen?`)) return;
+        delete drinksData[key];
+        renderAdminPanel();
+    }
+
+    function addItem(catKey) {
+        if (!drinksData[catKey]) return;
+        drinksData[catKey].items.push({ name: "Neuer Artikel", size: "0,3l", price: 5.00 });
+        renderAdminPanel();
+    }
+
+    function deleteItem(catKey, index) {
+        if (!drinksData[catKey]) return;
+        drinksData[catKey].items.splice(index, 1);
+        renderAdminPanel();
+    }
+
+    function resetToDefault() {
+        if (!confirm('Alle Daten auf die Standardwerte zurücksetzen?')) return;
+        localStorage.removeItem('diamondDrinksData');
+        location.reload();
+    }
+
+    function openAdminPanel() { 
+        renderAdminPanel(); 
+        document.getElementById("adminOverlay").classList.add("show"); 
+    }
+
+    function closeAdminPanel() { 
+        document.getElementById("adminOverlay").classList.remove("show"); 
+    }
+
+    // ==================== PIN & SECURITY ====================
+    const ADMIN_PIN = "4433";
+    let themeClickCount = 0, adminClickCount = 0;
+    let themeTimer = null, adminTimer = null;
+
+    function showPinDialog() { 
+        document.getElementById("pinOverlay").classList.add("show"); 
+        document.getElementById("pinInput").value = '';
+        document.getElementById("pinInput").focus(); 
+        document.getElementById("pinError").textContent = '';
+    }
+
+    function hidePinDialog() { 
+        document.getElementById("pinOverlay").classList.remove("show"); 
+    }
+
+    function checkPin() { 
+        const input = document.getElementById("pinInput");
+        if (input.value === ADMIN_PIN) { 
+            hidePinDialog(); 
+            openAdminPanel(); 
+        } else { 
+            document.getElementById("pinError").textContent = "❌ Falsche PIN!"; 
+            input.value = ""; 
+            input.focus();
+        } 
+    }
+
+    // ==================== RENDER DRINKS ====================
     function renderDrinks() {
         let catNav = document.getElementById("categoryNav");
         catNav.innerHTML = "";
@@ -975,27 +1823,32 @@
             }
         }
         document.getElementById("showAllCategoriesBtn").onclick = () => showAllCategories();
+        
         let html = "";
         for (let [key, cat] of Object.entries(drinksData)) {
             html += `<div class="category-section" data-category="${key}"><div class="category-title">${cat.title}</div><div class="drinks-grid">`;
             cat.items.forEach((item, idx) => {
                 let itemId = `${key}_${idx}`;
+                let hasVariants = item.hasVariants || false;
                 let hasPriceVariants = item.hasPriceVariants || false;
-                let requireSelection = item.requireSelection || hasPriceVariants || false;
-                let currentVariant = selectedVariants[itemId] || null;
                 let badge = item.desc && item.desc.match(/^\d/) ? `<span class="badge">${item.desc}</span>` : "";
                 let desc = item.desc && !item.desc.match(/^\d/) ? `<div class="drink-desc">${item.desc}</div>` : "";
                 let size = item.size || "0,4l";
                 
                 let displayPrice = "";
-                if (hasPriceVariants) {
-                    if (item.variants && item.variants.length > 0) {
-                        let firstPrice = item.variants[0].match(/(\d+)/);
-                        let lastPrice = item.variants[item.variants.length-1].match(/(\d+)/);
-                        if (firstPrice && lastPrice) {
-                            displayPrice = firstPrice[1] + " - " + lastPrice[1] + " €";
-                        } else if (firstPrice) {
-                            displayPrice = "ab " + firstPrice[1] + " €";
+                if (hasPriceVariants && item.variants) {
+                    let prices = [];
+                    item.variants.forEach(v => {
+                        let match = v.match(/(\d+)/);
+                        if (match) prices.push(parseFloat(match[1]));
+                    });
+                    if (prices.length > 0) {
+                        let minPrice = Math.min(...prices);
+                        let maxPrice = Math.max(...prices);
+                        if (minPrice === maxPrice) {
+                            displayPrice = minPrice.toFixed(2).replace('.', ',') + " €";
+                        } else {
+                            displayPrice = minPrice.toFixed(2).replace('.', ',') + " - " + maxPrice.toFixed(2).replace('.', ',') + " €";
                         }
                     } else {
                         displayPrice = "---";
@@ -1004,119 +1857,122 @@
                     displayPrice = item.price.toFixed(2).replace('.', ',') + " €";
                 }
                 
-                let showOrderBtn = !requireSelection || (requireSelection && currentVariant !== null);
+                html += `<div class="drink-item"><div class="drink-info"><div class="drink-name">${item.name}${badge}</div>${desc}<div class="drink-size">${size}</div></div>`;
+                html += `<div class="drink-price" id="price-${itemId}">${displayPrice}</div>`;
+                html += `<div class="drink-actions">`;
                 
-                html += `<div class="drink-item"><div class="drink-info"><div class="drink-name">${item.name}${badge}</div>${desc}<div class="drink-size">${size}</div>`;
-                if (item.hasVariants && item.variants) {
-                    html += `<div class="variation-select" data-id="${itemId}" data-require-selection="${requireSelection}">`;
-                    item.variants.forEach(v => { 
-                        let isActive = (currentVariant === v) ? 'active' : '';
-                        html += `<button class="var-btn ${isActive}" data-value="${v}">${v}</button>`;
-                    });
-                    html += `</div>`;
+                let btnClass = 'order-btn';
+                if (hasVariants || hasPriceVariants) {
+                    btnClass += ' has-variants';
                 }
-                html += `</div><div class="drink-price" id="price-${itemId}">${displayPrice}</div><div class="drink-actions"><button class="order-btn ${showOrderBtn ? 'visible' : ''}" data-id="${itemId}" data-name="${item.name}" data-price="${item.price || 0}" data-size="${size}" data-has-variants="${item.hasVariants}" data-variant="${currentVariant || ''}" data-require-selection="${requireSelection}" data-has-price-variants="${hasPriceVariants}">+</button></div></div>`;
+                
+                if (hasVariants || hasPriceVariants) {
+                    let variants = item.variants || [];
+                    let basePrice = item.price || 0;
+                    let variantsJson = JSON.stringify(variants).replace(/"/g, '&quot;');
+                    html += `<button class="${btnClass}" onclick="openVariantModal('${item.name}', '${size}', ${variantsJson}, ${basePrice}, ${hasPriceVariants})">+</button>`;
+                } else {
+                    html += `<button class="${btnClass}" onclick="addToCart('${item.name}', ${item.price}, '${size}')">+</button>`;
+                }
+                
+                html += `</div></div>`;
             });
             html += `</div></div>`;
         }
         document.getElementById("drinksContainer").innerHTML = html;
-        
-        document.querySelectorAll(".variation-select").forEach(select => { 
-            let id = select.dataset.id; 
-            let requireSelection = select.dataset.requireSelection === "true";
-            select.querySelectorAll(".var-btn").forEach(btn => { 
-                btn.addEventListener("click", (e) => { 
-                    e.stopPropagation(); 
-                    select.querySelectorAll(".var-btn").forEach(b => b.classList.remove("active")); 
-                    btn.classList.add("active"); 
-                    selectedVariants[id] = btn.dataset.value; 
-                    let orderBtn = select.closest(".drink-item")?.querySelector(".order-btn"); 
-                    let priceEl = select.closest(".drink-item")?.querySelector(".drink-price");
-                    
-                    if (orderBtn) {
-                        orderBtn.setAttribute("data-variant", selectedVariants[id]);
-                        if (requireSelection) {
-                            let hasPriceVariants = orderBtn.dataset.hasPriceVariants === "true";
-                            if (hasPriceVariants) {
-                                let priceMatch = selectedVariants[id].match(/(\d+)/);
-                                if (priceMatch && priceEl) {
-                                    priceEl.textContent = parseFloat(priceMatch[1]).toFixed(2).replace('.', ',') + " €";
-                                }
-                                let priceMatch2 = selectedVariants[id].match(/(\d+)/);
-                                if (priceMatch2) {
-                                    orderBtn.setAttribute("data-price", parseFloat(priceMatch2[1]));
-                                }
-                            }
-                            orderBtn.classList.add("visible");
-                        }
-                    }
-                }); 
-            }); 
-        });
-        
-        document.querySelectorAll(".order-btn").forEach(btn => { 
-            btn.addEventListener("click", () => { 
-                let name = btn.dataset.name, 
-                    variant = btn.dataset.variant, 
-                    hasVariants = btn.dataset.hasVariants === "true",
-                    hasPriceVariants = btn.dataset.hasPriceVariants === "true",
-                    price = parseFloat(btn.dataset.price), 
-                    size = btn.dataset.size, 
-                    fullName = name; 
-                if (hasVariants && variant) {
-                    if (name === "Jacky" && variant === "Cola") fullName = "Jacky Cola"; 
-                    else if (name === "Jacky" && variant === "Apfel") fullName = "Jacky Apfel"; 
-                    else if (name === "Softdrinks (Cola, Fanta, Sprite)" && ["Cola","Fanta","Sprite"].includes(variant)) fullName = `${variant} 1,0l Flasche`;
-                    else if (variant === "Saft") fullName = `${name}saft`; 
-                    else if (variant === "Schorle") fullName = `${name}schorle`; 
-                    else if (variant === "Nektar") fullName = `${name}nektar`; 
-                    else if (variant === "spritzig") fullName = `Wasser (spritzig)`; 
-                    else if (variant === "still") fullName = `Wasser (still)`; 
-                    else if (hasPriceVariants) {
-                        let includeText = variant.replace(/\d+€\s*/, "");
-                        fullName = `${name} (${includeText})`;
-                        let priceMatch = variant.match(/(\d+)/);
-                        if (priceMatch) {
-                            price = parseFloat(priceMatch[1]);
-                        }
-                    }
-                    else fullName = `${name} ${variant}`; 
-                }
-                addToCart(fullName, price, size); 
-            }); 
-        });
     }
 
-    function renderAdminPanel() { document.getElementById("adminContent").innerHTML = '<div style="text-align:center;padding:20px;">🔧 Admin Panel - Hier können Sie Getränke bearbeiten</div>'; }
-    function openAdminPanel() { renderAdminPanel(); document.getElementById("adminOverlay").classList.add("show"); }
-    function closeAdminPanel() { document.getElementById("adminOverlay").classList.remove("show"); }
-    function saveAllData() { showToast(translations[currentLang].dataSaved); setTimeout(() => location.reload(), 1500); }
+    // ==================== INIT ====================
+    function init() {
+        const savedData = localStorage.getItem('diamondDrinksData');
+        if (savedData) {
+            try {
+                const parsed = JSON.parse(savedData);
+                for (let key of Object.keys(drinksDataMultilang.de)) {
+                    if (parsed[key]) {
+                        drinksData[key].items = parsed[key].items || drinksData[key].items;
+                    }
+                }
+                for (let key of Object.keys(parsed)) {
+                    if (!drinksData[key] && parsed[key]) {
+                        drinksData[key] = parsed[key];
+                    }
+                }
+            } catch (e) {}
+        }
+        
+        loadCart();
+        if (localStorage.getItem('theme') === 'dark') document.body.classList.add('dark');
+        
+        renderDrinks();
+        showAllCategories();
+        updateCartUI();
+        
+        // Event-Listener
+        document.getElementById("themeTriggerHeader").addEventListener("click", () => { 
+            themeClickCount++; 
+            if (themeTimer) clearTimeout(themeTimer); 
+            themeTimer = setTimeout(() => { themeClickCount = 0; }, 800); 
+            if (themeClickCount >= 2) { themeClickCount = 0; toggleTheme(); } 
+        });
+        
+        document.getElementById("adminTriggerText").addEventListener("click", (e) => { 
+            e.stopPropagation(); 
+            adminClickCount++; 
+            if (adminTimer) clearTimeout(adminTimer); 
+            adminTimer = setTimeout(() => { adminClickCount = 0; }, 1000); 
+            if (adminClickCount >= 10) { adminClickCount = 0; showPinDialog(); } 
+        });
+        
+        document.querySelectorAll(".lang-btn").forEach(btn => btn.addEventListener("click", () => updateLanguage(btn.getAttribute("data-lang"))));
+        document.getElementById("resetCartBtn").addEventListener("click", resetCartWithConfirm);
+        document.getElementById("orderCartBtn").addEventListener("click", showOrderSummary);
+        document.getElementById("closeOrderBtn").addEventListener("click", closeOrderSummary);
+        document.getElementById("orderOverlay").addEventListener("click", (e) => { if (e.target === document.getElementById("orderOverlay")) closeOrderSummary(); });
+        document.getElementById("closeAdminBtn").addEventListener("click", closeAdminPanel);
+        document.getElementById("saveAllDataBtn").addEventListener("click", saveAllData);
+        document.getElementById("pinSubmitBtn").addEventListener("click", checkPin);
+        document.getElementById("pinCancelBtn").addEventListener("click", hidePinDialog);
+        document.getElementById("pinInput").addEventListener("keypress", (e) => { if (e.key === "Enter") checkPin(); });
+        document.getElementById("confirmYesBtn").addEventListener("click", executeResetCart);
+        document.getElementById("confirmNoBtn").addEventListener("click", cancelResetCart);
+        document.getElementById("confirmOverlay").addEventListener("click", (e) => { if (e.target === document.getElementById("confirmOverlay")) cancelResetCart(); });
+        document.getElementById("variantModalClose").addEventListener("click", closeVariantModal);
+        document.getElementById("variantModalOverlay").addEventListener("click", function(e) {
+            if (e.target === this) {
+                closeVariantModal();
+            }
+        });
+        
+        // Globale Funktionen für inline onclick
+        window.addCategory = addCategory;
+        window.deleteCategory = deleteCategory;
+        window.addItem = addItem;
+        window.deleteItem = deleteItem;
+        window.resetToDefault = resetToDefault;
+        window.renderAdminPanel = renderAdminPanel;
+        window.saveAllData = saveAllData;
+        window.openAdminPanel = openAdminPanel;
+        window.closeAdminPanel = closeAdminPanel;
+        window.showPinDialog = showPinDialog;
+        window.hidePinDialog = hidePinDialog;
+        window.checkPin = checkPin;
+        window.selectCategory = selectCategory;
+        window.showAllCategories = showAllCategories;
+        window.removeFromCart = removeFromCart;
+        window.executeResetCart = executeResetCart;
+        window.cancelResetCart = cancelResetCart;
+        window.showOrderSummary = showOrderSummary;
+        window.closeOrderSummary = closeOrderSummary;
+        window.openVariantModal = openVariantModal;
+        window.closeVariantModal = closeVariantModal;
+        window.addToCart = addToCart;
+        window.toggleTheme = toggleTheme;
+        window.updateLanguage = updateLanguage;
+        window.downloadHTML = downloadHTML;
+    }
 
-    let themeClickCount = 0, themeTimer = null, adminClickCount = 0, adminTimer = null;
-    const ADMIN_PIN = "4433";
-    function showPinDialog() { document.getElementById("pinOverlay").classList.add("show"); document.getElementById("pinInput").focus(); }
-    function hidePinDialog() { document.getElementById("pinOverlay").classList.remove("show"); }
-    function checkPin() { if (document.getElementById("pinInput").value === ADMIN_PIN) { hidePinDialog(); openAdminPanel(); } else { document.getElementById("pinError").textContent = "❌ Falsche PIN!"; document.getElementById("pinInput").value = ""; } }
-
-    document.getElementById("themeTriggerHeader").addEventListener("click", () => { themeClickCount++; if (themeTimer) clearTimeout(themeTimer); themeTimer = setTimeout(() => { themeClickCount = 0; }, 800); if (themeClickCount >= 2) { themeClickCount = 0; toggleTheme(); } });
-    document.getElementById("adminTriggerText").addEventListener("click", (e) => { e.stopPropagation(); adminClickCount++; if (adminTimer) clearTimeout(adminTimer); adminTimer = setTimeout(() => { adminClickCount = 0; }, 1000); if (adminClickCount >= 10) { adminClickCount = 0; showPinDialog(); } });
-    document.querySelectorAll(".lang-btn").forEach(btn => btn.addEventListener("click", () => updateLanguage(btn.getAttribute("data-lang"))));
-    document.getElementById("resetCartBtn").addEventListener("click", resetCartWithConfirm);
-    document.getElementById("orderCartBtn").addEventListener("click", showOrderSummary);
-    document.getElementById("closeOrderBtn").addEventListener("click", closeOrderSummary);
-    document.getElementById("orderOverlay").addEventListener("click", (e) => { if (e.target === document.getElementById("orderOverlay")) closeOrderSummary(); });
-    document.getElementById("closeAdminBtn").addEventListener("click", closeAdminPanel);
-    document.getElementById("saveAllDataBtn").addEventListener("click", saveAllData);
-    document.getElementById("pinSubmitBtn").addEventListener("click", checkPin);
-    document.getElementById("pinCancelBtn").addEventListener("click", hidePinDialog);
-    document.getElementById("pinInput").addEventListener("keypress", (e) => { if (e.key === "Enter") checkPin(); });
-    document.getElementById("confirmYesBtn").addEventListener("click", executeResetCart);
-    document.getElementById("confirmNoBtn").addEventListener("click", cancelResetCart);
-    document.getElementById("confirmOverlay").addEventListener("click", (e) => { if (e.target === document.getElementById("confirmOverlay")) cancelResetCart(); });
-
-    if (localStorage.getItem('theme') === 'dark') document.body.classList.add('dark');
-    renderDrinks();
-    showAllCategories();
+    init();
 </script>
 </body>
 </html>
